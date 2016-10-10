@@ -33,7 +33,7 @@ public abstract class FloorFactory implements Floor {
 
             switch(type){
                 case "General":
-                    floor = new GeneralFloor();
+                    floor = new FloorGeneral();
                     floor = setCommonProperties(resultSet, floor);
                     break;
             }
@@ -52,7 +52,7 @@ public abstract class FloorFactory implements Floor {
 
             switch(type){
                 case "General":
-                    floor = new GeneralFloor(f);
+                    floor = new FloorGeneral(f);
                     break;
             }
 

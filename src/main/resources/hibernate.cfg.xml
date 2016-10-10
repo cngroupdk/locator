@@ -23,9 +23,10 @@
 
         <mapping class="Buildings.OfficeSpace"/>
 
-        <mapping class="BuildingInformation.GeneralFloor"/>
+        <mapping class="BuildingInformation.FloorGeneral"/>
 
-        <mapping class="BuildingInformation.DevRoom"/>
+        <mapping class="BuildingInformation.RoomDev"/>
+        <mapping class="BuildingInformation.RoomFactory"/>
 
     </session-factory>
 </hibernate-configuration>

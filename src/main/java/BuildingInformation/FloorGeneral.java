@@ -9,13 +9,13 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name="floors")
-public class GeneralFloor extends FloorFactory implements Serializable{
+public class FloorGeneral extends FloorFactory implements Serializable{
 
-    public GeneralFloor(){
+    public FloorGeneral(){
 
     }
 
-    public GeneralFloor(Floor f){
+    public FloorGeneral(Floor f){
 
         this.setType(f.getType());
         this.setBuildingId(f.getBuildingId());

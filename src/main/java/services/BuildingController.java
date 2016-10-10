@@ -4,7 +4,6 @@ import Buildings.Building;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.jdbc.core.RowMapper;
 import Buildings.BuildingFactory;
 import BuildingInformation.Floor;
 import BuildingInformation.FloorFactory;
@@ -15,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import utilities.dbUtilities;
 
+import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManager;
 import java.net.URLDecoder;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -81,8 +80,6 @@ public class BuildingController {
 
     }
 
-
-
     @RequestMapping("/floors")
     public List<Floor> getCNFloors(){
 
@@ -91,7 +88,7 @@ public class BuildingController {
         SessionFactory sessionFactory = dbUtilities.getSessionFactory();
         Session session = sessionFactory.openSession();
 
-        String hql = "FROM GeneralFloor";
+        String hql = "FROM FloorGeneral";
         Query query = session.createQuery(hql);
         List<?> result = query.list();
 
@@ -118,7 +115,7 @@ public class BuildingController {
             SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
-            String hql = "FROM GeneralFloor WHERE floor_number =" + floorNumber + " AND building_id =" + buildingId;
+            String hql = "FROM FloorGeneral WHERE floor_number =" + floorNumber + " AND building_id =" + buildingId;
             Query query = session.createQuery(hql);
             List<?> result = query.list();
 
@@ -143,9 +140,9 @@ public class BuildingController {
         SessionFactory sessionFactory = dbUtilities.getSessionFactory();
         Session session = sessionFactory.openSession();
 
-        String hql = "FROM DevRoom";
+        String hql = "FROM BuildingInformation.RoomFactory";
         Query query = session.createQuery(hql);
-        List<?> result = query.list();
+        List<RoomFactory> result = query.list();
 
         for(Object element : result){
 
@@ -170,7 +167,7 @@ public class BuildingController {
             SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
-            String hql = "FROM DevRoom WHERE name =" + room_name  + " AND building_id =" + buildingId;
+            String hql = "FROM RoomDev WHERE name =" + room_name  + " AND building_id =" + buildingId;
             Query query = session.createQuery(hql);
             List<?> result = query.list();
 

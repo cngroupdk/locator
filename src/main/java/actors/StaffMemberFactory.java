@@ -12,10 +12,14 @@ import java.sql.ResultSet;
 public abstract class StaffMemberFactory implements StaffMember {
 
     @Id
-    private String employee_id;
-    private String manager_id;
-    private String first_name;
-    private String last_name;
+    @Column(name = "employee_id")
+    private String employeeId;
+    @Column(name = "manager_id")
+    private String managerId;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
     private String abbreviation;
     private String role;
     private String email;
@@ -123,15 +127,15 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public StaffMemberFactory(StaffMemberFactory p){
-        setFirstName(p.first_name);
-        setLastName(p.last_name);
+        setFirstName(p.firstName);
+        setLastName(p.lastName);
         setAbbreviation(p.abbreviation);
         setExtension(p.extension);
         setRole(p.role);
         setEmail(p.email);
         setLocation(p.location);
         setDetail(p.detail);
-        setManagerId(p.manager_id);
+        setManagerId(p.managerId);
     }
 
     public StaffMemberFactory(String firstName, String lastName, String abbreviation,
@@ -157,8 +161,8 @@ public abstract class StaffMemberFactory implements StaffMember {
         } // end if
         else{
             StaffMemberFactory otherPerson = (StaffMemberFactory)obj;
-            result = employee_id.equals(otherPerson.employee_id) && manager_id.equals(otherPerson.manager_id)
-                    && first_name.equals(otherPerson.first_name) && last_name.equals(otherPerson.last_name)
+            result = employeeId.equals(otherPerson.employeeId) && managerId.equals(otherPerson.managerId)
+                    && firstName.equals(otherPerson.firstName) && lastName.equals(otherPerson.lastName)
                     && location.equals(otherPerson.location) && email.equals(otherPerson.email)
             ;
         } // end else
@@ -171,7 +175,7 @@ public abstract class StaffMemberFactory implements StaffMember {
 
         int result = 0;
 
-        result = employee_id.hashCode() * manager_id.hashCode() * first_name.hashCode() * last_name.hashCode()
+        result = employeeId.hashCode() * managerId.hashCode() * firstName.hashCode() * lastName.hashCode()
                 * location.hashCode() * email.hashCode();
 
         return result;
@@ -187,35 +191,35 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public String getId() {
-        return employee_id;
+        return employeeId;
     }
 
     public void setId(String id) {
-        this.employee_id = new String(id);
+        this.employeeId = new String(id);
     }
 
     public void setManagerId(String id){
-        this.manager_id = new String(id);
+        this.managerId = new String(id);
     }
 
     public String getManagerId(){
-        return manager_id;
+        return managerId;
     }
 
     public String getFirstName() {
-        return first_name;
+        return firstName;
     }
 
     public void setFirstName(String firstName) {
-        this.first_name = new String(firstName);
+        this.firstName = new String(firstName);
     }
 
     public String getLastName() {
-        return last_name;
+        return lastName;
     }
 
     public void setLastName(String lastName) {
-        this.last_name = new String(lastName);
+        this.lastName = new String(lastName);
     }
 
     public String getAbbreviation() {

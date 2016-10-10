@@ -1,48 +1,65 @@
 package BuildingInformation;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import org.hibernate.annotations.DiscriminatorOptions;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.ResultSet;
 
 /**
  * Created by cano on 29.9.2016.
  */
-@MappedSuperclass
-public abstract class RoomFactory implements Room{
+@Entity
+@Inheritance
+@DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.STRING)
+@Table(name="rooms")
+public abstract class RoomFactory implements Room, Serializable{
 
     @Id
     private String name;
-    @Id
-    @Column(name = "building_id")
-    private String buildingId;
-    @Id
-    @Column(name = "floor_id")
-    private Integer floorId;
+    @Column(updatable = false, insertable = false)
     private String type;
     private Integer capacity;
     @Column(name = "assigned_people")
     private Integer assignedPeople;
-
-    protected RoomFactory(String name, String building_id, Integer floor_id, String type,
-                          Integer capacity, Integer assignedPeople){
-        setName(name);
-        setBuildingId(building_id);
-        setFloorId(floor_id);
-        setType(type);
-        setCapacity(capacity);
-        setAssignedPeople(assignedPeople);
-    }
+    @Id
+    @Column(name = "floor_id")
+    private Integer floorId;
+    @Id
+    @Column(name = "building_id")
+    private String buildingId;
 
     public RoomFactory(){
-        name = new String();
-        buildingId = new String();
-        floorId = new Integer(0);
-        type = new String();
-        capacity = new Integer(0);
-        assignedPeople = new Integer(0);
+
     }
 
+    @Override
+    public boolean equals(Object obj){
+        boolean result;
+        if((obj == null) || (getClass() != obj.getClass())){
+            result = false;
+        } // end if
+        else{
+            RoomFactory otherPerson = (RoomFactory)obj;
+            result = name.equals(otherPerson.name) && buildingId.equals(otherPerson.buildingId)
+                    && floorId.equals(otherPerson.floorId) && type.equals(otherPerson.type)
+            ;
+        } // end else
+
+        return result;
+    }
+
+    @Override
+    public int hashCode(){
+
+        int result = 0;
+
+        result = name.hashCode() * buildingId.hashCode() * buildingId.hashCode() * floorId.hashCode()
+                * type.hashCode();
+
+        return result;
+
+    }
     public static Room getRoom(ResultSet resultSet){
 
         Room room = null;
@@ -51,8 +68,8 @@ public abstract class RoomFactory implements Room{
             String type = resultSet.getString("type");
 
             switch(type){
-                case "DevRoom":
-                    room = new DevRoom();
+                case "Development":
+                    room = new RoomDev();
                     room = setCommonProperties(resultSet, room);
                     //capacity to add role specific logic here
                     break;
@@ -74,8 +91,8 @@ public abstract class RoomFactory implements Room{
             String type = r.getType();
 
             switch(type){
-                case "DevRoom":
-                    room = new DevRoom(r);
+                case "Development":
+                    room = new RoomDev(r);
                     break;
             }
         }
