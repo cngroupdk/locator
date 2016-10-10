@@ -1,5 +1,6 @@
 package BuildingInformation;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.io.Serializable;
  * Created by cano on 3.10.2016.
  */
 @Entity
-@Table(name="floors")
+@DiscriminatorValue("General")
 public class FloorGeneral extends FloorFactory implements Serializable{
 
     public FloorGeneral(){

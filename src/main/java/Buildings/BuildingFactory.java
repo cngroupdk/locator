@@ -6,12 +6,16 @@ import java.sql.ResultSet;
 /**
  * Created by cano on 30.9.2016.
  */
-@MappedSuperclass
+@Entity
+@Inheritance
+@DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.STRING)
+@Table(name="building")
 public class BuildingFactory implements Building {
 
     @Id
     @Column(name="building_id")
     private String buildingId;
+    @Column(updatable = false, insertable = false)
     private String type;
     private String name;
     private String city;
@@ -22,31 +26,33 @@ public class BuildingFactory implements Building {
     @Column(name="street_number")
     private String streetNumber;
 
-    public static Building getBuilding(ResultSet resultSet){
+    @Override
+    public boolean equals(Object obj){
+        boolean result;
+        if((obj == null) || (getClass() != obj.getClass())){
+            result = false;
+        } // end if
+        else{
+            BuildingFactory otherPerson = (BuildingFactory)obj;
+            result = name.equals(otherPerson.name) && buildingId.equals(otherPerson.buildingId)
+                    && type.equals(otherPerson.type) && city.equals(otherPerson.city)
+            ;
+        } // end else
 
-        Building building = null;
+        return result;
+    }
 
-        try{
-            String type = resultSet.getString("type");
+    @Override
+    public int hashCode(){
 
-            switch(type){
-                case "Headquarters":
-                    building = new Headquarters();
-                    building = setCommonProperties(resultSet, building);
-                    //capacity to add role specific logic here
-                    break;
-                case "Office Space":
-                    building = new OfficeSpace();
-                    building = setCommonProperties(resultSet, building);
-                    //capacity to add role specific logic here
-                    break;
-            }
-        }
-        catch ( Exception e){
-            //TO DO: error handling
-        }
+        int result = 0;
 
-        return building;
+        result = name.hashCode()
+                * buildingId.hashCode()
+                * type.hashCode()
+                * city.hashCode();
+
+        return result;
 
     }
 
@@ -72,39 +78,6 @@ public class BuildingFactory implements Building {
 
         return building;
 
-    }
-
-    public static Building setCommonProperties(ResultSet resultSet, Building building){
-
-        try {
-
-            String type = resultSet.getString("type");
-            building.setType(type!= null ? type : null);
-
-            String building_id = resultSet.getString("building_id");
-            building.setBuildingId(building_id!= null ? building_id : null);
-
-            String name = resultSet.getString("name");
-            building.setName(name!= null ? name : null);
-
-            String city = resultSet.getString("city");
-            building.setCity(city != null ? city : null);
-
-            String postal_code = resultSet.getString("postal_code");
-            building.setPostalCode(postal_code!= null ? postal_code : null);
-
-            String street_name = resultSet.getString("street_name");
-            building.setStreetName(street_name!= null ? street_name : null);
-
-            String street_number = resultSet.getString("street_number");
-            building.setStreetNumber(street_number != null ? street_number : null);
-
-
-        } catch( Exception e){
-            // TO DO: error handling
-        }
-
-        return building;
     }
 
     public String getBuildingId() {

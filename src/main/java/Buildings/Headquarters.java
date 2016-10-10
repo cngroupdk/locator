@@ -1,13 +1,13 @@
 package Buildings;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * Created by cano on 3.10.2016.
  */
 @Entity
-@Table(name="building")
+@DiscriminatorValue("Headquarters")
 public class Headquarters extends BuildingFactory {
 
     public Headquarters(){

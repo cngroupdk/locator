@@ -35,9 +35,9 @@ public class EmployeesController {
             SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
-            String hql = "FROM Developer";
+            String hql = "FROM actors.StaffMemberFactory";
             Query query = session.createQuery(hql);
-            List<?> result = query.list();
+            List<StaffMember> result = query.list();
 
             for(Object element : result){
 
@@ -58,9 +58,6 @@ public class EmployeesController {
                                          @RequestParam(value="last_name") String lastName){
 
         StaffMember employee = null;
-        List<StaffMember> employees = new ArrayList<StaffMember>();
-
-
 
         try {
             firstName = URLDecoder.decode(firstName, "UTF-8");
@@ -69,12 +66,12 @@ public class EmployeesController {
             SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
-            String hql = "FROM Developer WHERE first_name = " + firstName + " AND last_name = " + lastName;
+            String hql = "FROM actors.StaffMemberFactory WHERE first_name = " + firstName + " AND last_name = " + lastName;
             Query query = session.createQuery(hql);
-            List<?> result = query.list();
+            List<StaffMember> result = query.list();
 
             if (result.size() > 0)
-                employee = StaffMemberFactory.getStaffMember( (StaffMember) result.get(0));
+                employee = StaffMemberFactory.getStaffMember( result.get(0));
 
         }catch(Exception e){
             //TO DO: Error handling

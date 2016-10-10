@@ -35,17 +35,15 @@ public class BuildingController {
             SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
-            String hql = "FROM OfficeSpace";
+            String hql = "FROM Buildings.BuildingFactory";
             Query query = session.createQuery(hql);
-            List<?> result = query.list();
+            List<BuildingFactory> result = query.list();
 
             for(Object element : result){
-
                 buildings.add(BuildingFactory.getBuilding((Building) element));
             }
 
         }catch(Exception e){
-            //TO DO: Error handling
             e.printStackTrace();
         }
 
@@ -57,7 +55,6 @@ public class BuildingController {
     public Building getSingleCNBuilding(@RequestParam(value="building_id") String buildingId){
 
         Building building = null;
-        List<Building> buildings = new ArrayList<Building>();
 
         try {
             buildingId = URLDecoder.decode(buildingId, "UTF-8");
@@ -65,12 +62,12 @@ public class BuildingController {
             SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
-            String hql = "FROM OfficeSpace WHERE building_id =" + buildingId;
+            String hql = "FROM Buildings.BuildingFactory WHERE building_id =" + buildingId;
             Query query = session.createQuery(hql);
-            List<?> result = query.list();
+            List<Building> result = query.list();
 
             if (result.size() > 0)
-                building = BuildingFactory.getBuilding((Building) result.get(0));
+                building = BuildingFactory.getBuilding(result.get(0));
 
         }catch(Exception e){
             //TODO:Exception Handling
@@ -88,9 +85,9 @@ public class BuildingController {
         SessionFactory sessionFactory = dbUtilities.getSessionFactory();
         Session session = sessionFactory.openSession();
 
-        String hql = "FROM FloorGeneral";
+        String hql = "FROM BuildingInformation.FloorFactory";
         Query query = session.createQuery(hql);
-        List<?> result = query.list();
+        List<FloorFactory> result = query.list();
 
         for(Object element : result){
 
@@ -105,7 +102,6 @@ public class BuildingController {
     public Floor getSingleCNFloor(@RequestParam(value="floor_number") String floorNumber,
                                   @RequestParam(value="building_id") String buildingId){
 
-        List<Floor> floors = new ArrayList<Floor>();
         Floor floor = null;
 
         try {
@@ -115,13 +111,12 @@ public class BuildingController {
             SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
-            String hql = "FROM FloorGeneral WHERE floor_number =" + floorNumber + " AND building_id =" + buildingId;
+            String hql = "FROM BuildingInformation.FloorFactory WHERE floor_number =" + floorNumber + " AND building_id =" + buildingId;
             Query query = session.createQuery(hql);
-            List<?> result = query.list();
-
+            List<Floor> result = query.list();
 
             if (result.size() > 0)
-                floor = FloorFactory.getFloor((Floor) result.get(0));
+                floor = FloorFactory.getFloor( result.get(0));
 
         }
         catch(Exception e){
@@ -167,12 +162,12 @@ public class BuildingController {
             SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
-            String hql = "FROM RoomDev WHERE name =" + room_name  + " AND building_id =" + buildingId;
+            String hql = "FROM BuildingInformation.RoomFactory WHERE name =" + room_name  + " AND building_id =" + buildingId;
             Query query = session.createQuery(hql);
-            List<?> result = query.list();
+            List<Room> result = query.list();
 
             if(result.size()>0)
-                room = RoomFactory.getRoom((Room) result.get(0));
+                room = RoomFactory.getRoom(result.get(0));
 
         }catch(Exception e){
             //TODO: Error handling

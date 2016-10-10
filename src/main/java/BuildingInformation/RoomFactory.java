@@ -29,10 +29,6 @@ public abstract class RoomFactory implements Room, Serializable{
     @Column(name = "building_id")
     private String buildingId;
 
-    public RoomFactory(){
-
-    }
-
     @Override
     public boolean equals(Object obj){
         boolean result;
@@ -54,32 +50,12 @@ public abstract class RoomFactory implements Room, Serializable{
 
         int result = 0;
 
-        result = name.hashCode() * buildingId.hashCode() * buildingId.hashCode() * floorId.hashCode()
+        result = name.hashCode()
+                * buildingId.hashCode()
+                * floorId.hashCode()
                 * type.hashCode();
 
         return result;
-
-    }
-    public static Room getRoom(ResultSet resultSet){
-
-        Room room = null;
-
-        try{
-            String type = resultSet.getString("type");
-
-            switch(type){
-                case "Development":
-                    room = new RoomDev();
-                    room = setCommonProperties(resultSet, room);
-                    //capacity to add role specific logic here
-                    break;
-            }
-        }
-        catch ( Exception e){
-            //TO DO: error handling
-        }
-
-        return room;
 
     }
 
@@ -102,34 +78,6 @@ public abstract class RoomFactory implements Room, Serializable{
 
         return room;
 
-    }
-
-    public static Room setCommonProperties(ResultSet resultSet, Room room){
-
-        try {
-            String name = resultSet.getString("name");
-            room.setName(name!= null ? name : null);
-
-            String type = resultSet.getString("type");
-            room.setType(type!= null ? type : null);
-
-            String building_id = resultSet.getString("building_id");
-            room.setBuildingId(building_id!= null ? building_id : null);
-
-            int floor_id = resultSet.getInt("floor_id");
-            room.setFloorId(resultSet.wasNull() ? null : floor_id);
-
-            int capacity = resultSet.getInt("capacity");
-            room.setCapacity(resultSet.wasNull() ? null : capacity);
-
-            int assigned_people = resultSet.getInt("assigned_people");
-            room.setAssignedPeople(resultSet.wasNull() ? null : assigned_people);
-
-        } catch( Exception e){
-            // TO DO: error handling
-        }
-
-        return room;
     }
 
     public String getName() {

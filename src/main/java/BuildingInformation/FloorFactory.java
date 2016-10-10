@@ -1,20 +1,23 @@
 package BuildingInformation;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.ResultSet;
 
 /**
  * Created by cano on 30.9.2016.
  */
 
-@MappedSuperclass
-public abstract class FloorFactory implements Floor {
+@Entity
+@Inheritance
+@DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.STRING)
+@Table(name="floors")
+public abstract class FloorFactory implements Floor, Serializable {
 
     @Id
     @Column(name = "floor_id")
     private Integer floorId;
+    @Column(updatable = false, insertable = false)
     private String type;
     @Id
     @Column(name = "building_id")
@@ -25,24 +28,6 @@ public abstract class FloorFactory implements Floor {
     private Integer roomsNumber;
     @Column(name = "floorplan_url")
     private String floorplanUrl;
-
-    public static Floor getFloor(ResultSet resultSet){
-        Floor floor = null;
-        try {
-            String type = resultSet.getString("type");
-
-            switch(type){
-                case "General":
-                    floor = new FloorGeneral();
-                    floor = setCommonProperties(resultSet, floor);
-                    break;
-            }
-
-        }catch(Exception e){
-            //TODO: Error handling
-        }
-        return floor;
-    }
 
     public static Floor getFloor(Floor f){
 
@@ -62,32 +47,33 @@ public abstract class FloorFactory implements Floor {
         return floor;
     }
 
-    public static Floor setCommonProperties(ResultSet resultSet, Floor floor){
+    @Override
+    public boolean equals(Object obj){
+        boolean result;
+        if((obj == null) || (getClass() != obj.getClass())){
+            result = false;
+        } // end if
+        else{
+            FloorFactory otherPerson = (FloorFactory)obj;
+            result = buildingId.equals(otherPerson.buildingId)
+                    && floorNumber.equals(otherPerson.floorNumber) && type.equals(otherPerson.type)
+            ;
+        } // end else
 
-        try {
-            int floor_id = resultSet.getInt("floor_id");
-            floor.setFloorId(resultSet.wasNull() ? null : floor_id);
+        return result;
+    }
 
-            int rooms_number = resultSet.getInt("rooms_number");
-            floor.setRoomsNumber(resultSet.wasNull() ? null : rooms_number);
+    @Override
+    public int hashCode(){
 
-            String type = resultSet.getString("type");
-            floor.setType(type!= null ? type : null);
+        int result = 0;
 
-            String building_id = resultSet.getString("building_id");
-            floor.setBuildingId(building_id!= null ? building_id : null);
+        result = buildingId.hashCode()
+                * floorNumber.hashCode()
+                * type.hashCode();
 
-            String floor_number = resultSet.getString("floor_number");
-            floor.setFloorNumber(floor_number!= null ? floor_number : null);
+        return result;
 
-            String floorplan_url = resultSet.getString("floorplan_url");
-            floor.setFloorplanUrl(floorplan_url!= null ? floorplan_url : null);
-
-        } catch (Exception e){
-            // TODO: Error handling
-        }
-
-        return floor;
     }
 
     public Integer getFloorId() {
