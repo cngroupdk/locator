@@ -3,11 +3,14 @@ package services;
 import actors.StaffMember;
 
 import actors.StaffMemberFactory;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import utilities.dbConnector;
+import utilities.dbUtilities;
 
 import java.net.URLDecoder;
 import java.sql.ResultSet;
@@ -29,21 +32,21 @@ public class EmployeesController {
 
         try {
 
-            employees = dbConnector.getDefaultJdbcTemplate().query(
-                "SELECT * FROM employee",
-                 new RowMapper<StaffMember>() {
-                    @Override
-                    public StaffMember mapRow(ResultSet resultSet, int i) throws SQLException {
+            SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+            Session session = sessionFactory.openSession();
 
-                        StaffMember employee = StaffMemberFactory.getStaffMember(resultSet);
+            String hql = "FROM Developer";
+            Query query = session.createQuery(hql);
+            List<?> result = query.list();
 
-                        return employee;
-                    }
-                }
-            );
+            for(Object element : result){
+
+                employees.add(StaffMemberFactory.getStaffMember((StaffMember) element));
+            }
 
         }catch(Exception e){
             //TO DO: Error handling
+            e.printStackTrace();
         }
 
         return employees;
@@ -62,25 +65,19 @@ public class EmployeesController {
         try {
             firstName = URLDecoder.decode(firstName, "UTF-8");
             lastName = URLDecoder.decode(lastName, "UTF-8");
-            employees = dbConnector.getDefaultJdbcTemplate().query(
-                    "SELECT * FROM employee WHERE first_name = " + firstName + "AND last_name = " + lastName,
-                    new RowMapper<StaffMember>() {
-                        @Override
-                        public StaffMember mapRow(ResultSet resultSet, int i) throws SQLException {
 
-                            StaffMember employee = StaffMemberFactory.getStaffMember(resultSet);
+            SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+            Session session = sessionFactory.openSession();
 
-                            return employee;
-                        }
-                    }
-            );
+            String hql = "FROM Developer WHERE first_name = " + firstName + " AND last_name = " + lastName;
+            Query query = session.createQuery(hql);
+            List<?> result = query.list();
+
+            if (result.size() > 0)
+                employee = StaffMemberFactory.getStaffMember( (StaffMember) result.get(0));
 
         }catch(Exception e){
             //TO DO: Error handling
-        }
-
-        if(employees.size() > 0){
-            employee = employees.get(0);
         }
 
         return employee;

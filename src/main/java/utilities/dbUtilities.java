@@ -1,5 +1,7 @@
 package utilities;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -7,9 +9,9 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 /**
  * Created by cano on 29.9.2016.
  */
-public class dbConnector {
+public class dbUtilities {
 
-    private dbConnector(){
+    private dbUtilities(){
     }
 
     public static JdbcTemplate getJdbcTemplate( String driverClassName, String url, String username, String password){
@@ -40,6 +42,13 @@ public class dbConnector {
         dataSource.setPassword("PnchMns7722");
 
         return new JdbcTemplate(dataSource);
+    }
+
+    public static SessionFactory getSessionFactory(){
+
+        SessionFactory sf = new Configuration().configure().buildSessionFactory();
+
+        return sf;
     }
 
 }

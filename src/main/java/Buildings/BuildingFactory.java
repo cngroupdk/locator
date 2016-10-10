@@ -1,18 +1,25 @@
 package Buildings;
 
+import javax.persistence.*;
 import java.sql.ResultSet;
 
 /**
  * Created by cano on 30.9.2016.
  */
+@MappedSuperclass
 public class BuildingFactory implements Building {
 
+    @Id
+    @Column(name="building_id")
     private String buildingId;
     private String type;
     private String name;
     private String city;
+    @Column(name="postal_code")
     private String postalCode;
+    @Column(name="street_name")
     private String streetName;
+    @Column(name="street_number")
     private String streetNumber;
 
     public static Building getBuilding(ResultSet resultSet){
@@ -32,6 +39,30 @@ public class BuildingFactory implements Building {
                     building = new OfficeSpace();
                     building = setCommonProperties(resultSet, building);
                     //capacity to add role specific logic here
+                    break;
+            }
+        }
+        catch ( Exception e){
+            //TO DO: error handling
+        }
+
+        return building;
+
+    }
+
+    public static Building getBuilding(Building b){
+
+        Building building = null;
+
+        try{
+            String type = b.getType();
+
+            switch(type){
+                case "Headquarters":
+                    building = new Headquarters(b);
+                    break;
+                case "Office Space":
+                    building = new OfficeSpace(b);
                     break;
             }
         }

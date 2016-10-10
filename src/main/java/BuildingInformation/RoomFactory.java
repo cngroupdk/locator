@@ -1,17 +1,27 @@
 package BuildingInformation;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.sql.ResultSet;
 
 /**
  * Created by cano on 29.9.2016.
  */
+@MappedSuperclass
 public abstract class RoomFactory implements Room{
 
+    @Id
     private String name;
-    private String building_id;
-    private Integer floor_id;
+    @Id
+    @Column(name = "building_id")
+    private String buildingId;
+    @Id
+    @Column(name = "floor_id")
+    private Integer floorId;
     private String type;
     private Integer capacity;
+    @Column(name = "assigned_people")
     private Integer assignedPeople;
 
     protected RoomFactory(String name, String building_id, Integer floor_id, String type,
@@ -26,8 +36,8 @@ public abstract class RoomFactory implements Room{
 
     public RoomFactory(){
         name = new String();
-        building_id = new String();
-        floor_id = new Integer(0);
+        buildingId = new String();
+        floorId = new Integer(0);
         type = new String();
         capacity = new Integer(0);
         assignedPeople = new Integer(0);
@@ -45,6 +55,27 @@ public abstract class RoomFactory implements Room{
                     room = new DevRoom();
                     room = setCommonProperties(resultSet, room);
                     //capacity to add role specific logic here
+                    break;
+            }
+        }
+        catch ( Exception e){
+            //TO DO: error handling
+        }
+
+        return room;
+
+    }
+
+    public static Room getRoom(Room r){
+
+        Room room = null;
+
+        try{
+            String type = r.getType();
+
+            switch(type){
+                case "DevRoom":
+                    room = new DevRoom(r);
                     break;
             }
         }
@@ -93,19 +124,19 @@ public abstract class RoomFactory implements Room{
     }
 
     public String getBuildingId() {
-        return new String(building_id);
+        return new String(buildingId);
     }
 
     public void setBuildingId(String location) {
-        this.building_id = new String(location);
+        this.buildingId = new String(location);
     }
 
     public Integer getFloorId() {
-        return new Integer(floor_id);
+        return new Integer(floorId);
     }
 
     public void setFloorId(Integer location) {
-        this.floor_id = new Integer(location);
+        this.floorId = new Integer(location);
     }
 
     public String getType() {

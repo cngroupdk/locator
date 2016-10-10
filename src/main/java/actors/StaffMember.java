@@ -1,8 +1,12 @@
 package actors;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Created by cano on 3.10.2016.
  */
+
 public interface StaffMember {
 
     public String getVoIP();

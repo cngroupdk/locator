@@ -1,6 +1,9 @@
 package services;
 
 import Buildings.Building;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.jdbc.core.RowMapper;
 import Buildings.BuildingFactory;
 import BuildingInformation.Floor;
@@ -10,7 +13,7 @@ import BuildingInformation.RoomFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import utilities.dbConnector;
+import utilities.dbUtilities;
 
 import java.net.URLDecoder;
 import java.sql.ResultSet;
@@ -28,18 +31,24 @@ public class BuildingController {
 
         List<Building> buildings = new ArrayList<Building>();
 
-        buildings = dbConnector.getDefaultJdbcTemplate().query(
-                "SELECT * FROM building",
-                new RowMapper<Building>() {
-                    @Override
-                    public Building mapRow(ResultSet resultSet, int i) throws SQLException {
+        try {
 
-                        Building building = BuildingFactory.getBuilding(resultSet);
+            SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+            Session session = sessionFactory.openSession();
 
-                        return building;
-                    }
-                }
-        );
+            String hql = "FROM OfficeSpace";
+            Query query = session.createQuery(hql);
+            List<?> result = query.list();
+
+            for(Object element : result){
+
+                buildings.add(BuildingFactory.getBuilding((Building) element));
+            }
+
+        }catch(Exception e){
+            //TO DO: Error handling
+            e.printStackTrace();
+        }
 
         return buildings;
 
@@ -53,24 +62,19 @@ public class BuildingController {
 
         try {
             buildingId = URLDecoder.decode(buildingId, "UTF-8");
-            buildings = dbConnector.getDefaultJdbcTemplate().query(
-                    "SELECT * FROM building WHERE building_id =" + buildingId,
-                    new RowMapper<Building>() {
-                        @Override
-                        public Building mapRow(ResultSet resultSet, int i) throws SQLException {
 
-                            Building building = BuildingFactory.getBuilding(resultSet);
+            SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+            Session session = sessionFactory.openSession();
 
-                            return building;
-                        }
-                    }
-            );
+            String hql = "FROM OfficeSpace WHERE building_id =" + buildingId;
+            Query query = session.createQuery(hql);
+            List<?> result = query.list();
+
+            if (result.size() > 0)
+                building = BuildingFactory.getBuilding((Building) result.get(0));
+
         }catch(Exception e){
             //TODO:Exception Handling
-        }
-
-        if(buildings.size() > 0){
-            building = buildings.get(0);
         }
 
         return building;
@@ -84,18 +88,17 @@ public class BuildingController {
 
         List<Floor> floors = new ArrayList<Floor>();
 
-        floors = dbConnector.getDefaultJdbcTemplate().query(
-                "SELECT * FROM floors",
-                new RowMapper<Floor>() {
-                    @Override
-                    public Floor mapRow(ResultSet resultSet, int i) throws SQLException {
+        SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+        Session session = sessionFactory.openSession();
 
-                        Floor floor = FloorFactory.getFloor(resultSet);
+        String hql = "FROM GeneralFloor";
+        Query query = session.createQuery(hql);
+        List<?> result = query.list();
 
-                        return floor;
-                    }
-                }
-        );
+        for(Object element : result){
+
+            floors.add(FloorFactory.getFloor((Floor) element));
+        }
 
         return floors;
 
@@ -111,25 +114,21 @@ public class BuildingController {
         try {
             floorNumber = URLDecoder.decode(floorNumber, "UTF-8");
             buildingId = URLDecoder.decode(buildingId, "UTF-8");
-            floors = dbConnector.getDefaultJdbcTemplate().query(
-                    "SELECT * FROM floors WHERE floor_number =" + floorNumber + "AND building_id =" + buildingId,
-                    new RowMapper<Floor>() {
-                        @Override
-                        public Floor mapRow(ResultSet resultSet, int i) throws SQLException {
 
-                            Floor floor = FloorFactory.getFloor(resultSet);
+            SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+            Session session = sessionFactory.openSession();
 
-                            return floor;
-                        }
-                    }
-            );
+            String hql = "FROM GeneralFloor WHERE floor_number =" + floorNumber + " AND building_id =" + buildingId;
+            Query query = session.createQuery(hql);
+            List<?> result = query.list();
+
+
+            if (result.size() > 0)
+                floor = FloorFactory.getFloor((Floor) result.get(0));
+
         }
         catch(Exception e){
             //TODO exception handling
-        }
-
-        if(floors.size() > 0){
-            floor = floors.get(0);
         }
 
         return floor;
@@ -141,18 +140,17 @@ public class BuildingController {
 
         List<Room> rooms = new ArrayList<Room>();
 
-        rooms = dbConnector.getDefaultJdbcTemplate().query(
-                "SELECT * FROM rooms",
-                new RowMapper<Room>() {
-                    @Override
-                    public Room mapRow(ResultSet resultSet, int i) throws SQLException {
+        SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+        Session session = sessionFactory.openSession();
 
-                        Room room = RoomFactory.getRoom(resultSet);
+        String hql = "FROM DevRoom";
+        Query query = session.createQuery(hql);
+        List<?> result = query.list();
 
-                        return room;
-                    }
-                }
-        );
+        for(Object element : result){
+
+            rooms.add(RoomFactory.getRoom((Room) element));
+        }
 
         return rooms;
 
@@ -163,30 +161,24 @@ public class BuildingController {
                                 @RequestParam(value="building_id") String buildingId){
 
         Room room = null;
-        List<Room> rooms = new ArrayList<Room>();
 
         try {
 
             room_name = URLDecoder.decode(room_name, "UTF-8");
             buildingId = URLDecoder.decode(buildingId, "UTF-8");
-            rooms = dbConnector.getDefaultJdbcTemplate().query(
-                    "SELECT * FROM rooms WHERE name =" + room_name  + "AND building_id =" + buildingId,
-                    new RowMapper<Room>() {
-                        @Override
-                        public Room mapRow(ResultSet resultSet, int i) throws SQLException {
 
-                            Room room = RoomFactory.getRoom(resultSet);
+            SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+            Session session = sessionFactory.openSession();
 
-                            return room;
-                        }
-                    }
-            );
+            String hql = "FROM DevRoom WHERE name =" + room_name  + " AND building_id =" + buildingId;
+            Query query = session.createQuery(hql);
+            List<?> result = query.list();
+
+            if(result.size()>0)
+                room = RoomFactory.getRoom((Room) result.get(0));
+
         }catch(Exception e){
-
-        }
-
-        if(rooms.size() > 0){
-            room = rooms.get(0);
+            //TODO: Error handling
         }
 
         return room;

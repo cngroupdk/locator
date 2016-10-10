@@ -1,17 +1,29 @@
 package BuildingInformation;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.sql.ResultSet;
 
 /**
  * Created by cano on 30.9.2016.
  */
+
+@MappedSuperclass
 public abstract class FloorFactory implements Floor {
 
+    @Id
+    @Column(name = "floor_id")
     private Integer floorId;
     private String type;
+    @Id
+    @Column(name = "building_id")
     private String buildingId;
+    @Column(name = "floor_number")
     private String floorNumber;
+    @Column(name = "rooms_number")
     private Integer roomsNumber;
+    @Column(name = "floorplan_url")
     private String floorplanUrl;
 
     public static Floor getFloor(ResultSet resultSet){
@@ -23,6 +35,24 @@ public abstract class FloorFactory implements Floor {
                 case "General":
                     floor = new GeneralFloor();
                     floor = setCommonProperties(resultSet, floor);
+                    break;
+            }
+
+        }catch(Exception e){
+            //TODO: Error handling
+        }
+        return floor;
+    }
+
+    public static Floor getFloor(Floor f){
+
+        Floor floor = null;
+        try {
+            String type = f.getType();
+
+            switch(type){
+                case "General":
+                    floor = new GeneralFloor(f);
                     break;
             }
 

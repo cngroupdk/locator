@@ -1,24 +1,29 @@
 package actors;
 
+
+import javax.persistence.*;
 import java.sql.ResultSet;
 
 /**
  * Created by cano on 29.9.2016.
  */
 
+@MappedSuperclass
 public abstract class StaffMemberFactory implements StaffMember {
 
-    private String id;
-    private String managerId;
-    private String firstName;
-    private String lastName;
+    @Id
+    private String employee_id;
+    private String manager_id;
+    private String first_name;
+    private String last_name;
     private String abbreviation;
-    private String extension;
-    private String voIP;
     private String role;
     private String email;
     private String location;
     private String detail;
+    private String extension;
+    @Column(name="voip")
+    private String voIP;
 
     public StaffMemberFactory()
     {
@@ -91,16 +96,42 @@ public abstract class StaffMemberFactory implements StaffMember {
 
     }
 
+    public static StaffMember getStaffMember(StaffMember actor){
+
+        StaffMember employee = null;
+
+        try{
+
+            switch(actor.getRole()){
+                case "Developer":
+                    employee = new Developer(actor);
+                    break;
+                case "HR":
+                    employee = new HR(actor);
+                    break;
+                case "Tester":
+                    employee = new Tester(actor);
+                    break;
+            }
+        }
+        catch ( Exception e){
+            //TO DO: error handling
+        }
+
+        return employee;
+
+    }
+
     public StaffMemberFactory(StaffMemberFactory p){
-        setFirstName(p.firstName);
-        setLastName(p.lastName);
+        setFirstName(p.first_name);
+        setLastName(p.last_name);
         setAbbreviation(p.abbreviation);
         setExtension(p.extension);
         setRole(p.role);
         setEmail(p.email);
         setLocation(p.location);
         setDetail(p.detail);
-        setManagerId(p.managerId);
+        setManagerId(p.manager_id);
     }
 
     public StaffMemberFactory(String firstName, String lastName, String abbreviation,
@@ -126,8 +157,8 @@ public abstract class StaffMemberFactory implements StaffMember {
         } // end if
         else{
             StaffMemberFactory otherPerson = (StaffMemberFactory)obj;
-            result = id.equals(otherPerson.id) && managerId.equals(otherPerson.managerId)
-                    && firstName.equals(otherPerson.firstName) && lastName.equals(otherPerson.lastName)
+            result = employee_id.equals(otherPerson.employee_id) && manager_id.equals(otherPerson.manager_id)
+                    && first_name.equals(otherPerson.first_name) && last_name.equals(otherPerson.last_name)
                     && location.equals(otherPerson.location) && email.equals(otherPerson.email)
             ;
         } // end else
@@ -140,7 +171,7 @@ public abstract class StaffMemberFactory implements StaffMember {
 
         int result = 0;
 
-        result = id.hashCode() * managerId.hashCode() * firstName.hashCode() * lastName.hashCode()
+        result = employee_id.hashCode() * manager_id.hashCode() * first_name.hashCode() * last_name.hashCode()
                 * location.hashCode() * email.hashCode();
 
         return result;
@@ -156,35 +187,35 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public String getId() {
-        return id;
+        return employee_id;
     }
 
     public void setId(String id) {
-        this.id = new String(id);
+        this.employee_id = new String(id);
     }
 
     public void setManagerId(String id){
-        this.managerId = new String(id);
+        this.manager_id = new String(id);
     }
 
     public String getManagerId(){
-        return managerId;
+        return manager_id;
     }
 
     public String getFirstName() {
-        return firstName;
+        return first_name;
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = new String(firstName);
+        this.first_name = new String(firstName);
     }
 
     public String getLastName() {
-        return lastName;
+        return last_name;
     }
 
     public void setLastName(String lastName) {
-        this.lastName = new String(lastName);
+        this.last_name = new String(lastName);
     }
 
     public String getAbbreviation() {
