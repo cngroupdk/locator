@@ -1,7 +1,4 @@
-package actors;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
+package locatorRoot.actors;
 
 /**
  * Created by cano on 3.10.2016.

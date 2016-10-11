@@ -1,8 +1,7 @@
-package BuildingInformation;
+package locatorRoot.BuildingInformation;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -18,7 +17,6 @@ public class FloorGeneral extends FloorFactory implements Serializable{
 
     public FloorGeneral(Floor f){
 
-        this.setType(f.getType());
         this.setBuildingId(f.getBuildingId());
         this.setFloorId(f.getFloorId());
         this.setFloorNumber(f.getFloorNumber());

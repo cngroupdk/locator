@@ -1,4 +1,4 @@
-package BuildingInformation;
+package locatorRoot.BuildingInformation;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,7 +20,6 @@ public class RoomDev extends RoomFactory implements Serializable {
         this.setAssignedPeople(r.getAssignedPeople());
         this.setCapacity(r.getCapacity());
         this.setName(r.getName());
-        this.setType(r.getType());
     }
 
 }

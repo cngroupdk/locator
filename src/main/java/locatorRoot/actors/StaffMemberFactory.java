@@ -1,8 +1,7 @@
-package actors;
+package locatorRoot.actors;
 
 
 import javax.persistence.*;
-import java.sql.ResultSet;
 
 /**
  * Created by cano on 29.9.2016.
@@ -32,6 +31,10 @@ public abstract class StaffMemberFactory implements StaffMember {
     private String extension;
     @Column(name="voip")
     private String voIP;
+
+    protected StaffMemberFactory(){
+
+    }
 
     public static StaffMember getStaffMember(StaffMember actor){
 
@@ -152,9 +155,7 @@ public abstract class StaffMemberFactory implements StaffMember {
         return role;
     }
 
-    public void setRole(String role) {
-        this.role = new String(role);
-    }
+    public void setRole(String role){ this.role = role; }
 
     public String getEmail() {
         return email;

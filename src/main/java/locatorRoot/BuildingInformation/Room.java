@@ -1,4 +1,4 @@
-package BuildingInformation;
+package locatorRoot.BuildingInformation;
 
 /**
  * Created by cano on 3.10.2016.
@@ -18,8 +18,6 @@ public interface Room {
     public void setFloorId(Integer location);
 
     public String getType();
-
-    public void setType(String type);
 
     public Integer getCapacity();
 

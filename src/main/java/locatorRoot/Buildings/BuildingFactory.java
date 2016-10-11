@@ -1,7 +1,6 @@
-package Buildings;
+package locatorRoot.Buildings;
 
 import javax.persistence.*;
-import java.sql.ResultSet;
 
 /**
  * Created by cano on 30.9.2016.
@@ -90,10 +89,6 @@ public class BuildingFactory implements Building {
 
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getName() {

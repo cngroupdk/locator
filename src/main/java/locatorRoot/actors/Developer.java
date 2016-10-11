@@ -1,4 +1,4 @@
-package actors;
+package locatorRoot.actors;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -8,14 +8,14 @@ import javax.persistence.Entity;
  */
 
 @Entity
-@DiscriminatorValue("HR")
-public class HR extends StaffMemberFactory {
+@DiscriminatorValue("Developer")
+public class Developer extends StaffMemberFactory {
 
-    HR(){
+    public Developer(){
 
     }
 
-    HR(StaffMember sm){
+    Developer(StaffMember sm){
 
         this.setId(sm.getId());
         this.setManagerId(sm.getManagerId());
@@ -24,7 +24,6 @@ public class HR extends StaffMemberFactory {
         this.setAbbreviation(sm.getAbbreviation());
         this.setExtension(sm.getExtension());
         this.setVoIP(sm.getVoIP());
-        this.setRole(sm.getRole());
         this.setEmail(sm.getEmail());
         this.setLocation(sm.getLocation());
         this.setDetail(sm.getDetail());

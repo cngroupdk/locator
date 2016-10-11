@@ -1,8 +1,7 @@
-package utilities;
+package locatorRoot.utilities;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 

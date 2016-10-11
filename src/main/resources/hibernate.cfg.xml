@@ -19,20 +19,20 @@
         <property name="show_sql">true</property>
 
         <!-- Annotated entity classes -->
-        <mapping class="actors.StaffMemberFactory"/>
-        <mapping class="actors.Developer"/>
-        <mapping class="actors.HR"/>
-        <mapping class="actors.Tester"/>
+        <mapping class="locatorRoot.actors.StaffMemberFactory"/>
+        <mapping class="locatorRoot.actors.Developer"/>
+        <mapping class="locatorRoot.actors.HR"/>
+        <mapping class="locatorRoot.actors.Tester"/>
 
-        <mapping class="BuildingInformation.FloorFactory"/>
-        <mapping class="BuildingInformation.FloorGeneral"/>
+        <mapping class="locatorRoot.BuildingInformation.FloorFactory"/>
+        <mapping class="locatorRoot.BuildingInformation.FloorGeneral"/>
 
-        <mapping class="BuildingInformation.RoomFactory"/>
-        <mapping class="BuildingInformation.RoomDev"/>
+        <mapping class="locatorRoot.BuildingInformation.RoomFactory"/>
+        <mapping class="locatorRoot.BuildingInformation.RoomDev"/>
 
-        <mapping class="Buildings.BuildingFactory"/>
-        <mapping class="Buildings.Headquarters"/>
-        <mapping class="Buildings.OfficeSpace"/>
+        <mapping class="locatorRoot.Buildings.BuildingFactory"/>
+        <mapping class="locatorRoot.Buildings.Headquarters"/>
+        <mapping class="locatorRoot.Buildings.OfficeSpace"/>
 
     </session-factory>
 </hibernate-configuration>

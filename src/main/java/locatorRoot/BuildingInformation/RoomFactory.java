@@ -1,10 +1,7 @@
-package BuildingInformation;
-
-import org.hibernate.annotations.DiscriminatorOptions;
+package locatorRoot.BuildingInformation;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.ResultSet;
 
 /**
  * Created by cano on 29.9.2016.
@@ -13,6 +10,7 @@ import java.sql.ResultSet;
 @Inheritance
 @DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.STRING)
 @Table(name="rooms")
+@IdClass(RoomFactoryId.class)
 public abstract class RoomFactory implements Room, Serializable{
 
     @Id
@@ -106,10 +104,6 @@ public abstract class RoomFactory implements Room, Serializable{
 
     public String getType() {
         return new String(type);
-    }
-
-    public void setType(String type) {
-        this.type = new String(type);
     }
 
     public Integer getCapacity() {

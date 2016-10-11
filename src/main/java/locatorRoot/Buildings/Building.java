@@ -1,4 +1,4 @@
-package Buildings;
+package locatorRoot.Buildings;
 
 /**
  * Created by cano on 3.10.2016.
@@ -11,8 +11,6 @@ public interface Building {
     public void setBuildingId(String buildingId);
 
     public String getType();
-
-    public void setType(String type);
 
     public String getName();
 

@@ -1,8 +1,7 @@
-package BuildingInformation;
+package locatorRoot.BuildingInformation;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.ResultSet;
 
 /**
  * Created by cano on 30.9.2016.
@@ -12,23 +11,27 @@ import java.sql.ResultSet;
 @Inheritance
 @DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.STRING)
 @Table(name="floors")
+@IdClass(FloorFactoryId.class)
 public abstract class FloorFactory implements Floor, Serializable {
 
     @Id
     @Column(name = "floor_id")
     private Integer floorId;
-    @Column(updatable = false, insertable = false)
-    private String type;
-    @Id
-    @Column(name = "building_id")
-    private String buildingId;
     @Column(name = "floor_number")
     private String floorNumber;
     @Column(name = "rooms_number")
     private Integer roomsNumber;
     @Column(name = "floorplan_url")
     private String floorplanUrl;
+    @Column(updatable = false, insertable = false)
+    private String type;
+    @Id
+    @Column(name = "building_id")
+    private String buildingId;
 
+    protected FloorFactory(){
+
+    }
     public static Floor getFloor(Floor f){
 
         Floor floor = null;
@@ -118,10 +121,6 @@ public abstract class FloorFactory implements Floor, Serializable {
 
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
 }

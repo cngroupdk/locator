@@ -1,4 +1,4 @@
-package Buildings;
+package locatorRoot.Buildings;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -19,7 +19,6 @@ public class OfficeSpace extends BuildingFactory {
         this.setCity(b.getCity());
         this.setName(b.getName());
         this.setPostalCode(b.getPostalCode());
-        this.setType(b.getType());
         this.setStreetName(b.getStreetName());
         this.setStreetNumber(b.getStreetNumber());
     }

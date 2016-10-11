@@ -1,4 +1,4 @@
-package services;
+package locatorRoot;
 
 /**
  * Created by cano on 20.9.2016.
@@ -9,9 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+@EnableJpaRepositories
 public class Application {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);

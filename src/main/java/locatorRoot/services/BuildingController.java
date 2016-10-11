@@ -1,21 +1,21 @@
-package services;
+package locatorRoot.services;
 
-import Buildings.Building;
+import locatorRoot.Buildings.Building;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import Buildings.BuildingFactory;
-import BuildingInformation.Floor;
-import BuildingInformation.FloorFactory;
-import BuildingInformation.Room;
-import BuildingInformation.RoomFactory;
+import locatorRoot.Buildings.BuildingFactory;
+import locatorRoot.repositories.BuildingsRepository;
+import locatorRoot.BuildingInformation.Floor;
+import locatorRoot.BuildingInformation.FloorFactory;
+import locatorRoot.BuildingInformation.Room;
+import locatorRoot.BuildingInformation.RoomFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import utilities.dbUtilities;
+import locatorRoot.utilities.dbUtilities;
 
-import javax.persistence.PersistenceContext;
-import javax.persistence.EntityManager;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,9 @@ import java.util.List;
 @RestController
 public class BuildingController {
 
+    @Autowired
+    private BuildingsRepository repository;
+
     @RequestMapping("/buildings")
     public List<Building> getCNBuildings(){
 
@@ -32,15 +35,15 @@ public class BuildingController {
 
         try {
 
-            SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+            /*SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
             String hql = "FROM Buildings.BuildingFactory";
             Query query = session.createQuery(hql);
-            List<BuildingFactory> result = query.list();
+            List<BuildingFactory> result = query.list();*/
 
-            for(Object element : result){
-                buildings.add(BuildingFactory.getBuilding((Building) element));
+            for(Building b : repository.findAll()){
+                buildings.add(b);
             }
 
         }catch(Exception e){
@@ -59,15 +62,20 @@ public class BuildingController {
         try {
             buildingId = URLDecoder.decode(buildingId, "UTF-8");
 
-            SessionFactory sessionFactory = dbUtilities.getSessionFactory();
+            /*SessionFactory sessionFactory = dbUtilities.getSessionFactory();
             Session session = sessionFactory.openSession();
 
             String hql = "FROM Buildings.BuildingFactory WHERE building_id =" + buildingId;
             Query query = session.createQuery(hql);
-            List<Building> result = query.list();
+            List<Building> result = query.list();*/
 
-            if (result.size() > 0)
-                building = BuildingFactory.getBuilding(result.get(0));
+            List<Building> buildings = new ArrayList<Building>();
+            for(Building b : repository.findByBuildingId(buildingId)){
+                buildings.add(b);
+            }
+
+            if (buildings.size() > 0)
+                building = buildings.get(0);
 
         }catch(Exception e){
             //TODO:Exception Handling
@@ -77,6 +85,7 @@ public class BuildingController {
 
     }
 
+    /*
     @RequestMapping("/floors")
     public List<Floor> getCNFloors(){
 
@@ -125,8 +134,9 @@ public class BuildingController {
 
         return floor;
 
-    }
+    }*/
 
+    /*
     @RequestMapping("/rooms")
     public List<Room> getCNRooms(){
 
@@ -175,6 +185,6 @@ public class BuildingController {
 
         return room;
 
-    }
+    }*/
 
 }
