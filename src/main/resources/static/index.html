@@ -1,10 +1,21 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>Getting Started: Serving Web Content</title>
+        <title>Now adding a nice UI to this thing</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+        <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+        <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
+        <script src="https://unpkg.com/remarkable@1.7.1/dist/remarkable.min.js"></script>
+
     </head>
     <body>
+        <div id="content"></div>
+        <script type="text/babel" src="scripts/frontend.js"></script>
+        <script type="text/babel">
+        </script>
         <p>Get your employees <a href="/employees">here</a></p>
         <p>Get your single employee <a href="/single_employee?first_name=Victor Isaias&last_name=Cano Becerril">here</a></p>
         <p>Get your buildings <a href="/buildings">here</a></p>
