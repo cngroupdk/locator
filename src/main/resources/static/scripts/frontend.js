@@ -1,6 +1,24 @@
 // tutorial8.js
+const {
+    Button,
+    ButtonDropdown,
+    ButtonGroup,
+    ButtonToolbar,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    TetherContent,
+    Tooltip
+} = Reactstrap;
 
-var CommentBox = React.createClass({
+var FloorDropdown = React.createClass({
+
+    dropdownToggle : function() {
+        this.setState({
+            dd1: !this.state.dd1
+        });
+    },
 
     loadCommentsFromServer: function() {
         $.ajax({
@@ -17,7 +35,21 @@ var CommentBox = React.createClass({
     },
 
     getInitialState: function() {
-        return {data: []};
+        return {
+            dd1: false,
+            tetherConfig: {
+                target: '#tether',
+                attachment: 'middle left',
+                targetAttachment: 'middle right',
+                classPrefix: 'bs-tether',
+                classes: { element: 'popover', enabled: 'open' },
+                constraints: [
+                    { to: 'scrollParent', attachment: 'together none' },
+                    { to: 'window', attachment: 'together none' }
+                ]
+            },
+            data: []
+        };
     },
 
     componentDidMount: function() {
@@ -26,77 +58,135 @@ var CommentBox = React.createClass({
     },
 
     render: function() {
-        return (
-            <div className="commentBox">
-                <h1>Buildings</h1>
-                <CommentList data={this.state.data}/>
-            </div>
-        );
-    }
-});
-
-var CommentList = React.createClass({
-    render: function() {
-
-        var commentNodes = this.props.data.map(
-            function (comment) {
+        var floorNodes = this.state.data.map(
+            function (floor) {
                 return (
-                  <Comment commentData={comment} key={comment.buildingId}/>
+                    <FloorDropdownItem floorData={floor} key={floor.floorId}/>
                 );
             }
         );
 
         return (
-            <div className="commentList">
-                {commentNodes}
-            </div>
+                <Dropdown tether className="m-y-1" isOpen={this.state.dd4} toggle={() => { this.setState({ dd4: !this.state.dd4 })}}>
+                    <DropdownToggle caret>
+                        <Button color="primary">Select the Floor </Button>
+                    </DropdownToggle>
+                    <DropdownMenu>
+                        {floorNodes}
+                    </DropdownMenu>
+                </Dropdown>
         );
     }
 });
 
-var Comment = React.createClass({
+var FloorDropdownItem = React.createClass({
 
-    rawMarkup: function() {
-        var md = new Remarkable();
-        var rawMarkup = md.render(this.props.commentData.children.toString());
-        return { __html: rawMarkup };
+    render: function() {
+        return (
+            <DropdownItem className="floorList">
+                {this.props.floorData.floorNumber + " @ " + this.props.floorData.buildingId}
+            </DropdownItem>
+        );
+    }
+});
+
+var EmployeesDropdown = React.createClass({
+
+    dropdownToggle : function() {
+        this.setState({
+            dd1: !this.state.dd1
+        });
+    },
+
+    loadCommentsFromServer: function() {
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+                this.setState({data: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+
+    getInitialState: function() {
+        return {
+            dd1: false,
+            tetherConfig: {
+                target: '#tether',
+                attachment: 'middle left',
+                targetAttachment: 'middle right',
+                classPrefix: 'bs-tether',
+                classes: { element: 'popover', enabled: 'open' },
+                constraints: [
+                    { to: 'scrollParent', attachment: 'together none' },
+                    { to: 'window', attachment: 'together none' }
+                ]
+            },
+            data: []
+        };
+    },
+
+    componentDidMount: function() {
+        this.loadCommentsFromServer();
+        //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
 
     render: function() {
-        return (
-            <div className="comment">
-                <h2 className="commentAuthor">
-                    {this.props.commentData.name}
-                </h2>
-                <p>
-                    {this.props.commentData.city}
-                </p>
-                <p>
-                    {this.props.commentData.postalCode}
-                </p>
-                <p>
-                    {this.props.commentData.streetName}
-                </p>
-                <p>
-                    {this.props.commentData.type}
-                </p>
-            </div>
+        var employeeNodes = this.state.data.map(
+            function (employee) {
+                return (
+                    <EmployeeDropdownItem employeeData={employee} key={employee.employeeId}/>
+                );
+            }
+        );
 
+        return (
+                <Dropdown tether className="m-y-1" isOpen={this.state.dd4} toggle={() => { this.setState({ dd4: !this.state.dd4 })}}>
+                    <DropdownToggle caret>
+                        <Button color="primary">Select the Staff Member</Button>
+                    </DropdownToggle>
+                    <DropdownMenu>
+                        {employeeNodes}
+                    </DropdownMenu>
+                </Dropdown>
         );
     }
 });
 
-var CommentForm = React.createClass({
+var EmployeeDropdownItem = React.createClass({
+
     render: function() {
         return (
-            <div className="commentForm">
-                Hello, world! I am a CommentForm.
+            <DropdownItem className="employeeList">
+                {this.props.employeeData.lastName + " " + this.props.employeeData.firstName}
+            </DropdownItem>
+        );
+    }
+});
+
+var SelectorBox = React.createClass({
+
+    render: function() {
+        return (
+            <div className="commentBox">
+                <h1>Resource Locator</h1>
+                <hr/>
+                <div>
+                    <EmployeesDropdown url="/employees"/>
+                    <FloorDropdown url="/floors"/>
+                </div>
+                <hr/>
             </div>
         );
     }
 });
 
 ReactDOM.render(
-    <CommentBox url="/buildings"/>,
+    <SelectorBox/>,
     document.getElementById('content')
 );
+
