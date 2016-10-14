@@ -1,18 +1,18 @@
-package locatorRoot.BuildingInformation;
+package dk.cngroup.intranet.locator.buildingcomponents;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
- * Created by cano on 30.9.2016.
+ * Floor class that represents such a component of a building.
+ *
+ * The Floor class implements JPA annotations and is mapped to the 'floors' database table
+ *
+ * @author Victor Cano
  */
 
 @Entity
-@Inheritance
-@DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.STRING)
 @Table(name="floors")
-@IdClass(FloorFactoryId.class)
-public abstract class FloorFactory implements Floor, Serializable {
+public class Floor {
 
     @Id
     @Column(name = "floor_id")
@@ -25,29 +25,21 @@ public abstract class FloorFactory implements Floor, Serializable {
     private String floorplanUrl;
     @Column(updatable = false, insertable = false)
     private String type;
-    @Id
     @Column(name = "building_id")
     private String buildingId;
 
-    protected FloorFactory(){
+    public Floor(){
 
     }
-    public static Floor getFloor(Floor f){
 
-        Floor floor = null;
-        try {
-            String type = f.getType();
+    public Floor(Floor f){
 
-            switch(type){
-                case "General":
-                    floor = new FloorGeneral(f);
-                    break;
-            }
+        this.setBuildingId(f.getBuildingId());
+        this.setFloorId(f.getFloorId());
+        this.setFloorNumber(f.getFloorNumber());
+        this.setFloorplanUrl(f.getFloorplanUrl());
+        this.setRoomsNumber(f.getRoomsNumber());
 
-        }catch(Exception e){
-            //TODO: Error handling
-        }
-        return floor;
     }
 
     @Override
@@ -57,7 +49,7 @@ public abstract class FloorFactory implements Floor, Serializable {
             result = false;
         } // end if
         else{
-            FloorFactory otherPerson = (FloorFactory)obj;
+            Floor otherPerson = (Floor)obj;
             result = buildingId.equals(otherPerson.buildingId)
                     && floorNumber.equals(otherPerson.floorNumber) && type.equals(otherPerson.type)
             ;

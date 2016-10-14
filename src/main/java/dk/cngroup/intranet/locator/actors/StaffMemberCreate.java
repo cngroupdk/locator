@@ -1,19 +1,25 @@
-package locatorRoot.actors;
+package dk.cngroup.intranet.locator.actors;
 
 
 import javax.persistence.*;
 
 /**
- * Created by cano on 29.9.2016.
+ * Factory class to generate different types of employees implementing the StaffMember interface.
+ *
+ * The StaffMemberCreate class implements JPA and is mapped to the 'employee' database table
+ *
+ * @author Victor Cano
  */
 
 @Entity
 @Inheritance
 @DiscriminatorColumn(name="role", discriminatorType = DiscriminatorType.STRING)
 @Table(name="employee")
-public abstract class StaffMemberFactory implements StaffMember {
+public abstract class StaffMemberCreate implements StaffMember {
 
     @Id
+    @Column(name = "employee_guid")
+    private String employeeGuid;
     @Column(name = "employee_id")
     private String employeeId;
     @Column(name = "manager_id")
@@ -32,10 +38,21 @@ public abstract class StaffMemberFactory implements StaffMember {
     @Column(name="voip")
     private String voIP;
 
-    protected StaffMemberFactory(){
+    protected StaffMemberCreate(){
 
     }
 
+    /**
+     * Returns an Object implementing the StaffMember interface depending on
+     * the field 'type' in the 'employee' database
+     *
+     * The type of object being returned at the moment are:
+     * Developer
+     * HR
+     * Tester
+     * @param actor
+     * @return
+     */
     public static StaffMember getStaffMember(StaffMember actor){
 
         StaffMember employee = null;
@@ -69,7 +86,7 @@ public abstract class StaffMemberFactory implements StaffMember {
             result = false;
         } // end if
         else{
-            StaffMemberFactory otherPerson = (StaffMemberFactory)obj;
+            StaffMemberCreate otherPerson = (StaffMemberCreate)obj;
             result = employeeId.equals(otherPerson.employeeId) && managerId.equals(otherPerson.managerId)
                     && firstName.equals(otherPerson.firstName) && lastName.equals(otherPerson.lastName)
                     && location.equals(otherPerson.location) && email.equals(otherPerson.email)
@@ -95,12 +112,20 @@ public abstract class StaffMemberFactory implements StaffMember {
 
     }
 
+    public String getEmployeeGuid() {
+        return employeeGuid;
+    }
+
+    public void setEmployeeGuid(String employeeGuid) {
+        this.employeeGuid = employeeGuid;
+    }
+
     public String getVoIP() {
         return voIP;
     }
 
     public void setVoIP(String voIP) {
-        this.voIP = new String(voIP);
+        this.voIP = voIP;
     }
 
     public String getId() {
@@ -108,11 +133,11 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public void setId(String id) {
-        this.employeeId = new String(id);
+        this.employeeId = id;
     }
 
     public void setManagerId(String id){
-        this.managerId = new String(id);
+        this.managerId = id;
     }
 
     public String getManagerId(){
@@ -124,7 +149,7 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = new String(firstName);
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -132,7 +157,7 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = new String(lastName);
+        this.lastName = lastName;
     }
 
     public String getAbbreviation() {
@@ -140,7 +165,7 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public void setAbbreviation(String abbreviation) {
-        this.abbreviation = new String(abbreviation);
+        this.abbreviation = abbreviation;
     }
 
     public String getExtension() {
@@ -148,7 +173,7 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public void setExtension(String extension) {
-        this.extension = new String (extension);
+        this.extension = extension;
     }
 
     public String getRole() {
@@ -162,7 +187,7 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public void setEmail(String email) {
-        this.email = new String(email);
+        this.email = email;
     }
 
     public String getLocation() {
@@ -170,7 +195,7 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public void setLocation(String location) {
-        this.location = new String(location);
+        this.location = location;
     }
 
     public String getDetail() {
@@ -178,7 +203,7 @@ public abstract class StaffMemberFactory implements StaffMember {
     }
 
     public void setDetail(String detail) {
-        this.detail = new String(detail);
+        this.detail = detail;
     }
 
 }

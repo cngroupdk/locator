@@ -14,12 +14,6 @@ const {
 
 var FloorDropdown = React.createClass({
 
-    dropdownToggle : function() {
-        this.setState({
-            dd1: !this.state.dd1
-        });
-    },
-
     loadCommentsFromServer: function() {
         $.ajax({
             url: this.props.url,
@@ -36,25 +30,12 @@ var FloorDropdown = React.createClass({
 
     getInitialState: function() {
         return {
-            dd1: false,
-            tetherConfig: {
-                target: '#tether',
-                attachment: 'middle left',
-                targetAttachment: 'middle right',
-                classPrefix: 'bs-tether',
-                classes: { element: 'popover', enabled: 'open' },
-                constraints: [
-                    { to: 'scrollParent', attachment: 'together none' },
-                    { to: 'window', attachment: 'together none' }
-                ]
-            },
             data: []
         };
     },
 
     componentDidMount: function() {
         this.loadCommentsFromServer();
-        //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
 
     render: function() {
@@ -92,12 +73,6 @@ var FloorDropdownItem = React.createClass({
 
 var EmployeesDropdown = React.createClass({
 
-    dropdownToggle : function() {
-        this.setState({
-            dd1: !this.state.dd1
-        });
-    },
-
     loadCommentsFromServer: function() {
         $.ajax({
             url: this.props.url,
@@ -114,25 +89,12 @@ var EmployeesDropdown = React.createClass({
 
     getInitialState: function() {
         return {
-            dd1: false,
-            tetherConfig: {
-                target: '#tether',
-                attachment: 'middle left',
-                targetAttachment: 'middle right',
-                classPrefix: 'bs-tether',
-                classes: { element: 'popover', enabled: 'open' },
-                constraints: [
-                    { to: 'scrollParent', attachment: 'together none' },
-                    { to: 'window', attachment: 'together none' }
-                ]
-            },
             data: []
         };
     },
 
     componentDidMount: function() {
         this.loadCommentsFromServer();
-        //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
 
     render: function() {
@@ -172,7 +134,7 @@ var SelectorBox = React.createClass({
 
     render: function() {
         return (
-            <div className="commentBox">
+            <div className="selectorBox">
                 <h1>Resource Locator</h1>
                 <hr/>
                 <div>

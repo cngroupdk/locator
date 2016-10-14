@@ -19,20 +19,20 @@
         <property name="show_sql">true</property>
 
         <!-- Annotated entity classes -->
-        <mapping class="locatorRoot.actors.StaffMemberFactory"/>
-        <mapping class="locatorRoot.actors.Developer"/>
-        <mapping class="locatorRoot.actors.HR"/>
-        <mapping class="locatorRoot.actors.Tester"/>
+        <mapping class="dk.cngroup.intranet.locator.actors.StaffMemberCreate"/>
+        <mapping class="dk.cngroup.intranet.locator.actors.Developer"/>
+        <mapping class="dk.cngroup.intranet.locator.actors.HR"/>
+        <mapping class="dk.cngroup.intranet.locator.actors.Tester"/>
 
-        <mapping class="locatorRoot.BuildingInformation.FloorFactory"/>
-        <mapping class="locatorRoot.BuildingInformation.FloorGeneral"/>
+        <mapping class="dk.cngroup.intranet.locator.buildingcomponents.FloorFactory"/>
+        <mapping class="dk.cngroup.intranet.locator.buildingcomponents.FloorGeneral"/>
 
-        <mapping class="locatorRoot.BuildingInformation.RoomFactory"/>
-        <mapping class="locatorRoot.BuildingInformation.RoomDev"/>
+        <mapping class="dk.cngroup.intranet.locator.buildingcomponents.RoomFactory"/>
+        <mapping class="dk.cngroup.intranet.locator.buildingcomponents.RoomDev"/>
 
-        <mapping class="locatorRoot.Buildings.BuildingFactory"/>
-        <mapping class="locatorRoot.Buildings.Headquarters"/>
-        <mapping class="locatorRoot.Buildings.OfficeSpace"/>
+        <mapping class="dk.cngroup.intranet.locator.buildings.BuildingFactory"/>
+        <mapping class="dk.cngroup.intranet.locator.buildings.Headquarters"/>
+        <mapping class="dk.cngroup.intranet.locator.buildings.OfficeSpace"/>
 
     </session-factory>
 </hibernate-configuration>

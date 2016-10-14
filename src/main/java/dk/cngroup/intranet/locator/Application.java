@@ -1,4 +1,4 @@
-package locatorRoot;
+package dk.cngroup.intranet.locator;
 
 /**
  * Created by cano on 20.9.2016.
@@ -20,5 +20,9 @@ public class Application {
     public static void main(String args[]) {
         log.info("Starting everything");
         SpringApplication.run(Application.class, args);
+    }
+
+    public static Logger getLogger(){
+        return log;
     }
 }

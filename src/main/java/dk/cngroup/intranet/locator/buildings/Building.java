@@ -1,17 +1,24 @@
-package locatorRoot.Buildings;
+package dk.cngroup.intranet.locator.buildings;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * Created by cano on 30.9.2016.
+ * Building class that represents such an entity.
+ *
+ * The Building class implements JPA annotations and is mapped to the 'building' database table
+ *
+ * @author Victor Cano
  */
 @Entity
-@Inheritance
-@DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.STRING)
 @Table(name="building")
-public class BuildingFactory implements Building {
+public class Building {
 
     @Id
+    @Column(name="building_guid")
+    private Integer buildingGuid;
     @Column(name="building_id")
     private String buildingId;
     @Column(updatable = false, insertable = false)
@@ -32,7 +39,7 @@ public class BuildingFactory implements Building {
             result = false;
         } // end if
         else{
-            BuildingFactory otherPerson = (BuildingFactory)obj;
+            Building otherPerson = (Building)obj;
             result = name.equals(otherPerson.name) && buildingId.equals(otherPerson.buildingId)
                     && type.equals(otherPerson.type) && city.equals(otherPerson.city)
             ;
@@ -55,28 +62,12 @@ public class BuildingFactory implements Building {
 
     }
 
-    public static Building getBuilding(Building b){
+    public Integer getBuildingGuid() {
+        return buildingGuid;
+    }
 
-        Building building = null;
-
-        try{
-            String type = b.getType();
-
-            switch(type){
-                case "Headquarters":
-                    building = new Headquarters(b);
-                    break;
-                case "Office Space":
-                    building = new OfficeSpace(b);
-                    break;
-            }
-        }
-        catch ( Exception e){
-            //TO DO: error handling
-        }
-
-        return building;
-
+    public void setBuildingGuid(Integer buildingGuid) {
+        this.buildingGuid = buildingGuid;
     }
 
     public String getBuildingId() {

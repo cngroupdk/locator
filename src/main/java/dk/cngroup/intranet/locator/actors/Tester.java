@@ -1,21 +1,23 @@
-package locatorRoot.actors;
+package dk.cngroup.intranet.locator.actors;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 /**
- * Created by cano on 3.10.2016.
+ * Tester class that inherits from StaffMemberCreate class
+ *
+ * @author Victor Cano
  */
 
 @Entity
-@DiscriminatorValue("Developer")
-public class Developer extends StaffMemberFactory {
+@DiscriminatorValue("Tester")
+public class Tester extends StaffMemberCreate {
 
-    public Developer(){
+    Tester(){
 
     }
 
-    Developer(StaffMember sm){
+    Tester(StaffMember sm){
 
         this.setId(sm.getId());
         this.setManagerId(sm.getManagerId());
@@ -29,5 +31,4 @@ public class Developer extends StaffMemberFactory {
         this.setDetail(sm.getDetail());
 
     }
-
 }
