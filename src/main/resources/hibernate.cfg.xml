@@ -18,21 +18,5 @@
         <!-- Print executed SQL to stdout -->
         <property name="show_sql">true</property>
 
-        <!-- Annotated entity classes -->
-        <mapping class="dk.cngroup.intranet.locator.actors.StaffMemberCreate"/>
-        <mapping class="dk.cngroup.intranet.locator.actors.Developer"/>
-        <mapping class="dk.cngroup.intranet.locator.actors.HR"/>
-        <mapping class="dk.cngroup.intranet.locator.actors.Tester"/>
-
-        <mapping class="dk.cngroup.intranet.locator.buildingcomponents.FloorFactory"/>
-        <mapping class="dk.cngroup.intranet.locator.buildingcomponents.FloorGeneral"/>
-
-        <mapping class="dk.cngroup.intranet.locator.buildingcomponents.RoomFactory"/>
-        <mapping class="dk.cngroup.intranet.locator.buildingcomponents.RoomDev"/>
-
-        <mapping class="dk.cngroup.intranet.locator.buildings.BuildingFactory"/>
-        <mapping class="dk.cngroup.intranet.locator.buildings.Headquarters"/>
-        <mapping class="dk.cngroup.intranet.locator.buildings.OfficeSpace"/>
-
     </session-factory>
 </hibernate-configuration>

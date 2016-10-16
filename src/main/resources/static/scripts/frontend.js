@@ -12,6 +12,30 @@ const {
     Tooltip
 } = Reactstrap;
 
+var FloorMap = React.createClass({
+
+    getInitialState: function() {
+        return {
+            showMap : false,
+            data: []
+        };
+    },
+
+    render: function() {
+
+        return (
+            <div>
+                <img src={'/floorplan.jpg'} className="floorplanMap"/>
+            </div>
+        );
+    }
+
+
+
+
+});
+
+
 var FloorDropdown = React.createClass({
 
     loadCommentsFromServer: function() {
@@ -132,14 +156,25 @@ var EmployeeDropdownItem = React.createClass({
 
 var SelectorBox = React.createClass({
 
+    getInitialState: function () {
+        return { mapVisible: false };
+    },
+
+    onClick: function() {
+        this.setState({mapVisible: !this.state.mapVisible});
+    },
+
     render: function() {
         return (
-            <div className="selectorBox">
+            <div className="selectorBox" onClick={this.onClick}>
                 <h1>Resource Locator</h1>
                 <hr/>
                 <div>
                     <EmployeesDropdown url="/employees"/>
                     <FloorDropdown url="/floors"/>
+                    {
+                        this.state.mapVisible ?  <FloorMap url="/floors"/>  : null
+                    }
                 </div>
                 <hr/>
             </div>
