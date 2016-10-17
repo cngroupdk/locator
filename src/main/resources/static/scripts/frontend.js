@@ -52,8 +52,18 @@ var FloorDropdown = React.createClass({
         });
     },
 
+    updateFloor : function(e){
+
+        var flData = this.state.data[e.target.value];
+        var newFloor = flData.floorNumber + " @ " + flData.buildingId;
+        this.setState(
+            {floorName : newFloor}
+        );
+    },
+
     getInitialState: function() {
         return {
+            floorName : 'Select the floor',
             data: []
         };
     },
@@ -66,15 +76,17 @@ var FloorDropdown = React.createClass({
         var floorNodes = this.state.data.map(
             function (floor) {
                 return (
-                    <FloorDropdownItem floorData={floor} key={floor.floorId}/>
+                    <FloorDropdownItem floorData={floor}
+                                       key={floor.floorId}
+                                       update = {this.updateFloor}/>
                 );
             }
-        );
+        , this);
 
         return (
                 <Dropdown tether className="m-y-1" isOpen={this.state.dd4} toggle={() => { this.setState({ dd4: !this.state.dd4 })}}>
                     <DropdownToggle caret>
-                        <Button color="primary">Select the Floor </Button>
+                        <Button color="primary">{this.state.floorName}</Button>
                     </DropdownToggle>
                     <DropdownMenu>
                         {floorNodes}
@@ -88,7 +100,9 @@ var FloorDropdownItem = React.createClass({
 
     render: function() {
         return (
-            <DropdownItem className="floorList">
+            <DropdownItem className="floorList"
+                          onClick={this.props.update}
+                          value = {this.props.floorData.floorId}>
                 {this.props.floorData.floorNumber + " @ " + this.props.floorData.buildingId}
             </DropdownItem>
         );
@@ -113,8 +127,18 @@ var EmployeesDropdown = React.createClass({
 
     getInitialState: function() {
         return {
+            chosenName: 'Select the Staff Member',
             data: []
         };
+    },
+
+    updateName : function(e){
+
+        var emplData = this.state.data[e.target.value];
+        var newName = emplData.lastName + ", " + emplData.firstName;
+        this.setState(
+            {chosenName : newName}
+        );
     },
 
     componentDidMount: function() {
@@ -125,15 +149,17 @@ var EmployeesDropdown = React.createClass({
         var employeeNodes = this.state.data.map(
             function (employee) {
                 return (
-                    <EmployeeDropdownItem employeeData={employee} key={employee.employeeId}/>
+                    <EmployeeDropdownItem employeeData={employee}
+                                          key={employee.employeeGuid}
+                                          update = {this.updateName} />
                 );
             }
-        );
+        , this);
 
         return (
                 <Dropdown tether className="m-y-1" isOpen={this.state.dd4} toggle={() => { this.setState({ dd4: !this.state.dd4 })}}>
                     <DropdownToggle caret>
-                        <Button color="primary">Select the Staff Member</Button>
+                        <Button color="primary">{this.state.chosenName}</Button>
                     </DropdownToggle>
                     <DropdownMenu>
                         {employeeNodes}
@@ -147,8 +173,10 @@ var EmployeeDropdownItem = React.createClass({
 
     render: function() {
         return (
-            <DropdownItem className="employeeList">
-                {this.props.employeeData.lastName + " " + this.props.employeeData.firstName}
+            <DropdownItem className="employeeList"
+                          onClick={this.props.update}
+                          value = {this.props.employeeData.employeeGuid}>
+                {this.props.employeeData.lastName + ", " + this.props.employeeData.firstName}
             </DropdownItem>
         );
     }
@@ -157,7 +185,7 @@ var EmployeeDropdownItem = React.createClass({
 var SelectorBox = React.createClass({
 
     getInitialState: function () {
-        return { mapVisible: false };
+        return { mapVisible: true };
     },
 
     onClick: function() {
@@ -166,14 +194,14 @@ var SelectorBox = React.createClass({
 
     render: function() {
         return (
-            <div className="selectorBox" onClick={this.onClick}>
+            <div className="selectorBox">
                 <h1>Resource Locator</h1>
                 <hr/>
                 <div>
                     <EmployeesDropdown url="/employees"/>
                     <FloorDropdown url="/floors"/>
                     {
-                        this.state.mapVisible ?  <FloorMap url="/floors"/>  : null
+                        this.state.mapVisible ?  <FloorMap/>  : null
                     }
                 </div>
                 <hr/>
