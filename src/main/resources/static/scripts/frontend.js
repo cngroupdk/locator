@@ -1,15 +1,11 @@
 // tutorial8.js
 const {
     Button,
-    ButtonDropdown,
-    ButtonGroup,
-    ButtonToolbar,
     Dropdown,
     DropdownItem,
     DropdownMenu,
     DropdownToggle,
-    TetherContent,
-    Tooltip
+    Container, Row, Col
 } = Reactstrap;
 
 var FloorMap = React.createClass({
@@ -239,14 +235,18 @@ var SelectorBox = React.createClass({
     render: function() {
         return (
             <div className="selectorBox">
+                <Container>
                 <h1>Resource Locator</h1>
                 <hr/>
-                <div>
-                    <EmployeesDropdown onChange={this.onSelectEmployee} selectedEmp={this.state.selectedEmployee} url="/employees" ref={(ref) => this.state.myEmployee = ref}/>
-                    <FloorDropdown onChange={this.onSelectFloor} selectedFl ={this.state.selectedFloor} url="/floors" ref={(ref) => this.state.myFloor = ref}/>
-                    <FloorMap imageSource={this.state.presentImage} ref={(ref) => this.state.myImage = ref}/>
-                </div>
+                <Row>
+                    <Col>
+                        <EmployeesDropdown onChange={this.onSelectEmployee} selectedEmp={this.state.selectedEmployee} url="/employees" ref={(ref) => this.state.myEmployee = ref}/>
+                        <FloorDropdown onChange={this.onSelectFloor} selectedFl ={this.state.selectedFloor} url="/floors" ref={(ref) => this.state.myFloor = ref}/>
+                        <FloorMap imageSource={this.state.presentImage} ref={(ref) => this.state.myImage = ref}/>
+                    </Col>
+                </Row>
                 <hr/>
+                </Container>
             </div>
         );
     }
