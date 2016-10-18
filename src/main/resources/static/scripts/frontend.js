@@ -16,16 +16,22 @@ var FloorMap = React.createClass({
 
     getInitialState: function() {
         return {
-            showMap : false,
+            mapPath : this.props.imageSource,
             data: []
         };
+    },
+
+    setMapPath : function(newPath){
+        this.setState(
+            {mapPath : newPath}
+        );
     },
 
     render: function() {
 
         return (
             <div>
-                <img src={'/floorplan.jpg'} className="floorplanMap"/>
+                <img src={this.state.mapPath} className="floorplanMap"/>
             </div>
         );
     }
@@ -52,18 +58,22 @@ var FloorDropdown = React.createClass({
         });
     },
 
-    updateFloor : function(e){
+    updateFloor : function(newName){
+        this.setState(
+            {floorName : newName}
+        );
+    },
+
+    onClickUpdateFloor : function(e){
 
         var flData = this.state.data[e.target.value];
-        var newFloor = flData.floorNumber + " @ " + flData.buildingId;
-        this.setState(
-            {floorName : newFloor}
-        );
+        var newName = this.props.onChange(e.target.value, flData);
+        this.updateFloor(newName);
     },
 
     getInitialState: function() {
         return {
-            floorName : 'Select the floor',
+            floorName :  this.props.selectedFl,
             data: []
         };
     },
@@ -78,7 +88,7 @@ var FloorDropdown = React.createClass({
                 return (
                     <FloorDropdownItem floorData={floor}
                                        key={floor.floorId}
-                                       update = {this.updateFloor}/>
+                                       update = {this.onClickUpdateFloor}/>
                 );
             }
         , this);
@@ -127,18 +137,19 @@ var EmployeesDropdown = React.createClass({
 
     getInitialState: function() {
         return {
-            chosenName: 'Select the Staff Member',
+            chosenName: this.props.selectedEmp,
             data: []
         };
     },
 
-    updateName : function(e){
+    updateName : function(newName){
+        this.setState({chosenName : newName});
+    },
 
+    onClickUpdateName : function(e){
         var emplData = this.state.data[e.target.value];
-        var newName = emplData.lastName + ", " + emplData.firstName;
-        this.setState(
-            {chosenName : newName}
-        );
+        var newName = this.props.onChange(e.target.value, emplData);
+        this.updateName(newName);
     },
 
     componentDidMount: function() {
@@ -151,7 +162,8 @@ var EmployeesDropdown = React.createClass({
                 return (
                     <EmployeeDropdownItem employeeData={employee}
                                           key={employee.employeeGuid}
-                                          update = {this.updateName} />
+                                          update = {this.onClickUpdateName}
+                    />
                 );
             }
         , this);
@@ -185,11 +197,43 @@ var EmployeeDropdownItem = React.createClass({
 var SelectorBox = React.createClass({
 
     getInitialState: function () {
-        return { mapVisible: true };
+        return {
+            selectedEmployee: 'Select an Employee',
+            selectedFloor: 'Select a Floor',
+            presentImage : '',
+            myImage : null,
+            myEmployee : null,
+            myFloor : null
+        };
     },
 
-    onClick: function() {
-        this.setState({mapVisible: !this.state.mapVisible});
+    setImagePath : function(buildingId, floorNumber, refToImage){
+
+        fetch('/floors/' + buildingId + '/' + floorNumber).then((response) => {return response.json()}).then(function(emplData){
+            refToImage.setMapPath(emplData.floorplanUrl);
+        }).catch((error) => {
+            console.error(error);
+        });
+    },
+
+    onSelectEmployee: function(index, emplData) {
+
+        var res = emplData.location.split("@");
+        this.setImagePath(res[2], res[1], this.state.myImage);
+
+        this.state.myFloor.updateFloor(res[1] + ' @ ' + res[2]);
+        var newName = emplData.lastName + ", " + emplData.firstName;
+        this.setState({ selectedEmployee : newName });
+        return newName;
+    },
+
+    onSelectFloor: function(index, flData) {
+        var newFloor = flData.floorNumber + " @ " + flData.buildingId;
+        this.setImagePath(flData.buildingId, flData.floorNumber, this.state.myImage);
+
+        this.state.myEmployee.updateName('Select an Employee');
+        this.setState({ selectedFloor : newFloor });
+        return newFloor;
     },
 
     render: function() {
@@ -198,11 +242,9 @@ var SelectorBox = React.createClass({
                 <h1>Resource Locator</h1>
                 <hr/>
                 <div>
-                    <EmployeesDropdown url="/employees"/>
-                    <FloorDropdown url="/floors"/>
-                    {
-                        this.state.mapVisible ?  <FloorMap/>  : null
-                    }
+                    <EmployeesDropdown onChange={this.onSelectEmployee} selectedEmp={this.state.selectedEmployee} url="/employees" ref={(ref) => this.state.myEmployee = ref}/>
+                    <FloorDropdown onChange={this.onSelectFloor} selectedFl ={this.state.selectedFloor} url="/floors" ref={(ref) => this.state.myFloor = ref}/>
+                    <FloorMap imageSource={this.state.presentImage} ref={(ref) => this.state.myImage = ref}/>
                 </div>
                 <hr/>
             </div>

@@ -24,4 +24,10 @@ public interface FloorsRepository extends CrudRepository<Floor, Long>{
      * @return
      */
     List<Floor> findByFloorNumberAndBuildingId(String FloorNumber, String BuildingId);
+
+    /**
+     * JPA query to obtain all floors and order by floorId
+     * @return
+     */
+    Iterable<Floor> findAllByOrderByFloorId();
 }

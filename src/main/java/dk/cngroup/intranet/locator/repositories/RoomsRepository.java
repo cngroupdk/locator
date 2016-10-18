@@ -24,4 +24,10 @@ public interface RoomsRepository extends CrudRepository<Room, Long> {
      * @return
      */
     List<Room> findByNameAndBuildingId(String Name, String BuildingId);
+
+    /**
+     * JPA query to obtain all rooms and order by roomId
+     * @return
+     */
+    Iterable<Room> findAllByOrderByRoomId();
 }

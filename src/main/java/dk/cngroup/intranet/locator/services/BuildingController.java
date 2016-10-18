@@ -28,7 +28,7 @@ public class BuildingController {
     @RequestMapping("/buildings")
     public Iterable<Building> getCNBuildings(){
 
-        Iterable<Building> buildings = repository.findAll();
+        Iterable<Building> buildings = repository.findAllByOrderByBuildingGuid();
 
         if (buildings == null) {
             Application.getLogger().info("/buildings failed, no buildings found.");

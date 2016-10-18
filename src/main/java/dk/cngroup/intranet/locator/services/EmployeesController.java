@@ -32,15 +32,16 @@ public class EmployeesController {
      * @return an Iterable object of StaffMemberCreate objects
      */
     @RequestMapping("/employees")
-    public Iterable<StaffMemberCreate> getEmployeeList(){
+    public List<StaffMember> getEmployeeList(){
 
         Iterable<StaffMemberCreate> employees = repository.findAll();
+        List<StaffMember> result = repository.findAllByOrderByEmployeeGuid();
 
         if (employees == null) {
             Application.getLogger().info("/employees failed, no employees found.");
             throw new ServiceNotFoundException();
         }
-        return employees;
+        return result;
 
     }
 

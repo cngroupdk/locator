@@ -30,7 +30,7 @@ public class FloorsController {
     @RequestMapping("/floors")
     public Iterable<Floor> getCNFloors(){
 
-        Iterable<Floor> floors = repository.findAll();
+        Iterable<Floor> floors = repository.findAllByOrderByFloorId();
 
         if (floors == null) {
             Application.getLogger().info("/floors failed, no floors found.");

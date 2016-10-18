@@ -23,5 +23,10 @@ public interface BuildingsRepository extends CrudRepository<Building, Long> {
      * @return
      */
     List<Building> findByBuildingId(String buildingId);
+    /**
+     * JPA query to obtain all employees and order by employeeGuid
+     * @return
+     */
+    Iterable<Building> findAllByOrderByBuildingGuid();
 
 }

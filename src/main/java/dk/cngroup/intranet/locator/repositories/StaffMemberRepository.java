@@ -26,4 +26,10 @@ public interface StaffMemberRepository extends CrudRepository <StaffMemberCreate
      * @return
      */
     List<StaffMember> findByFirstNameAndLastName(String firstName, String lastName);
+
+    /**
+     * JPA query to obtain all employees and order by employeeGuid
+     * @return
+     */
+    List<StaffMember> findAllByOrderByEmployeeGuid();
 }

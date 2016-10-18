@@ -31,7 +31,7 @@ public class RoomsController {
     @RequestMapping("/rooms")
     public Iterable<Room> getCNRooms(){
 
-        Iterable<Room> rooms = repository.findAll();
+        Iterable<Room> rooms = repository.findAllByOrderByRoomId();
 
         if(rooms == null) {
             Application.getLogger().info("/rooms failed, no rooms found.");
