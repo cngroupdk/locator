@@ -8,12 +8,11 @@ const {
     Container, Row, Col
 } = Reactstrap;
 
-var FloorMap = React.createClass({
+var ImageMap = React.createClass({
 
     getInitialState: function() {
         return {
-            mapPath : this.props.imageSource,
-            data: []
+            mapPath : this.props.imgSource
         };
     },
 
@@ -23,18 +22,24 @@ var FloorMap = React.createClass({
         );
     },
 
+    setStyleProps : function(style){
+        this.setState(
+            {style : style}
+        );
+    },
+
     render: function() {
 
         return (
             <div>
-                <img src={this.state.mapPath} className="floorplanMap"/>
+                <img src={this.state.mapPath}
+                     style={this.state.style}
+                     onMouseEnter={this.props.hoverEnter}
+                     onMouseLeave={this.props.hoverLeave}
+                />
             </div>
         );
     }
-
-
-
-
 });
 
 
@@ -63,13 +68,14 @@ var FloorDropdown = React.createClass({
     onClickUpdateFloor : function(e){
 
         var flData = this.state.data[e.target.value];
-        var newName = this.props.onChange(e.target.value, flData);
-        this.updateFloor(newName);
+        var newFloor = flData.floorNumber + " @ " + flData.buildingId;
+        this.props.onChange(e.target.value, flData);
+        this.updateFloor(newFloor);
     },
 
     getInitialState: function() {
         return {
-            floorName :  this.props.selectedFl,
+            floorName : 'Select a Floor',
             data: []
         };
     },
@@ -133,7 +139,7 @@ var EmployeesDropdown = React.createClass({
 
     getInitialState: function() {
         return {
-            chosenName: this.props.selectedEmp,
+            chosenName: 'Select an Employee',
             data: []
         };
     },
@@ -144,7 +150,8 @@ var EmployeesDropdown = React.createClass({
 
     onClickUpdateName : function(e){
         var emplData = this.state.data[e.target.value];
-        var newName = this.props.onChange(e.target.value, emplData);
+        var newName = emplData.lastName + ", " + emplData.firstName;
+        this.props.onChange(e.target.value, emplData);
         this.updateName(newName);
     },
 
@@ -194,16 +201,15 @@ var SelectorBox = React.createClass({
 
     getInitialState: function () {
         return {
-            selectedEmployee: 'Select an Employee',
-            selectedFloor: 'Select a Floor',
-            presentImage : '',
-            myImage : null,
+            showEmployee: false,
+            myMap : null,
             myEmployee : null,
-            myFloor : null
+            myFloor : null,
+            myImage : null
         };
     },
 
-    setImagePath : function(buildingId, floorNumber, refToImage){
+    setFloorplanPath : function(buildingId, floorNumber, refToImage){
 
         fetch('/floors/' + buildingId + '/' + floorNumber).then((response) => {return response.json()}).then(function(emplData){
             refToImage.setMapPath(emplData.floorplanUrl);
@@ -212,42 +218,99 @@ var SelectorBox = React.createClass({
         });
     },
 
+    setEmployeeImages : function(employeeId, buildingId, roomName, refToImage){
+        fetch('/rooms/' + buildingId + '/' + roomName).then((response) => {return response.json()}).then(function(roomData){
+            var style =
+            {
+                transition: 'all 0.5s',
+                visibility: 'visible',
+                maxWidth: '5%',
+                position: 'absolute',
+                top: roomData.styleTop,
+                left: roomData.styleLeft
+            }
+            refToImage.setMapPath(employeeId + '.jpg');
+            refToImage.setStyleProps(style);
+        }).catch((error) => {
+            console.error(error);
+        });
+    },
+
     onSelectEmployee: function(index, emplData) {
 
         var res = emplData.location.split("@");
-        this.setImagePath(res[2], res[1], this.state.myImage);
-
+        var buildingId = res[2];
+        var floorNumber = res[1];
+        var roomName = res[0];
+        this.setFloorplanPath(buildingId, floorNumber, this.state.myMap);
+        this.setEmployeeImages(emplData.id, buildingId, roomName, this.state.myImage);
         this.state.myFloor.updateFloor(res[1] + ' @ ' + res[2]);
-        var newName = emplData.lastName + ", " + emplData.firstName;
-        this.setState({ selectedEmployee : newName });
-        return newName;
     },
 
     onSelectFloor: function(index, flData) {
-        var newFloor = flData.floorNumber + " @ " + flData.buildingId;
-        this.setImagePath(flData.buildingId, flData.floorNumber, this.state.myImage);
 
+        this.setFloorplanPath(flData.buildingId, flData.floorNumber, this.state.myMap);
         this.state.myEmployee.updateName('Select an Employee');
-        this.setState({ selectedFloor : newFloor });
-        return newFloor;
+        var style = {visibility: 'hidden'};
+        this.state.myImage.setStyleProps(style);
+
+    },
+
+    onMouseEnterHandler: function() {
+        var newStyle =
+        {
+            transition: 'all 0.5s',
+            visibility: 'visible',
+            maxWidth: '35%',
+            position: 'absolute',
+            top: this.state.myImage.state.style.top,
+            left: this.state.myImage.state.style.left
+        }
+
+        this.state.myImage.setStyleProps(newStyle);
+
+        console.log('enter');
+    },
+    onMouseLeaveHandler: function() {
+        var newStyle =
+        {
+            transition: 'all 0.5s',
+            visibility: 'visible',
+            maxWidth: '5%',
+            position: 'absolute',
+            top: this.state.myImage.state.style.top,
+            left: this.state.myImage.state.style.left
+        }
+
+        this.state.myImage.setStyleProps(newStyle);
+        console.log('leave');
     },
 
     render: function() {
         return (
+
             <div className="selectorBox">
                 <Container>
                 <h1>Resource Locator</h1>
                 <hr/>
                 <Row>
                     <Col>
-                        <EmployeesDropdown onChange={this.onSelectEmployee} selectedEmp={this.state.selectedEmployee} url="/employees" ref={(ref) => this.state.myEmployee = ref}/>
-                        <FloorDropdown onChange={this.onSelectFloor} selectedFl ={this.state.selectedFloor} url="/floors" ref={(ref) => this.state.myFloor = ref}/>
-                        <FloorMap imageSource={this.state.presentImage} ref={(ref) => this.state.myImage = ref}/>
+                        <EmployeesDropdown onChange={this.onSelectEmployee} url="/employees" ref={(ref) => this.state.myEmployee = ref}/>
+                        <FloorDropdown onChange={this.onSelectFloor} url="/floors" ref={(ref) => this.state.myFloor = ref}/>
+                        <ImageMap className="FloorMap" ref={(ref) => this.state.myMap = ref}/>
+                        <ImageMap show ={false}
+                                  className="staff"
+                                  ref={(ref) => this.state.myImage = ref}
+                                  hoverEnter={this.onMouseEnterHandler}
+                                  hoverLeave={this.onMouseLeaveHandler}
+                        />
+
                     </Col>
                 </Row>
                 <hr/>
                 </Container>
             </div>
+
         );
     }
 });

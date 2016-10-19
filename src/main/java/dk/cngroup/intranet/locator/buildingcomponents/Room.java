@@ -26,7 +26,10 @@ public class Room {
     private Integer floorId;
     @Column(name = "building_id")
     private String buildingId;
-
+    @Column(name = "style_top")
+    private String styleTop;
+    @Column(name = "style_left")
+    private String styleLeft;
     @Override
     public boolean equals(Object obj) {
         boolean result;
@@ -114,4 +117,19 @@ public class Room {
         this.buildingId = buildingId;
     }
 
+    public String getStyleTop() {
+        return styleTop;
+    }
+
+    public void setStyleTop(String styleTop) {
+        this.styleTop = styleTop;
+    }
+
+    public String getStyleLeft() {
+        return styleLeft;
+    }
+
+    public void setStyleLeft(String styleLeft) {
+        this.styleLeft = styleLeft;
+    }
 }
