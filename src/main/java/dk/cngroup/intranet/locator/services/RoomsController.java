@@ -4,6 +4,7 @@ import dk.cngroup.intranet.locator.Application;
 import dk.cngroup.intranet.locator.buildingcomponents.Room;
 import dk.cngroup.intranet.locator.repositories.RoomsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,7 @@ public class RoomsController {
      *
      * @return an Iterable object of Room objects
      */
+    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/rooms")
     public Iterable<Room> getCNRooms(){
 
@@ -47,6 +49,7 @@ public class RoomsController {
      *
      * @return a Room object
      */
+    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/rooms/{building_id}/{room_name}")
     public Room getSingleCNRoom(@PathVariable(value="room_name") String room_name,
                                 @PathVariable(value="building_id") String buildingId){

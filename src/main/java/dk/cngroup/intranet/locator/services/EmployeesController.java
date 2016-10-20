@@ -7,6 +7,7 @@ import dk.cngroup.intranet.locator.actors.StaffMemberCreate;
 import dk.cngroup.intranet.locator.actors.StaffMember;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,7 @@ public class EmployeesController {
      *
      * @return an Iterable object of StaffMemberCreate objects
      */
+    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/employees")
     public List<StaffMember> getEmployeeList(){
 

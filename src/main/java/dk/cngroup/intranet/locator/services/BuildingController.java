@@ -25,6 +25,7 @@ public class BuildingController {
      *
      * @return an Iterable object of Building objects
      */
+    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/buildings")
     public Iterable<Building> getCNBuildings(){
 
@@ -43,6 +44,7 @@ public class BuildingController {
      *
      * @return a Building object
      */
+    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("buildings/{building_id}")
     public Building getSingleCNBuilding(@PathVariable("building_id") String buildingId){
 

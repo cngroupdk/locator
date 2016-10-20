@@ -3,6 +3,7 @@ import dk.cngroup.intranet.locator.Application;
 import dk.cngroup.intranet.locator.buildingcomponents.Floor;
 import dk.cngroup.intranet.locator.repositories.FloorsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,7 @@ public class FloorsController {
      *
      * @return an Iterable object of Floor objects
      */
+    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/floors")
     public Iterable<Floor> getCNFloors(){
 
@@ -45,6 +47,7 @@ public class FloorsController {
      *
      * @return a Floor object
      */
+    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/floors/{building_id}/{floor_number}")
     public Floor getSingleCNFloor(@PathVariable(value="floor_number") String floorNumber,
                                   @PathVariable(value="building_id") String buildingId){
