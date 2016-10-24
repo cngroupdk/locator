@@ -231,8 +231,8 @@ public class HttpRequestsTest {
                         "\"assignedPeople\":3," +
                         "\"floorId\":0," +
                         "\"buildingId\":\"20\"," +
-                        "\"styleTop\":\"62%\"," +
-                        "\"styleLeft\":\"17%\"" +
+                        "\"styleTop\":\"-270px\"," +
+                        "\"styleLeft\":\"170px\"" +
                         "}," +
                         "{" +
                         "\"roomId\":2," +
@@ -242,8 +242,8 @@ public class HttpRequestsTest {
                         "\"assignedPeople\":4," +
                         "\"floorId\":4," +
                         "\"buildingId\":\"KR9\"," +
-                        "\"styleTop\":\"45%\"," +
-                        "\"styleLeft\":\"39%\"" +
+                        "\"styleTop\":\"-384px\"," +
+                        "\"styleLeft\":\"420px\"" +
                         "}," +
                         "{" +
                         "\"roomId\":3," +
@@ -276,7 +276,7 @@ public class HttpRequestsTest {
 
         this.mockMvc.perform(get("/rooms/20/106")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString(
-                        "{\"roomId\":1,\"name\":\"106\",\"type\":\"Development\",\"capacity\":6,\"assignedPeople\":3,\"floorId\":0,\"buildingId\":\"20\",\"styleTop\":\"62%\",\"styleLeft\":\"17%\"}"
+                        "{\"roomId\":1,\"name\":\"106\",\"type\":\"Development\",\"capacity\":6,\"assignedPeople\":3,\"floorId\":0,\"buildingId\":\"20\",\"styleTop\":\"-270px\",\"styleLeft\":\"170px\"}"
                 )));
     }
 
