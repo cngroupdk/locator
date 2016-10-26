@@ -17,8 +17,8 @@ public class Floor {
     @Id
     @Column(name = "floor_id")
     private Integer floorId;
-    @Column(name = "floor_number")
-    private String floorNumber;
+    @Column(name = "floor_name")
+    private String floorName;
     @Column(name = "rooms_number")
     private Integer roomsNumber;
     @Column(name = "floorplan_url")
@@ -36,7 +36,7 @@ public class Floor {
 
         this.setBuildingId(f.getBuildingId());
         this.setFloorId(f.getFloorId());
-        this.setFloorNumber(f.getFloorNumber());
+        this.setFloorName(f.getFloorName());
         this.setFloorplanUrl(f.getFloorplanUrl());
         this.setRoomsNumber(f.getRoomsNumber());
 
@@ -51,7 +51,7 @@ public class Floor {
         else{
             Floor otherPerson = (Floor)obj;
             result = buildingId.equals(otherPerson.buildingId)
-                    && floorNumber.equals(otherPerson.floorNumber) && type.equals(otherPerson.type)
+                    && floorName.equals(otherPerson.floorName) && type.equals(otherPerson.type)
             ;
         } // end else
 
@@ -64,7 +64,7 @@ public class Floor {
         int result = 0;
 
         result = buildingId.hashCode()
-                * floorNumber.hashCode()
+                * floorName.hashCode()
                 * type.hashCode();
 
         return result;
@@ -87,12 +87,12 @@ public class Floor {
         this.buildingId = buildingId;
     }
 
-    public String getFloorNumber() {
-        return floorNumber;
+    public String getFloorName() {
+        return floorName;
     }
 
-    public void setFloorNumber(String floorNumber) {
-        this.floorNumber = floorNumber;
+    public void setFloorName(String floorName) {
+        this.floorName = floorName;
     }
 
     public Integer getRoomsNumber() {

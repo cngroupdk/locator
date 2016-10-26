@@ -34,7 +34,7 @@ var FloorDropdown = React.createClass({
 
     getInitialState: function() {
         return {
-            floorName : 'Select a Floor',
+            floorName : 'Choose Floor',
             data: []
         };
     },

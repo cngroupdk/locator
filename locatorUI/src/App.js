@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Card } from 'reactstrap';
 import EmployeeDropdown from './EmployeeDropdown';
 import FloorDropdown from './FloorDropdown';
 import ImageMap from './ImageMap';
@@ -16,9 +16,9 @@ var App=React.createClass({
     };
   },
 
-  setFloorplanPath : function(buildingId, floorNumber, refToImage){
+  setFloorplanPath : function(buildingId, floorName, refToImage){
 
-    fetch('http://localhost:8080/floors/' + buildingId + '/' + floorNumber).then((response) => {return response.json()}).then(function(emplData){
+    fetch('http://localhost:8080/floors/' + buildingId + '/' + floorName).then((response) => {return response.json()}).then(function(emplData){
       refToImage.setMapPath('http://localhost:8080' + emplData.floorplanUrl);
     }).catch((error) => {
       console.error(error);
@@ -47,16 +47,16 @@ var App=React.createClass({
 
     var res = emplData.location.split("@");
     var buildingId = res[2];
-    var floorNumber = res[1];
+    var floorName = res[1];
     var roomName = res[0];
-    this.setFloorplanPath(buildingId, floorNumber, this.state.myMap);
+    this.setFloorplanPath(buildingId, floorName, this.state.myMap);
     this.setEmployeeImages(emplData.id, buildingId, roomName, this.state.myImage);
     this.state.myFloor.updateFloor(res[1] + ' @ ' + res[2]);
   },
 
   onSelectFloor: function(index, flData) {
 
-    this.setFloorplanPath(flData.buildingId, flData.floorNumber, this.state.myMap);
+    this.setFloorplanPath(flData.buildingId, flData.floorName, this.state.myMap);
     this.state.myEmployee.updateName('Select an Employee');
     var style = {visibility: 'hidden'};
     this.state.myImage.setStyleProps(style);
@@ -98,22 +98,30 @@ var App=React.createClass({
 
         <div className="selectorBox">
           <Container className="Container">
-            <h1>Resource Locator</h1>
-            <hr/>
-            <Row>
-              <Col>
-                <EmployeeDropdown className="MyEmployees" onChange={this.onSelectEmployee} url="http://localhost:8080/employees" ref={(ref) => this.state.myEmployee = ref}/>
-                <FloorDropdown className="MyFloors" onChange={this.onSelectFloor} url="http://localhost:8080/floors" ref={(ref) => this.state.myFloor = ref}/>
-                <ImageMap className="FloorMap" ref={(ref) => this.state.myMap = ref}/>
-                <ImageMap show={false}
-                          className="staff"
-                          ref={(ref) => this.state.myImage = ref}
-                          hoverEnter={this.onMouseEnterHandler}
-                          hoverLeave={this.onMouseLeaveHandler}
-                />
-              </Col>
-            </Row>
-            <hr/>
+            <Card block>
+              <h1>Resource Locator</h1>
+              <hr/>
+              <Row>
+                <Col xs="3">
+                  <EmployeeDropdown className="MyEmployees" onChange={this.onSelectEmployee} url="http://localhost:8080/employees" ref={(ref) => this.state.myEmployee = ref}/>
+                </Col>
+                <Col xs="2">
+                  <FloorDropdown className="MyFloors" onChange={this.onSelectFloor} url="http://localhost:8080/floors" ref={(ref) => this.state.myFloor = ref}/>
+                </Col>
+              </Row>
+              <Row>
+                <hr/>
+                <Col xs="12">
+                  <ImageMap className="FloorMap" ref={(ref) => this.state.myMap = ref}/>
+                  <ImageMap show={false}
+                            className="staff"
+                            ref={(ref) => this.state.myImage = ref}
+                            hoverEnter={this.onMouseEnterHandler}
+                            hoverLeave={this.onMouseLeaveHandler}
+                  />
+                </Col>
+              </Row>
+            </Card>
           </Container>
         </div>
 

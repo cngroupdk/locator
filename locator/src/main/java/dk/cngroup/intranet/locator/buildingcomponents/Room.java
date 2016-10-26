@@ -22,8 +22,8 @@ public class Room {
     private Integer capacity;
     @Column(name = "assigned_people")
     private Integer assignedPeople;
-    @Column(name = "floor_id")
-    private Integer floorId;
+    @Column(name = "floor_name")
+    private String floorName;
     @Column(name = "building_id")
     private String buildingId;
     @Column(name = "style_top")
@@ -39,7 +39,7 @@ public class Room {
         else {
             Room otherPerson = (Room) obj;
             result = name.equals(otherPerson.name) && buildingId.equals(otherPerson.buildingId)
-                    && floorId.equals(otherPerson.floorId) && type.equals(otherPerson.type)
+                    && floorName.equals(otherPerson.floorName) && type.equals(otherPerson.type)
             ;
         } // end else
 
@@ -53,7 +53,7 @@ public class Room {
 
         result = name.hashCode()
                 * buildingId.hashCode()
-                * floorId.hashCode()
+                * floorName.hashCode()
                 * type.hashCode();
 
         return result;
@@ -101,12 +101,12 @@ public class Room {
         this.assignedPeople = assignedPeople;
     }
 
-    public Integer getFloorId() {
-        return floorId;
+    public String getFloorName() {
+        return floorName;
     }
 
-    public void setFloorId(Integer floorId) {
-        this.floorId = floorId;
+    public void setFloorName(String floorName) {
+        this.floorName = floorName;
     }
 
     public String getBuildingId() {

@@ -19,11 +19,18 @@ import java.util.List;
 public interface FloorsRepository extends CrudRepository<Floor, Long>{
     /**
      * JPA query to obtain a floor by the floorNumber and BuildingId fields
-     * @param FloorNumber
+     * @param FloorName
      * @param BuildingId
      * @return
      */
-    List<Floor> findByFloorNumberAndBuildingId(String FloorNumber, String BuildingId);
+    List<Floor> findByFloorNameAndBuildingId(String FloorName, String BuildingId);
+
+    /**
+     * JPA query to obtain a floor by the BuildingId field
+     * @param BuildingId
+     * @return
+     */
+    List<Floor> findByBuildingId(String BuildingId);
 
     /**
      * JPA query to obtain all floors and order by floorId

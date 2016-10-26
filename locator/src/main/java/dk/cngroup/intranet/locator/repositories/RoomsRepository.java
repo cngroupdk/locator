@@ -26,6 +26,21 @@ public interface RoomsRepository extends CrudRepository<Room, Long> {
     List<Room> findByNameAndBuildingId(String Name, String BuildingId);
 
     /**
+     * JPA query to obtain a room by the FloorName and BuildingId fields
+     * @param FloorName
+     * @param BuildingId
+     * @return
+     */
+    List<Room> findByFloorNameAndBuildingId(String FloorName, String BuildingId);
+
+    /**
+     * JPA query to obtain a room by the BuildingId field
+     * @param BuildingId
+     * @return
+     */
+    List<Room> findByBuildingId(String BuildingId);
+
+    /**
      * JPA query to obtain all rooms and order by roomId
      * @return
      */

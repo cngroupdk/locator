@@ -28,7 +28,7 @@ public class FloorsController {
      *
      * @return an Iterable object of Floor objects
      */
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @RequestMapping("/floors")
     public Iterable<Floor> getCNFloors(){
 
@@ -42,31 +42,58 @@ public class FloorsController {
 
     }
 
+
     /**
      * Rest service to return data on a specific floor in the database based on the buildingId and the floor number.
      *
      * @return a Floor object
      */
-    @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping("/floors/{building_id}/{floor_number}")
-    public Floor getSingleCNFloor(@PathVariable(value="floor_number") String floorNumber,
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping("/floors/{building_id}")
+    public List<Floor> getCNFloorsByBuilding(@PathVariable(value="building_id") String buildingId){
+
+        List<Floor> floors = new ArrayList<Floor>();
+
+        try {
+            buildingId = URLDecoder.decode(buildingId, "UTF-8");
+
+            floors = repository.findByBuildingId(buildingId);
+
+        }
+        catch(Exception e){
+            Application.getLogger().info("/floors/{building_id}/{floor_name} failed, no floor found.");
+            throw new ServiceNotFoundException();
+        }
+
+        return floors;
+
+    }
+
+    /**
+     * Rest service to return data on a specific floor in the database based on the buildingId and the floor number.
+     *
+     * @return a Floor object
+     */
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping("/floors/{building_id}/{floor_name}")
+    public Floor getSingleCNFloor(@PathVariable(value="floor_name") String floorName,
                                   @PathVariable(value="building_id") String buildingId){
 
         Floor floor = null;
         List<Floor> floors = new ArrayList<Floor>();
 
         try {
-            floorNumber = URLDecoder.decode(floorNumber, "UTF-8");
+            floorName = URLDecoder.decode(floorName, "UTF-8");
             buildingId = URLDecoder.decode(buildingId, "UTF-8");
 
-            floors = repository.findByFloorNumberAndBuildingId(floorNumber, buildingId);
+            floors = repository.findByFloorNameAndBuildingId(floorName, buildingId);
 
             if (floors.size() > 0)
                 floor = floors.get(0);
 
         }
         catch(Exception e){
-            Application.getLogger().info("/floors/{building_id}/{floor_number} failed, no floor found.");
+            Application.getLogger().info("/floors/{building_id}/{floor_name} failed, no floor found.");
             throw new ServiceNotFoundException();
         }
 

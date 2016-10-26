@@ -4,11 +4,9 @@ import dk.cngroup.intranet.locator.Application;
 import dk.cngroup.intranet.locator.buildingcomponents.Room;
 import dk.cngroup.intranet.locator.repositories.RoomsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ public class RoomsController {
      *
      * @return an Iterable object of Room objects
      */
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @RequestMapping("/rooms")
     public Iterable<Room> getCNRooms(){
 
@@ -49,7 +47,7 @@ public class RoomsController {
      *
      * @return a Room object
      */
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @RequestMapping("/rooms/{building_id}/{room_name}")
     public Room getSingleCNRoom(@PathVariable(value="room_name") String room_name,
                                 @PathVariable(value="building_id") String buildingId){
@@ -76,4 +74,67 @@ public class RoomsController {
         return room;
 
     }
+
+    /**
+     * Rest service to return data on rooms in the database based on the buildingId.
+     *
+     * @return a Room object
+     */
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping("/rooms/{building_id}")
+    public List<Room> getCNRoomsByBuilding(@PathVariable(value="building_id") String buildingId){
+
+        List<Room> result = new ArrayList<Room>();
+
+        try {
+
+            buildingId = URLDecoder.decode(buildingId, "UTF-8");
+            result = repository.findByBuildingId(buildingId);
+
+        }catch(Exception e){
+            Application.getLogger().info("/rooms/{building_id} failed, no rooms found.");
+            throw new ServiceNotFoundException();
+        }
+
+        return result;
+
+    }
+
+
+    /**
+     * Rest service to return data on rooms in the database based on the buildingId and the floorId.
+     *
+     * @return a Room object
+     */
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping("/rooms/byfloor/{building_id}/{floor_name}")
+    public List<Room> getCNRoomsByBuildingAndFloor(@PathVariable(value="floor_name") String floor_name,
+                                     @PathVariable(value="building_id") String buildingId){
+
+        List<Room> result = new ArrayList<Room>();
+
+        try {
+
+            floor_name = URLDecoder.decode(floor_name, "UTF-8");
+            buildingId = URLDecoder.decode(buildingId, "UTF-8");
+
+            result = repository.findByFloorNameAndBuildingId(floor_name, buildingId);
+
+
+        }catch(Exception e){
+            Application.getLogger().info("/rooms/{building_id}/{floor_id} failed, no rooms found.");
+            throw new ServiceNotFoundException();
+        }
+
+        return result;
+
+    }
+
+    /*
+    @CrossOrigin(origins = "http://localhost:3000")
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/new_room")
+    public String addSingleCNRoom(@Valid String jsonData) {
+
+        return "UpdateDone";
+    }*/
 }
