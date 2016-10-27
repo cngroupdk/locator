@@ -39,8 +39,8 @@ var BuildingDropdown = React.createClass({
 
         var buildingData = this.state.data[e.target.value];
         var newBuilding = buildingData.name;
-        //this.props.onChange(e.target.value, buildingData);
-        this.updateFloor(newBuilding);
+        this.props.onChange(buildingData);
+        this.updateBuilding(newBuilding);
     },
 
     render: function() {
@@ -57,7 +57,7 @@ var BuildingDropdown = React.createClass({
 
         return (
             <Dropdown tether className="m-y-1" isOpen={this.state.dd4} toggle={() => { this.setState({ dd4: !this.state.dd4 })}}>
-                <DropdownToggle className="buildingDropdownToggle" caret color="primary">
+                <DropdownToggle disabled={this.props.disabled} className="buildingDropdownToggle" caret color="primary">
                     {this.state.buildingName}
                 </DropdownToggle>
                 <DropdownMenu className="buildingDropdownMenu">

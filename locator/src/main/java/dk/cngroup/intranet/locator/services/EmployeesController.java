@@ -32,7 +32,7 @@ public class EmployeesController {
      *
      * @return an Iterable object of StaffMemberCreate objects
      */
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @RequestMapping("/employees")
     public List<StaffMember> getEmployeeList(){
 
@@ -47,6 +47,7 @@ public class EmployeesController {
 
     }
 
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @RequestMapping("/employees/{first_name}/{last_name}")
     public StaffMember getSingleEmployee(@PathVariable(value="first_name") String firstName,
                                          @PathVariable(value="last_name") String lastName){

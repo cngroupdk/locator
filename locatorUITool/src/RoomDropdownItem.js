@@ -10,7 +10,7 @@ var RoomDropdownItem = React.createClass({
         return (
             <DropdownItem className="roomItem"
                           onClick={this.props.update}
-                          value={this.props.roomData.roomId}>
+                          value={this.props.counter}>
                 {this.props.roomData.name}
             </DropdownItem>
         );
