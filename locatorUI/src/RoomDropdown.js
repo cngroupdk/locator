@@ -8,9 +8,9 @@ import $ from 'jquery';
 
 var RoomDropdown = React.createClass({
 
-    loadCommentsFromServer: function (url) {
+    loadCommentsFromServer: function () {
 
-        this.serverRequest = $.get(url, function (result) {
+        this.serverRequest = $.get(this.props.url, function (result) {
             this.setState({
                 data: result
             });
@@ -21,8 +21,7 @@ var RoomDropdown = React.createClass({
     getInitialState: function() {
         return {
             roomIndex : -1,
-            disabled : true,
-            roomName : 'Choose Room',
+            roomName : 'Select a Room',
             data: []
         };
     },
@@ -37,13 +36,7 @@ var RoomDropdown = React.createClass({
     },
 
     componentDidMount: function() {
-
-    },
-
-    enableDropdown : function(newBool){
-        this.setState(
-            {disabled : newBool}
-        );
+        this.loadCommentsFromServer();
     },
 
     updateRoom : function(newName){
@@ -61,7 +54,9 @@ var RoomDropdown = React.createClass({
     onClickUpdateRoom : function(e){
 
         var roomData = this.state.data[e.target.value];
-        var newRoom = roomData.name;
+        var newRoom = roomData.name + " @ " + roomData.floorName + " @ " + roomData.buildingId;
+
+        this.props.onChange(e.target.value, roomData);
         this.updateRoom(newRoom);
         this.updateRoomIndex(e.target.value);
     },
@@ -83,7 +78,7 @@ var RoomDropdown = React.createClass({
 
         return (
             <Dropdown tether className="m-y-1" isOpen={this.state.dd4} toggle={() => { this.setState({ dd4: !this.state.dd4 })}}>
-                <DropdownToggle disabled={this.state.disabled} className="roomDropdownToggle" caret color="primary">
+                <DropdownToggle className="roomDropdownToggle" caret color="primary">
                     {this.state.roomName}
                 </DropdownToggle>
                 <DropdownMenu className="roomDropdownMenu">

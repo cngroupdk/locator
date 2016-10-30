@@ -1,7 +1,8 @@
 import React from 'react';
-import { Container, Row, Col, Card } from 'reactstrap';
+import { Container, Row, Col, Card, CardTitle, CardSubtitle } from 'reactstrap';
 import EmployeeDropdown from './EmployeeDropdown';
 import FloorDropdown from './FloorDropdown';
+import RoomDropdown from './RoomDropdown';
 import ImageMap from './ImageMap';
 
 var App=React.createClass({
@@ -12,6 +13,7 @@ var App=React.createClass({
       myMap : null,
       myEmployee : null,
       myFloor : null,
+      myRoom : null,
       myImage : null
     };
   },
@@ -51,16 +53,37 @@ var App=React.createClass({
     var roomName = res[0];
     this.setFloorplanPath(buildingId, floorName, this.state.myMap);
     this.setEmployeeImages(emplData.id, buildingId, roomName, this.state.myImage);
-    this.state.myFloor.updateFloor(res[1] + ' @ ' + res[2]);
+    this.state.myFloor.updateFloor(floorName + ' @ ' + buildingId);
+    this.state.myRoom.updateRoom(emplData.location);
   },
 
   onSelectFloor: function(index, flData) {
 
     this.setFloorplanPath(flData.buildingId, flData.floorName, this.state.myMap);
     this.state.myEmployee.updateName('Select an Employee');
+    this.state.myRoom.updateRoom('Select a Room');
     var style = {visibility: 'hidden'};
     this.state.myImage.setStyleProps(style);
 
+  },
+
+  onSelectRoom: function(index, roomData) {
+
+    this.setFloorplanPath(roomData.buildingId, roomData.floorName, this.state.myMap);
+    this.state.myEmployee.updateName('Select an Employee');
+    var floorName = roomData.floorName + '@' + roomData.buildingId;
+    this.state.myFloor.updateFloor(floorName);
+    var style =
+    {
+      transition: 'all 0.5s',
+      visibility: 'visible',
+      maxWidth: '75px',
+      position: 'relative',
+      top: roomData.styleTop,
+      left: roomData.styleLeft
+    }
+    this.state.myImage.setMapPath('http://localhost:8080/star.png');
+    this.state.myImage.setStyleProps(style);
   },
 
   onMouseEnterHandler: function() {
@@ -78,6 +101,7 @@ var App=React.createClass({
 
     console.log('enter');
   },
+
   onMouseLeaveHandler: function() {
     var newStyle =
     {
@@ -99,14 +123,18 @@ var App=React.createClass({
         <div className="selectorBox">
           <Container className="Container">
             <Card block>
-              <h1>Resource Locator</h1>
+              <CardTitle>Resource Locator</CardTitle>
               <hr/>
+              <CardSubtitle>Select an employee, floor number or room to display the location</CardSubtitle>
               <Row>
-                <Col xs="3">
+                <Col sm="3">
                   <EmployeeDropdown className="MyEmployees" onChange={this.onSelectEmployee} url="http://localhost:8080/employees" ref={(ref) => this.state.myEmployee = ref}/>
                 </Col>
-                <Col xs="2">
+                <Col sm="3">
                   <FloorDropdown className="MyFloors" onChange={this.onSelectFloor} url="http://localhost:8080/floors" ref={(ref) => this.state.myFloor = ref}/>
+                </Col>
+                <Col sm="3">
+                  <RoomDropdown className="MyRooms" onChange={this.onSelectRoom} url="http://localhost:8080/rooms" ref={(ref) => this.state.myRoom = ref}/>
                 </Col>
               </Row>
               <Row>

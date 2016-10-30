@@ -6,3 +6,7 @@ html, body {
 body {
   padding: 2rem;
 }
+
+.CoordinateInput{
+  z-index: 0 !important;
+}

@@ -1,8 +1,13 @@
 package dk.cngroup.intranet.locator.services;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.cngroup.intranet.locator.Application;
 import dk.cngroup.intranet.locator.buildingcomponents.Room;
 import dk.cngroup.intranet.locator.repositories.RoomsRepository;
+import jdk.nashorn.internal.parser.JSONParser;
+import jdk.nashorn.internal.runtime.JSONFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -130,11 +135,16 @@ public class RoomsController {
 
     }
 
-    /*
-    @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(method = RequestMethod.POST, path="/rooms/new_room")
-    public String addSingleCNRoom(@Valid String jsonData) {
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/newroom")
+    @ResponseBody
+    public String addSingleCNRoom(@RequestBody Room newRoom) {
+
+        newRoom.setRoomId((int)repository.count());
+
+        repository.save(newRoom);
 
         return "UpdateDone";
-    }*/
+    }
 }

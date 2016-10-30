@@ -17,7 +17,6 @@ public class Room {
     @Column(name = "room_id")
     private Integer roomId;
     private String name;
-    @Column(updatable = false, insertable = false)
     private String type;
     private Integer capacity;
     @Column(name = "assigned_people")

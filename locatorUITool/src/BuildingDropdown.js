@@ -21,7 +21,17 @@ var BuildingDropdown = React.createClass({
     getInitialState: function() {
         return {
             buildingName : 'Choose Building',
+            buildingIndex: -1,
             data: []
+        };
+    },
+
+    getBuildingData: function(){
+
+        var selectedBuilding = this.state.data[this.state.buildingIndex];
+
+        return{
+            selectedBuilding
         };
     },
 
@@ -35,12 +45,19 @@ var BuildingDropdown = React.createClass({
         );
     },
 
+    updateBuildingIndex : function(newIndex){
+        this.setState(
+            {buildingIndex : newIndex}
+        );
+    },
+
     onClickUpdateBuilding : function(e){
 
         var buildingData = this.state.data[e.target.value];
         var newBuilding = buildingData.name;
         this.props.onChange(buildingData);
         this.updateBuilding(newBuilding);
+        this.updateBuildingIndex(e.target.value);
     },
 
     render: function() {

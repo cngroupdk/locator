@@ -30,9 +30,9 @@ var FloorDropdown = React.createClass({
         );
     },
 
-    updateSelectedIndex : function(newIndex){
+    updateFloorIndex : function(newIndex){
         this.setState(
-            {selectedIndex : newIndex}
+            {floorIndex : newIndex}
         );
     },
 
@@ -42,24 +42,31 @@ var FloorDropdown = React.createClass({
         var newFloor = flData.floorName + " @ " + flData.buildingId;
         this.props.onChange(flData);
         this.updateFloor(newFloor);
-        this.updateSelectedIndex(e.target.value);
+        this.updateFloorIndex(e.target.value);
     },
 
     getInitialState: function() {
         return {
-            selectedIndex : -1,
+            floorIndex : -1,
             disabled : true,
             floorName : 'Choose Floor',
             data: []
         };
     },
 
-    getFloorSelectedData: function(){
-        var selectedFloor = this.state.data[this.state.selectedIndex];
+    getFloorData: function(){
+        var selectedFloor = this.state.data[this.state.floorIndex];
 
         return{
             selectedFloor
         };
+    },
+
+    getDropdownDisabled: function(){
+
+        var disabled = this.state.disabled;
+
+        return{ disabled };
     },
 
     componentDidMount: function() {
