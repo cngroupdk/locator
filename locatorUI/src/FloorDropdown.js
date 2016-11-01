@@ -18,9 +18,22 @@ var FloorDropdown = React.createClass({
 
     },
 
+    getCurrentFloor : function(){
+        var currentFloor = this.state.floorName;
+        return{
+            currentFloor
+        };
+    },
+
     updateFloor : function(newName){
         this.setState(
             {floorName : newName}
+        );
+    },
+
+    updateFloorIndex : function(newIndex){
+        this.setState(
+            {floorIndex : newIndex}
         );
     },
 
@@ -30,10 +43,12 @@ var FloorDropdown = React.createClass({
         var newFloor = flData.floorName + " @ " + flData.buildingId;
         this.props.onChange(e.target.value, flData);
         this.updateFloor(newFloor);
+        this.updateFloorIndex(e.target.value);
     },
 
     getInitialState: function() {
         return {
+            floorIndex : -1,
             floorName : 'Select a Floor',
             data: []
         };

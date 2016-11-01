@@ -28,7 +28,8 @@ var ImageMap = React.createClass({
 
         return (
             <div>
-                <img src={this.state.mapPath}
+                <img className={this.props.className}
+                     src={this.state.mapPath}
                      style={this.state.style}
                      onClick={this.props.clickEnter}
                      alt={this.props.alt}

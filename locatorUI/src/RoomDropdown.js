@@ -35,6 +35,13 @@ var RoomDropdown = React.createClass({
         };
     },
 
+    getCurrentRoom : function(){
+        var currentRoom = this.state.roomName;
+        return{
+            currentRoom
+        };
+    },
+
     componentDidMount: function() {
         this.loadCommentsFromServer();
     },

@@ -23,7 +23,6 @@ public class Floor {
     private Integer roomsNumber;
     @Column(name = "floorplan_url")
     private String floorplanUrl;
-    @Column(updatable = false, insertable = false)
     private String type;
     @Column(name = "building_id")
     private String buildingId;
@@ -113,6 +112,10 @@ public class Floor {
 
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
 }

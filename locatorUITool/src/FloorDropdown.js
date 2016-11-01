@@ -18,10 +18,17 @@ var FloorDropdown = React.createClass({
 
     },
 
-    enableDropdown : function(newBool){
+    disableDropdown : function(newBool){
         this.setState(
             {disabled : newBool}
         );
+    },
+
+    getCurrentFloor : function(){
+        var currentFloor = this.state.floorName;
+        return{
+            currentFloor
+        };
     },
 
     updateFloor : function(newName){

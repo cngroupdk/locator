@@ -19,8 +19,29 @@ var EmployeeDropdown = React.createClass({
 
     getInitialState: function() {
         return {
+            employeeIndex : -1,
             chosenName: 'Select an Employee',
             data: []
+        };
+    },
+
+    updateEmployeeIndex : function(newIndex){
+        this.setState(
+            {employeeIndex : newIndex}
+        );
+    },
+
+    getEmployeeData: function(){
+        var selectedEmployee = this.state.data[this.state.employeeIndex];
+        return{
+            selectedEmployee
+        };
+    },
+
+    getCurrentName : function(){
+        var currentName = this.state.chosenName;
+        return{
+            currentName
         };
     },
 
@@ -33,6 +54,7 @@ var EmployeeDropdown = React.createClass({
         var newName = emplData.lastName + ", " + emplData.firstName;
         this.props.onChange(e.target.value, emplData);
         this.updateName(newName);
+        this.updateEmployeeIndex(e.target.value);
     },
 
     componentDidMount: function() {

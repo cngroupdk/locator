@@ -35,6 +35,13 @@ var BuildingDropdown = React.createClass({
         };
     },
 
+    getCurrentBuilding : function(){
+        var currentBuilding = this.state.buildingName;
+        return{
+            currentBuilding
+        };
+    },
+
     componentDidMount: function() {
         this.loadCommentsFromServer();
     },

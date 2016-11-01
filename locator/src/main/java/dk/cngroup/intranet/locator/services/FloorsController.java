@@ -3,10 +3,7 @@ import dk.cngroup.intranet.locator.Application;
 import dk.cngroup.intranet.locator.buildingcomponents.Floor;
 import dk.cngroup.intranet.locator.repositories.FloorsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -99,5 +96,34 @@ public class FloorsController {
 
         return floor;
 
+    }
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/newfloor")
+    @ResponseBody
+    public String addSingleCNFloor(@RequestBody Floor newFloor) {
+
+        newFloor.setFloorId((int)repository.count());
+        repository.save(newFloor);
+
+        return "UpdateDone";
+    }
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/updatefloor")
+    @ResponseBody
+    public String updateSingleCNFloor(@RequestBody List<Floor> utilityFloors) {
+
+        Floor oldRoom = utilityFloors.get(0);
+        Floor newRoom = utilityFloors.get(1);
+
+        Floor dbRoom = getSingleCNFloor(oldRoom.getFloorName(),oldRoom.getBuildingId());
+        dbRoom.setFloorName(newRoom.getFloorName());
+        dbRoom.setRoomsNumber(newRoom.getRoomsNumber());
+        dbRoom.setFloorplanUrl(newRoom.getFloorplanUrl());
+
+        repository.save(dbRoom);
+
+        return "UpdateDone";
     }
 }

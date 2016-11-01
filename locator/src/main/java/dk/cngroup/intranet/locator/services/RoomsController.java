@@ -151,9 +151,14 @@ public class RoomsController {
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @RequestMapping(method = RequestMethod.POST, path="/rooms/updateroom")
     @ResponseBody
-    public String updateSingleCNRoom(@RequestBody Room updatedRoom) {
+    public String updateSingleCNRoom(@RequestBody Room utilityRoom) {
 
+        Room updatedRoom = new Room();
+        updatedRoom = getSingleCNRoom(utilityRoom.getName(),utilityRoom.getBuildingId());
+        updatedRoom.setStyleTop(utilityRoom.getStyleTop());
+        updatedRoom.setStyleLeft(utilityRoom.getStyleLeft());
 
+        repository.save(updatedRoom);
 
         return "UpdateDone";
     }

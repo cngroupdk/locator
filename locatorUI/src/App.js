@@ -73,48 +73,63 @@ var App=React.createClass({
     this.state.myEmployee.updateName('Select an Employee');
     var floorName = roomData.floorName + '@' + roomData.buildingId;
     this.state.myFloor.updateFloor(floorName);
+
+    var newTop = parseInt(roomData.styleTop.replace('px', ''));
+    var newLeft = parseInt(roomData.styleLeft.replace('px', '')) + 14;
+
     var style =
     {
       transition: 'all 0.5s',
       visibility: 'visible',
-      maxWidth: '75px',
+      maxWidth: '40px',
       position: 'relative',
-      top: roomData.styleTop,
-      left: roomData.styleLeft
+      top: newTop,
+      left: newLeft
     }
-    this.state.myImage.setMapPath('http://localhost:8080/star.png');
+
+    this.state.myImage.setMapPath('http://localhost:8080/map-marker.png');
     this.state.myImage.setStyleProps(style);
   },
 
   onMouseEnterHandler: function() {
-    var newStyle =
-    {
-      transition: 'all 0.5s',
-      visibility: 'visible',
-      maxWidth: '200px',
-      position: 'relative',
-      top: this.state.myImage.state.style.top,
-      left: this.state.myImage.state.style.left
+
+    var employeeName = this.state.myEmployee.getCurrentName();
+
+    if (employeeName.currentName !== 'Select an Employee') {
+
+      var newStyle =
+      {
+        transition: 'all 0.5s',
+        visibility: 'visible',
+        maxWidth: '200px',
+        position: 'relative',
+        top: this.state.myImage.state.style.top,
+        left: this.state.myImage.state.style.left
+      }
+
+      this.state.myImage.setStyleProps(newStyle);
+
     }
-
-    this.state.myImage.setStyleProps(newStyle);
-
-    console.log('enter');
   },
 
   onMouseLeaveHandler: function() {
-    var newStyle =
-    {
-      transition: 'all 0.5s',
-      visibility: 'visible',
-      maxWidth: '75px',
-      position: 'relative',
-      top: this.state.myImage.state.style.top,
-      left: this.state.myImage.state.style.left
-    }
 
-    this.state.myImage.setStyleProps(newStyle);
-    console.log('leave');
+    var employeeName = this.state.myEmployee.getCurrentName();
+
+    if (employeeName.currentName !== 'Select an Employee') {
+
+      var newStyle =
+      {
+        transition: 'all 0.5s',
+        visibility: 'visible',
+        maxWidth: '75px',
+        position: 'relative',
+        top: this.state.myImage.state.style.top,
+        left: this.state.myImage.state.style.left
+      }
+
+      this.state.myImage.setStyleProps(newStyle);
+    }
   },
 
   render: function() {

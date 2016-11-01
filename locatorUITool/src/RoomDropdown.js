@@ -36,11 +36,18 @@ var RoomDropdown = React.createClass({
         };
     },
 
+    getCurrentRoom : function(){
+        var currentRoom = this.state.roomName;
+        return{
+            currentRoom
+        };
+    },
+
     componentDidMount: function() {
 
     },
 
-    enableDropdown : function(newBool){
+    disableDropdown : function(newBool){
         this.setState(
             {disabled : newBool}
         );
