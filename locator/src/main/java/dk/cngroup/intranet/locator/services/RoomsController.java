@@ -147,4 +147,14 @@ public class RoomsController {
 
         return "UpdateDone";
     }
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/updateroom")
+    @ResponseBody
+    public String updateSingleCNRoom(@RequestBody Room updatedRoom) {
+
+
+
+        return "UpdateDone";
+    }
 }

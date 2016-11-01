@@ -22,10 +22,15 @@ var App = React.createClass({
             refCoordX : "",
             refCoordY : "",
             refCoordMap : null,
+            refCoordIMG : null,
 
             AddSubmitDisabled: true,
             CoordSubmitDisabled: true
         };
+    },
+
+    componentDidMount() {
+
     },
 
     onSelectAddSetBuilding : function(buildingData){
@@ -38,22 +43,50 @@ var App = React.createClass({
     },
 
     onSelectCoordSetBuilding : function(buildingData){
+
         this.state.refCoordFloor.loadCommentsFromServer('http://localhost:8080/floors/' + buildingData.buildingId);
         this.state.refCoordFloor.enableDropdown(false);
+        this.state.refCoordFloor.updateFloor("Choose Floor");
+        this.state.refCoordRoom.updateRoom("Choose Room");
+
+        var style = { visibility: 'hidden' };
+        this.state.refCoordMap.setStyleProps(style);
+        this.state.refCoordIMG.setStyleProps(style);
+
     },
 
     onSelectCoordSetFloor : function(flData){
 
         this.state.refCoordRoom.loadCommentsFromServer('http://localhost:8080/rooms/byfloor/' + flData.buildingId + '/' + flData.floorName);
         this.state.refCoordRoom.enableDropdown(false);
+        this.state.refCoordRoom.updateRoom("Choose Room");
+
         this.state.refCoordMap.setMapPath('http://localhost:8080' + flData.floorplanUrl);
+        var style = { visibility: 'visible' };
+        this.state.refCoordMap.setStyleProps(style);
     },
 
     onMouseClickHandler: function(event){
-        var x = event.clientX;
-        var y = event.clientY;
-        this.setState({refCoordX: x});
-        this.setState({refCoordY: y});
+
+        var rects = event.target.getClientRects();
+
+        var x = event.clientX - rects[0].left - 35;
+        var y = (event.clientY - rects[0].top) - (rects[0].bottom - rects[0].top) - 40;
+
+        this.setState({refCoordX: x, refCoordY: y});
+
+        var style =
+        {
+            transition: 'all 0.5s',
+            visibility: 'visible',
+            maxWidth: '25px',
+            position: 'relative',
+            top: y + 15,
+            left: x + 23
+        };
+
+        this.state.refCoordIMG.setMapPath('http://localhost:8080/map-marker.png');
+        this.state.refCoordIMG.setStyleProps(style);
     },
 
     onSetCoordSubmitHandler: function () {
@@ -213,6 +246,9 @@ var App = React.createClass({
                                     <ImageMap clickEnter={this.onMouseClickHandler}
                                               className="FloorMap"
                                               ref={(ref) => this.state.refCoordMap = ref}/>
+                                    <ImageMap show={false}
+                                              className="Icon"
+                                              ref={(ref) => this.state.refCoordIMG = ref}/>
                                 </Col>
                             </Card>
                         </Row>
