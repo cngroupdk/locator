@@ -50,10 +50,13 @@ var EmployeeDropdown = React.createClass({
     },
 
     onClickUpdateName : function(e){
-        var emplData = this.state.data[e.target.value];
-        var newName = emplData.lastName + ", " + emplData.firstName;
-        this.props.onChange(e.target.value, emplData);
-        this.updateName(newName);
+        var data = {
+          emplData : this.state.data[e.target.value],
+          index : e.target.value
+        };
+
+        this.props.onChange(data);
+        this.updateName(data.emplData.firstName + " " + data.emplData.lastName);
         this.updateEmployeeIndex(e.target.value);
     },
 

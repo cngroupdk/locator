@@ -2,6 +2,7 @@
  * Created by cano on 20.10.2016.
  */
 import React from 'react';
+import {Card, CardImg} from 'reactstrap';
 
 var ImageMap = React.createClass({
 
@@ -27,12 +28,14 @@ var ImageMap = React.createClass({
 
         return (
             <div>
-                <img src={this.state.mapPath}
-                     style={this.state.style}
-                     onMouseEnter={this.props.hoverEnter}
-                     onMouseLeave={this.props.hoverLeave}
-                     alt={this.props.alt}
-                />
+                <CardImg id={this.props.id}
+                         className="cardImg"
+                         src={this.state.mapPath}
+                         style={this.state.style}
+                         onMouseEnter={this.props.hoverEnter}
+                         onMouseLeave={this.props.hoverLeave}
+                         alt={this.props.alt}
+                 />
             </div>
         );
     }

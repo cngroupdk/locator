@@ -6,3 +6,34 @@ html, body {
 body {
   padding: 2rem;
 }
+
+.selectorBox {
+  padding: 35px;
+  background: #d0edff;
+}
+
+#Staff.cardImg{
+  visibility: hidden;
+  transition: all 0.5s;
+  max-width: 75px;
+  position: relative;
+  border: 5px solid lightcyan;
+  borderRadius: 15px;
+}
+
+#Staff.cardImg:hover {
+  transition: all 0.5s;
+  max-width: 200px;
+  position: relative;
+  border: 5px solid lightcyan;
+  borderRadius: 15px;
+}
+
+#EditPen.cardImg{
+  visibility: hidden;
+  transition: all 0.5s;
+  max-width: 20px;
+  position: relative;
+  border: 2px solid dimgray;
+  borderRadius: 15px;
+}

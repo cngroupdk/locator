@@ -133,7 +133,7 @@ var App = React.createClass({
             left: XY.x + 23
         };
 
-        this.state.refCoordIMG.setMapPath('http://localhost:8080/map-marker.png');
+        this.state.refCoordIMG.setMapPath('http://localhost:8080/marker-location.png');
         this.state.refCoordIMG.setStyleProps(style);
     },
 
@@ -188,23 +188,21 @@ var App = React.createClass({
             };
 
             var jsonData = JSON.stringify(rawData);
-
-            $.ajax({
+            fetch('http://localhost:8080/rooms/updateroom',{
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                type: 'POST',
-                url: "http://localhost:8080/rooms/updateroom",
-                data: jsonData
+                body: jsonData
             })
-            .done(function (data) {
-                console.log('Sucess ' + data);
-            })
-            .fail(function (jqXhr) {
-                console.log('failed to register');
+            .then((response) => {
+                var message = { content: "Success! New Room Coordinates Submitted.",
+                    type: "success"};
+                this.addNotification(message);
+            }).catch((error) => {
+                console.error(error);
             });
-            this.addNotification("Room Coordinates Updated.");
         }
         else{
             var message = { content: "Please fill all parameters before clicking \"Submit\"",
@@ -242,20 +240,21 @@ var App = React.createClass({
 
             var jsonData = JSON.stringify(rawData);
 
-            $.ajax({
+            fetch('http://localhost:8080/rooms/newroom',{
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                type: 'POST',
-                url: "http://localhost:8080/rooms/newroom",
-                data: jsonData
+                body: jsonData
             })
-            .done(function(data) {
-                console.log('Sucess ' + data);
+            .then((response) => {
+                var message = { content: "Success! New Room Submitted.",
+                    type: "success"};
+                this.addNotification(message);
             })
-            .fail(function(jqXhr) {
-                console.log('failed to register');
+            .catch((error) => {
+                console.error(error);
             });
         }
         else{
@@ -291,20 +290,20 @@ var App = React.createClass({
 
             var jsonData = JSON.stringify(rawData);
 
-            $.ajax({
+            fetch('http://localhost:8080/rooms/newfloor',{
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                type: 'POST',
-                url: "http://localhost:8080/rooms/newfloor",
-                data: jsonData
+                body: jsonData
             })
-            .done(function(data) {
-                console.log('Sucess ' + data);
-            })
-            .fail(function(jqXhr) {
-                console.log('failed to register');
+            .then((response) => {
+                var message = { content: "Success! New Floor Submitted.",
+                    type: "success"};
+                this.addNotification(message);
+            }).catch((error) => {
+                console.error(error);
             });
         }
         else{
@@ -461,7 +460,6 @@ var App = React.createClass({
                                               className="FloorMap"
                                               ref={(ref) => this.state.refCoordMap = ref}/>
                                     <ImageMap clickEnter={this.onMouseClickHandler}
-                                              show={false}
                                               className="Icon"
                                               ref={(ref) => this.state.refCoordIMG = ref}/>
                                 </Col>

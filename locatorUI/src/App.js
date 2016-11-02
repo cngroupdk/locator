@@ -14,122 +14,118 @@ var App=React.createClass({
       myEmployee : null,
       myFloor : null,
       myRoom : null,
-      myImage : null
+      myImage : null,
+      myEditPen : null
     };
   },
 
-  setFloorplanPath : function(buildingId, floorName, refToImage){
+  setFloorplanPath : function(data){
 
-    fetch('http://localhost:8080/floors/' + buildingId + '/' + floorName).then((response) => {return response.json()}).then(function(emplData){
-      refToImage.setMapPath('http://localhost:8080' + emplData.floorplanUrl);
+    fetch('http://localhost:8080/floors/' + data.buildingId + '/' + data.floorName).then((response) => {return response.json()}).then(function(floorData){
+      data.refToFloor.setMapPath('http://localhost:8080' + floorData.floorplanUrl);
     }).catch((error) => {
       console.error(error);
     });
   },
 
-  setEmployeeImages : function(employeeId, buildingId, roomName, refToImage){
-    fetch('http://localhost:8080/rooms/' + buildingId + '/' + roomName).then((response) => {return response.json()}).then(function(roomData){
+  setEmployeeImages : function(data){
+    fetch('http://localhost:8080/rooms/' + data.buildingId + '/' + data.roomName).then((response) => {return response.json()}).then(function(roomData){
+
       var style =
       {
-        transition: 'all 0.5s',
         visibility: 'visible',
-        maxWidth: '75px',
-        position: 'relative',
         top: roomData.styleTop,
         left: roomData.styleLeft
-      }
-      refToImage.setMapPath('http://localhost:8080/' + employeeId + '.jpg');
-      refToImage.setStyleProps(style);
+      };
+
+      data.refToImage.setMapPath('http://localhost:8080/' + data.employeeId + '.jpg');
+      data.refToImage.setStyleProps(style);
+
+      var newTop = parseInt(style.top.replace('px', ''), 10) - 30;
+      var newLeft = parseInt(style.left.replace('px', ''), 10) + 7;
+      style =
+      {
+        visibility: 'visible',
+        top: newTop,
+        left: newLeft
+      };
+      data.refToPen.setMapPath('http://localhost:8080/marker-pen.png');
+      data.refToPen.setStyleProps(style);
+
     }).catch((error) => {
       console.error(error);
     });
   },
 
-  onSelectEmployee: function(index, emplData) {
+  onSelectEmployee: function(data) {
 
-    var res = emplData.location.split("@");
-    var buildingId = res[2];
-    var floorName = res[1];
-    var roomName = res[0];
-    this.setFloorplanPath(buildingId, floorName, this.state.myMap);
-    this.setEmployeeImages(emplData.id, buildingId, roomName, this.state.myImage);
-    this.state.myFloor.updateFloor(floorName + ' @ ' + buildingId);
-    this.state.myRoom.updateRoom(emplData.location);
+    var res = data.emplData.location.split("@");
+
+    var inputData ={
+      employeeId : data.emplData.id,
+      buildingId : res[2],
+      floorName : res[1],
+      roomName : res[0],
+      refToFloor : this.state.myMap,
+      refToImage : this.state.myImage,
+      refToPen : this.state.myEditPen
+    };
+
+    this.setFloorplanPath(inputData);
+    this.setEmployeeImages(inputData);
+    this.state.myFloor.updateFloor(inputData.floorName + ' @ ' + inputData.buildingId);
+    this.state.myRoom.updateRoom(data.emplData.location);
   },
 
-  onSelectFloor: function(index, flData) {
+  onSelectFloor: function(data) {
 
-    this.setFloorplanPath(flData.buildingId, flData.floorName, this.state.myMap);
+    var inputData ={
+      buildingId : data.flData.buildingId,
+      floorName : data.flData.floorName,
+      refToFloor : this.state.myMap
+    };
+
+    this.setFloorplanPath(inputData);
     this.state.myEmployee.updateName('Select an Employee');
     this.state.myRoom.updateRoom('Select a Room');
     var style = {visibility: 'hidden'};
     this.state.myImage.setStyleProps(style);
+    this.state.myEditPen.setStyleProps(style);
 
   },
 
-  onSelectRoom: function(index, roomData) {
+  onSelectRoom: function(data) {
 
-    this.setFloorplanPath(roomData.buildingId, roomData.floorName, this.state.myMap);
+    var inputData ={
+      buildingId : data.roomData.buildingId,
+      floorName : data.roomData.floorName,
+      refToFloor : this.state.myMap
+    };
+
+    this.setFloorplanPath(inputData);
     this.state.myEmployee.updateName('Select an Employee');
-    var floorName = roomData.floorName + '@' + roomData.buildingId;
+
+    var floorName = data.roomData.floorName + '@' + data.roomData.buildingId;
     this.state.myFloor.updateFloor(floorName);
 
-    var newTop = parseInt(roomData.styleTop.replace('px', ''));
-    var newLeft = parseInt(roomData.styleLeft.replace('px', '')) + 14;
+    var newTop = parseInt(data.roomData.styleTop.replace('px', ''), 10);
+    var newLeft = parseInt(data.roomData.styleLeft.replace('px', ''), 10) + 14;
 
     var style =
     {
-      transition: 'all 0.5s',
       visibility: 'visible',
       maxWidth: '40px',
-      position: 'relative',
       top: newTop,
       left: newLeft
-    }
-
-    this.state.myImage.setMapPath('http://localhost:8080/map-marker.png');
+    };
+    this.state.myImage.setMapPath('http://localhost:8080/marker-location.png');
     this.state.myImage.setStyleProps(style);
-  },
 
-  onMouseEnterHandler: function() {
-
-    var employeeName = this.state.myEmployee.getCurrentName();
-
-    if (employeeName.currentName !== 'Select an Employee') {
-
-      var newStyle =
-      {
-        transition: 'all 0.5s',
-        visibility: 'visible',
-        maxWidth: '200px',
-        position: 'relative',
-        top: this.state.myImage.state.style.top,
-        left: this.state.myImage.state.style.left
-      }
-
-      this.state.myImage.setStyleProps(newStyle);
-
-    }
-  },
-
-  onMouseLeaveHandler: function() {
-
-    var employeeName = this.state.myEmployee.getCurrentName();
-
-    if (employeeName.currentName !== 'Select an Employee') {
-
-      var newStyle =
-      {
-        transition: 'all 0.5s',
-        visibility: 'visible',
-        maxWidth: '75px',
-        position: 'relative',
-        top: this.state.myImage.state.style.top,
-        left: this.state.myImage.state.style.left
-      }
-
-      this.state.myImage.setStyleProps(newStyle);
-    }
+    style =
+    {
+      visibility: 'hidden'
+    };
+    this.state.myEditPen.setStyleProps(style);
   },
 
   render: function() {
@@ -155,12 +151,14 @@ var App=React.createClass({
               <Row>
                 <hr/>
                 <Col xs="12">
-                  <ImageMap className="FloorMap" ref={(ref) => this.state.myMap = ref}/>
-                  <ImageMap show={false}
-                            className="staff"
+                  <ImageMap id="FloorMap"
+                            ref={(ref) => this.state.myMap = ref}
+                  />
+                  <ImageMap id="Staff"
                             ref={(ref) => this.state.myImage = ref}
-                            hoverEnter={this.onMouseEnterHandler}
-                            hoverLeave={this.onMouseLeaveHandler}
+                  />
+                  <ImageMap id="EditPen"
+                            ref={(ref) => this.state.myEditPen = ref}
                   />
                 </Col>
               </Row>

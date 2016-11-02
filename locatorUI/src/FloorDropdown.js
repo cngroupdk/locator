@@ -38,10 +38,13 @@ var FloorDropdown = React.createClass({
     },
 
     onClickUpdateFloor : function(e){
+        var data = {
+            flData : this.state.data[e.target.value],
+            index : e.target.value
+        };
 
-        var flData = this.state.data[e.target.value];
-        var newFloor = flData.floorName + " @ " + flData.buildingId;
-        this.props.onChange(e.target.value, flData);
+        var newFloor = data.flData.floorName + " @ " + data.flData.buildingId;
+        this.props.onChange(data);
         this.updateFloor(newFloor);
         this.updateFloorIndex(e.target.value);
     },

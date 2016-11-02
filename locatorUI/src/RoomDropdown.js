@@ -59,11 +59,14 @@ var RoomDropdown = React.createClass({
     },
 
     onClickUpdateRoom : function(e){
+        var data = {
+            roomData : this.state.data[e.target.value],
+            index : e.target.value
+        };
 
-        var roomData = this.state.data[e.target.value];
-        var newRoom = roomData.name + " @ " + roomData.floorName + " @ " + roomData.buildingId;
+        var newRoom = data.roomData.name + " @ " + data.roomData.floorName + " @ " + data.roomData.buildingId;
 
-        this.props.onChange(e.target.value, roomData);
+        this.props.onChange(data);
         this.updateRoom(newRoom);
         this.updateRoomIndex(e.target.value);
     },
