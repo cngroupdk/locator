@@ -9,7 +9,15 @@ body {
 
 .selectorBox {
   padding: 35px;
-  background: #d0edff;
+  background: #e2ecff;
+}
+
+.Container {
+  border-radius: 5px;
+}
+
+.EditLocationCard{
+  padding: 15px;
 }
 
 #Staff.cardImg{
@@ -18,15 +26,11 @@ body {
   max-width: 75px;
   position: relative;
   border: 5px solid lightcyan;
-  borderRadius: 15px;
+  border-radius: 15px;
 }
 
 #Staff.cardImg:hover {
-  transition: all 0.5s;
   max-width: 200px;
-  position: relative;
-  border: 5px solid lightcyan;
-  borderRadius: 15px;
 }
 
 #EditPen.cardImg{
@@ -35,5 +39,14 @@ body {
   max-width: 20px;
   position: relative;
   border: 2px solid dimgray;
-  borderRadius: 15px;
+  border-radius: 15px;
+  background-color: floralwhite;
+}
+
+#EditPen.cardImg:hover {
+  max-width: 30px;
+}
+
+.dropdown.open{
+  z-index: 1075 !important;
 }

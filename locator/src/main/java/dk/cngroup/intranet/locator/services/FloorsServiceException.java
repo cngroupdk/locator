@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
-@ResponseStatus(value= HttpStatus.NOT_FOUND, reason="No such Service")  // 404
-public class ServiceNotFoundException extends RuntimeException{
+@ResponseStatus(value= HttpStatus.NOT_FOUND, reason="No Floors Service Found.")  // 404
+public class FloorsServiceException extends RuntimeException{
 
 }

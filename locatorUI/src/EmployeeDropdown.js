@@ -8,6 +8,24 @@ import $ from 'jquery';
 
 var EmployeeDropdown = React.createClass({
 
+
+    getInitialState: function() {
+        return {
+            employeeIndex : -1,
+            chosenName: 'Select an Employee',
+            data: [],
+            disabled : false
+        };
+    },
+
+    componentDidMount: function() {
+        this.loadCommentsFromServer();
+    },
+
+    componentWillUnmount: function() {
+        this.serverRequest.abort();
+    },
+
     loadCommentsFromServer: function() {
         this.serverRequest = $.get(this.props.url, function (result) {
             this.setState({
@@ -17,12 +35,10 @@ var EmployeeDropdown = React.createClass({
 
     },
 
-    getInitialState: function() {
-        return {
-            employeeIndex : -1,
-            chosenName: 'Select an Employee',
-            data: []
-        };
+    disableDropdown : function(newBool){
+        this.setState(
+            {disabled : newBool}
+        );
     },
 
     updateEmployeeIndex : function(newIndex){
@@ -49,23 +65,16 @@ var EmployeeDropdown = React.createClass({
         this.setState({chosenName : newName});
     },
 
-    onClickUpdateName : function(e){
+    onClickUpdateName : function(event){
         var data = {
-          emplData : this.state.data[e.target.value],
-          index : e.target.value
+            event,
+            emplData : this.state.data[event.target.value],
+            index : event.target.value
         };
 
         this.props.onChange(data);
         this.updateName(data.emplData.firstName + " " + data.emplData.lastName);
-        this.updateEmployeeIndex(e.target.value);
-    },
-
-    componentDidMount: function() {
-        this.loadCommentsFromServer();
-    },
-
-    componentWillUnmount: function() {
-        this.serverRequest.abort();
+        this.updateEmployeeIndex(event.target.value);
     },
 
     render: function() {
@@ -83,7 +92,7 @@ var EmployeeDropdown = React.createClass({
 
         return (
             <Dropdown tether className="m-y-1" isOpen={this.state.dd4} toggle={() => { this.setState({ dd4: !this.state.dd4 })}}>
-                <DropdownToggle className="EmployeeDropdownToggle" caret color="primary">
+                <DropdownToggle disabled={this.props.disabled} className="EmployeeDropdownToggle" caret color="primary">
                     {this.state.chosenName}
                 </DropdownToggle>
                 <DropdownMenu className="EmployeeDropdownMenu">

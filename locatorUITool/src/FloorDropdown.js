@@ -8,6 +8,23 @@ import $ from 'jquery';
 
 var FloorDropdown = React.createClass({
 
+    getInitialState: function() {
+        return {
+            floorIndex : -1,
+            disabled : true,
+            floorName : 'Choose Floor',
+            data: []
+        };
+    },
+
+    componentDidMount: function() {
+
+    },
+
+    componentWillUnmount: function() {
+        this.serverRequest.abort();
+    },
+
     loadCommentsFromServer: function(url) {
 
         this.serverRequest = $.get(url, function (result) {
@@ -52,15 +69,6 @@ var FloorDropdown = React.createClass({
         this.updateFloorIndex(e.target.value);
     },
 
-    getInitialState: function() {
-        return {
-            floorIndex : -1,
-            disabled : true,
-            floorName : 'Choose Floor',
-            data: []
-        };
-    },
-
     getFloorData: function(){
         var selectedFloor = this.state.data[this.state.floorIndex];
 
@@ -74,10 +82,6 @@ var FloorDropdown = React.createClass({
         var disabled = this.state.disabled;
 
         return{ disabled };
-    },
-
-    componentDidMount: function() {
-
     },
 
     render: function() {

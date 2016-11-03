@@ -8,6 +8,23 @@ import $ from 'jquery';
 
 var RoomDropdown = React.createClass({
 
+    getInitialState: function() {
+        return {
+            roomIndex : -1,
+            disabled : true,
+            roomName : 'Choose Room',
+            data: []
+        };
+    },
+
+    componentDidMount: function() {
+
+    },
+
+    componentWillUnmount: function() {
+        this.serverRequest.abort();
+    },
+
     loadCommentsFromServer: function (url) {
 
         this.serverRequest = $.get(url, function (result) {
@@ -16,15 +33,6 @@ var RoomDropdown = React.createClass({
             });
         }.bind(this));
 
-    },
-
-    getInitialState: function() {
-        return {
-            roomIndex : -1,
-            disabled : true,
-            roomName : 'Choose Room',
-            data: []
-        };
     },
 
     getRoomData: function(){
@@ -41,10 +49,6 @@ var RoomDropdown = React.createClass({
         return{
             currentRoom
         };
-    },
-
-    componentDidMount: function() {
-
     },
 
     disableDropdown : function(newBool){

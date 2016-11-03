@@ -5,7 +5,6 @@ import BuildingDropdown from './BuildingDropdown';
 import FloorDropdown from './FloorDropdown';
 import RoomDropdown from './RoomDropdown';
 import ImageMap from './ImageMap';
-import $ from 'jquery';
 import './App.css';
 
 var App = React.createClass({
@@ -188,7 +187,7 @@ var App = React.createClass({
             };
 
             var jsonData = JSON.stringify(rawData);
-            fetch('http://localhost:8080/rooms/updateroom',{
+            fetch('http://localhost:8080/rooms/update/room',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -197,8 +196,21 @@ var App = React.createClass({
                 body: jsonData
             })
             .then((response) => {
-                var message = { content: "Success! New Room Coordinates Submitted.",
-                    type: "success"};
+
+                var message;
+                if(response.status === 200) {
+                    message = {
+                        content: "Success! New Location for the Employee Submitted.",
+                        type: "success"
+                    };
+                }
+                else{
+                    message = {
+                        content: "Error: New Location not updated. Contact your Administrator.",
+                        type: "error"
+                    };
+                }
+
                 this.addNotification(message);
             }).catch((error) => {
                 console.error(error);
@@ -240,7 +252,7 @@ var App = React.createClass({
 
             var jsonData = JSON.stringify(rawData);
 
-            fetch('http://localhost:8080/rooms/newroom',{
+            fetch('http://localhost:8080/rooms/new/room',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -249,8 +261,21 @@ var App = React.createClass({
                 body: jsonData
             })
             .then((response) => {
-                var message = { content: "Success! New Room Submitted.",
-                    type: "success"};
+
+                var message;
+                if(response.status === 200) {
+                    message = {
+                        content: "Success! New Location for the Employee Submitted.",
+                        type: "success"
+                    };
+                }
+                else{
+                    message = {
+                        content: "Error: New Location not updated. Contact your Administrator.",
+                        type: "error"
+                    };
+                }
+
                 this.addNotification(message);
             })
             .catch((error) => {
@@ -290,7 +315,7 @@ var App = React.createClass({
 
             var jsonData = JSON.stringify(rawData);
 
-            fetch('http://localhost:8080/rooms/newfloor',{
+            fetch('http://localhost:8080/rooms/new/floor',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -299,9 +324,24 @@ var App = React.createClass({
                 body: jsonData
             })
             .then((response) => {
-                var message = { content: "Success! New Floor Submitted.",
-                    type: "success"};
+
+                var message;
+
+                if(response.status === 200) {
+                    message = {
+                        content: "Success! New Location for the Employee Submitted.",
+                        type: "success"
+                    };
+                }
+                else{
+                    message = {
+                        content: "Error: New Location not updated. Contact your Administrator.",
+                        type: "error"
+                    };
+                }
+
                 this.addNotification(message);
+
             }).catch((error) => {
                 console.error(error);
             });
@@ -354,7 +394,9 @@ var App = React.createClass({
                                     <BuildingDropdown className="MyBuilding"
                                                       url="http://localhost:8080/buildings"
                                                       onChange={this.onSelectAddRoomSetBuilding}
-                                                      ref={(ref) => this.state.refAddRoomBuilding = ref}/>
+                                                      ref={(ref) => this.state.refAddRoomBuilding = ref}
+                                                      disabled={false}
+                                    />
 
                                     <FloorDropdown  className="MyFloor"
                                                     onChange={this.onSelectAddSetFloor}
@@ -389,7 +431,9 @@ var App = React.createClass({
                                     <BuildingDropdown className="MyBuilding"
                                                       url="http://localhost:8080/buildings"
                                                       onChange={this.onSelectAddFloorSetBuilding}
-                                                      ref={(ref) => this.state.refAddFloorBuilding = ref}/>
+                                                      ref={(ref) => this.state.refAddFloorBuilding = ref}
+                                                      disabled={false}
+                                    />
                                     <InputGroup>
                                         <InputGroupAddon>Floor Name</InputGroupAddon>
                                         <Input className="CoordinateInput"

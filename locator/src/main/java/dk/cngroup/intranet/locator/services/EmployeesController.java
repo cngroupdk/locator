@@ -1,19 +1,9 @@
 package dk.cngroup.intranet.locator.services;
-
 import dk.cngroup.intranet.locator.Application;
 import dk.cngroup.intranet.locator.repositories.StaffMemberRepository;
-
-import dk.cngroup.intranet.locator.actors.StaffMemberCreate;
 import dk.cngroup.intranet.locator.actors.StaffMember;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.net.URLDecoder;
-import java.util.ArrayList;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
@@ -36,12 +26,12 @@ public class EmployeesController {
     @RequestMapping("/employees")
     public List<StaffMember> getEmployeeList(){
 
-        Iterable<StaffMemberCreate> employees = repository.findAll();
+        Iterable<StaffMember> employees = repository.findAll();
         List<StaffMember> result = repository.findAllByOrderByEmployeeGuid();
 
         if (employees == null) {
             Application.getLogger().info("/employees failed, no employees found.");
-            throw new ServiceNotFoundException();
+            throw new EmployeesServiceException();
         }
         return result;
 
@@ -55,8 +45,6 @@ public class EmployeesController {
         StaffMember employee = null;
 
         try {
-            firstName = URLDecoder.decode(firstName, "UTF-8");
-            lastName = URLDecoder.decode(lastName, "UTF-8");
 
             List<StaffMember> result = repository.findByFirstNameAndLastName(firstName, lastName);
 
@@ -65,11 +53,25 @@ public class EmployeesController {
 
         }catch(Exception e){
             Application.getLogger().info("/employees/{first_name}/{last_name}, no employee found.");
-            throw new ServiceNotFoundException();
+            throw new EmployeesServiceException();
         }
 
         return employee;
 
+    }
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping(method = RequestMethod.POST, path="/employees/update/employee")
+    @ResponseBody
+    public String updateSingleEmployee(@RequestBody StaffMember updatedEmployee) {
+        try {
+            repository.save(updatedEmployee);
+        }catch(Exception e){
+            Application.getLogger().info("/employees/update/employee, Employee not updated.");
+            throw new EmployeesServiceException();
+        }
+
+        return "UpdateDone";
     }
 
 }

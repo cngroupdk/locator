@@ -1,59 +1,170 @@
 package dk.cngroup.intranet.locator.actors;
 
+
+import javax.persistence.*;
+
 /**
- * StaffMember interface to define common public methods
+ *
+ * The StaffMember class implements JPA and is mapped to the 'employee' database table
  *
  * @author Victor Cano
  */
 
-public interface StaffMember {
+@Entity
+@Inheritance
+@DiscriminatorColumn(name="role", discriminatorType = DiscriminatorType.STRING)
+@Table(name="employees")
+public class StaffMember{
 
-    String getVoIP();
+    @Id
+    @Column(name = "employee_guid")
+    private Integer employeeGuid;
+    @Column(name = "employee_id")
+    private String employeeId;
+    @Column(name = "manager_id")
+    private String managerId;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
+    private String abbreviation;
+    private String role;
+    private String email;
+    private String location;
+    private String detail;
+    private String extension;
+    @Column(name="voip")
+    private String voIP;
 
-    void setVoIP(String voIP);
+    protected StaffMember(){
 
-    String getEmployeeGuid();
+    }
 
-    void setEmployeeGuid(String employeeGuid);
+    @Override
+    public boolean equals(Object obj){
+        boolean result;
+        if((obj == null) || (getClass() != obj.getClass())){
+            result = false;
+        } // end if
+        else{
+            StaffMember otherPerson = (StaffMember)obj;
+            result = employeeId.equals(otherPerson.employeeId) && managerId.equals(otherPerson.managerId)
+                    && firstName.equals(otherPerson.firstName) && lastName.equals(otherPerson.lastName)
+                    && location.equals(otherPerson.location) && email.equals(otherPerson.email)
+            ;
+        } // end else
 
-    String getId();
+        return result;
+    }
 
-    void setId(String id);
+    @Override
+    public int hashCode(){
 
-    void setManagerId(String id);
+        int result = 0;
 
-    String getManagerId();
+        result = employeeId.hashCode()
+                * managerId.hashCode()
+                * firstName.hashCode()
+                * lastName.hashCode()
+                * location.hashCode()
+                * email.hashCode();
 
-    String getFirstName();
+        return result;
 
-    void setFirstName(String firstName);
+    }
 
-    String getLastName();
+    public Integer getEmployeeGuid() {
+        return employeeGuid;
+    }
 
-    void setLastName(String lastName);
+    public void setEmployeeGuid(Integer employeeGuid) {
+        this.employeeGuid = employeeGuid;
+    }
 
-    String getAbbreviation();
+    public String getVoIP() {
+        return voIP;
+    }
 
-    void setAbbreviation(String abbreviation);
+    public void setVoIP(String voIP) {
+        this.voIP = voIP;
+    }
 
-    String getExtension();
+    public String getId() {
+        return employeeId;
+    }
 
-    void setExtension(String extension);
+    public void setId(String id) {
+        this.employeeId = id;
+    }
 
-    String getRole();
+    public void setManagerId(String id){
+        this.managerId = id;
+    }
 
-    void setRole(String role);
+    public String getManagerId(){
+        return managerId;
+    }
 
-    String getEmail();
+    public String getFirstName() {
+        return firstName;
+    }
 
-    void setEmail(String email);
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    String getLocation();
+    public String getLastName() {
+        return lastName;
+    }
 
-    void setLocation(String location);
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-    String getDetail();
+    public String getAbbreviation() {
+        return abbreviation;
+    }
 
-    void setDetail(String detail);
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role){ this.role = role; }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
 
 }

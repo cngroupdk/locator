@@ -342,8 +342,8 @@ public class HttpRequestsTest {
                         "\"assignedPeople\":3," +
                         "\"floorName\":\"2nd Floor\"," +
                         "\"buildingId\":\"20\"," +
-                        "\"styleTop\":\"-195px\"," +
-                        "\"styleLeft\":\"150px\"" +
+                        "\"styleTop\":\"-179px\"," +
+                        "\"styleLeft\":\"149px\"" +
                         "}" +
                     "]"
                 ));

@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * @author Victor Cano
  */
 @Entity
-@Table(name="building")
+@Table(name="buildings")
 public class Building {
 
     @Id

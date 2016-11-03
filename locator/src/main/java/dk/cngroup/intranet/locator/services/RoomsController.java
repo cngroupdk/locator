@@ -1,19 +1,11 @@
 package dk.cngroup.intranet.locator.services;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.cngroup.intranet.locator.Application;
 import dk.cngroup.intranet.locator.buildingcomponents.Room;
 import dk.cngroup.intranet.locator.repositories.RoomsRepository;
-import jdk.nashorn.internal.parser.JSONParser;
-import jdk.nashorn.internal.runtime.JSONFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +32,7 @@ public class RoomsController {
 
         if(rooms == null) {
             Application.getLogger().info("/rooms failed, no rooms found.");
-            throw new ServiceNotFoundException();
+            throw new RoomsServiceException();
         }
 
         return rooms;
@@ -61,19 +53,14 @@ public class RoomsController {
 
         try {
 
-            room_name = URLDecoder.decode(room_name, "UTF-8");
-            buildingId = URLDecoder.decode(buildingId, "UTF-8");
-
-            List<Room> result = new ArrayList<Room>();
-
-            result = repository.findByNameAndBuildingId(room_name, buildingId);
+            List<Room> result = repository.findByNameAndBuildingId(room_name, buildingId);
 
             if(result.size()>0)
                 room = result.get(0);
 
         }catch(Exception e){
             Application.getLogger().info("/rooms/{building_id}/{room_name} failed, no rooms found.");
-            throw new ServiceNotFoundException();
+            throw new RoomsServiceException();
         }
 
         return room;
@@ -89,16 +76,15 @@ public class RoomsController {
     @RequestMapping("/rooms/{building_id}")
     public List<Room> getCNRoomsByBuilding(@PathVariable(value="building_id") String buildingId){
 
-        List<Room> result = new ArrayList<Room>();
+        List<Room> result;
 
         try {
 
-            buildingId = URLDecoder.decode(buildingId, "UTF-8");
             result = repository.findByBuildingId(buildingId);
 
         }catch(Exception e){
             Application.getLogger().info("/rooms/{building_id} failed, no rooms found.");
-            throw new ServiceNotFoundException();
+            throw new RoomsServiceException();
         }
 
         return result;
@@ -116,19 +102,16 @@ public class RoomsController {
     public List<Room> getCNRoomsByBuildingAndFloor(@PathVariable(value="floor_name") String floor_name,
                                      @PathVariable(value="building_id") String buildingId){
 
-        List<Room> result = new ArrayList<Room>();
+        List<Room> result;
 
         try {
-
-            floor_name = URLDecoder.decode(floor_name, "UTF-8");
-            buildingId = URLDecoder.decode(buildingId, "UTF-8");
 
             result = repository.findByFloorNameAndBuildingId(floor_name, buildingId);
 
 
         }catch(Exception e){
             Application.getLogger().info("/rooms/{building_id}/{floor_id} failed, no rooms found.");
-            throw new ServiceNotFoundException();
+            throw new RoomsServiceException();
         }
 
         return result;
@@ -137,29 +120,38 @@ public class RoomsController {
 
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
-    @RequestMapping(method = RequestMethod.POST, path="/rooms/newroom")
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/new/room")
     @ResponseBody
     public String addSingleCNRoom(@RequestBody Room newRoom) {
+        try{
+            newRoom.setRoomId((int)repository.count());
 
-        newRoom.setRoomId((int)repository.count());
+            repository.save(newRoom);
 
-        repository.save(newRoom);
+        }catch(Exception e){
+            Application.getLogger().info("/rooms/new/room, Room not added.");
+            throw new RoomsServiceException();
+        }
 
         return "UpdateDone";
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
-    @RequestMapping(method = RequestMethod.POST, path="/rooms/updateroom")
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/update/room")
     @ResponseBody
     public String updateSingleCNRoom(@RequestBody Room utilityRoom) {
+        try{
+            Room updatedRoom = new Room();
+            updatedRoom = getSingleCNRoom(utilityRoom.getName(),utilityRoom.getBuildingId());
+            updatedRoom.setStyleTop(utilityRoom.getStyleTop());
+            updatedRoom.setStyleLeft(utilityRoom.getStyleLeft());
 
-        Room updatedRoom = new Room();
-        updatedRoom = getSingleCNRoom(utilityRoom.getName(),utilityRoom.getBuildingId());
-        updatedRoom.setStyleTop(utilityRoom.getStyleTop());
-        updatedRoom.setStyleLeft(utilityRoom.getStyleLeft());
+            repository.save(updatedRoom);
 
-        repository.save(updatedRoom);
-
+        }catch(Exception e){
+            Application.getLogger().info("/rooms/update/room, Room not updated.");
+            throw new RoomsServiceException();
+        }
         return "UpdateDone";
     }
 }

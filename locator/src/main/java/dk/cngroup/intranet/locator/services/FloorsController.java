@@ -5,8 +5,6 @@ import dk.cngroup.intranet.locator.repositories.FloorsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +31,7 @@ public class FloorsController {
 
         if (floors == null) {
             Application.getLogger().info("/floors failed, no floors found.");
-            throw new ServiceNotFoundException();
+            throw new FloorsServiceException();
         }
         return floors;
 
@@ -49,17 +47,16 @@ public class FloorsController {
     @RequestMapping("/floors/{building_id}")
     public List<Floor> getCNFloorsByBuilding(@PathVariable(value="building_id") String buildingId){
 
-        List<Floor> floors = new ArrayList<Floor>();
+        List<Floor> floors;
 
         try {
-            buildingId = URLDecoder.decode(buildingId, "UTF-8");
 
             floors = repository.findByBuildingId(buildingId);
 
         }
         catch(Exception e){
             Application.getLogger().info("/floors/{building_id}/{floor_name} failed, no floor found.");
-            throw new ServiceNotFoundException();
+            throw new FloorsServiceException();
         }
 
         return floors;
@@ -77,13 +74,10 @@ public class FloorsController {
                                   @PathVariable(value="building_id") String buildingId){
 
         Floor floor = null;
-        List<Floor> floors = new ArrayList<Floor>();
 
         try {
-            floorName = URLDecoder.decode(floorName, "UTF-8");
-            buildingId = URLDecoder.decode(buildingId, "UTF-8");
 
-            floors = repository.findByFloorNameAndBuildingId(floorName, buildingId);
+            List<Floor> floors = repository.findByFloorNameAndBuildingId(floorName, buildingId);
 
             if (floors.size() > 0)
                 floor = floors.get(0);
@@ -91,7 +85,7 @@ public class FloorsController {
         }
         catch(Exception e){
             Application.getLogger().info("/floors/{building_id}/{floor_name} failed, no floor found.");
-            throw new ServiceNotFoundException();
+            throw new FloorsServiceException();
         }
 
         return floor;
@@ -99,31 +93,39 @@ public class FloorsController {
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
-    @RequestMapping(method = RequestMethod.POST, path="/rooms/newfloor")
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/new/floor")
     @ResponseBody
     public String addSingleCNFloor(@RequestBody Floor newFloor) {
-
-        newFloor.setFloorId((int)repository.count());
-        repository.save(newFloor);
+        try{
+            newFloor.setFloorId((int)repository.count());
+            repository.save(newFloor);
+        }catch(Exception e){
+            Application.getLogger().info("/rooms/new/floor, Floor not added.");
+            throw new FloorsServiceException();
+        }
 
         return "UpdateDone";
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
-    @RequestMapping(method = RequestMethod.POST, path="/rooms/updatefloor")
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/update/floor")
     @ResponseBody
     public String updateSingleCNFloor(@RequestBody List<Floor> utilityFloors) {
 
-        Floor oldRoom = utilityFloors.get(0);
-        Floor newRoom = utilityFloors.get(1);
+        try{
+            Floor oldRoom = utilityFloors.get(0);
+            Floor newRoom = utilityFloors.get(1);
 
-        Floor dbRoom = getSingleCNFloor(oldRoom.getFloorName(),oldRoom.getBuildingId());
-        dbRoom.setFloorName(newRoom.getFloorName());
-        dbRoom.setRoomsNumber(newRoom.getRoomsNumber());
-        dbRoom.setFloorplanUrl(newRoom.getFloorplanUrl());
+            Floor dbRoom = getSingleCNFloor(oldRoom.getFloorName(),oldRoom.getBuildingId());
+            dbRoom.setFloorName(newRoom.getFloorName());
+            dbRoom.setRoomsNumber(newRoom.getRoomsNumber());
+            dbRoom.setFloorplanUrl(newRoom.getFloorplanUrl());
 
-        repository.save(dbRoom);
-
+            repository.save(dbRoom);
+        }catch(Exception e){
+            Application.getLogger().info("/rooms/update/floor, Floor not updated.");
+            throw new FloorsServiceException();
+        }
         return "UpdateDone";
     }
 }

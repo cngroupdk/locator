@@ -8,6 +8,23 @@ import $ from 'jquery';
 
 var FloorDropdown = React.createClass({
 
+    getInitialState: function() {
+        return {
+            floorIndex : -1,
+            floorName : 'Select a Floor',
+            data: [],
+            disabled : false
+        };
+    },
+
+    componentDidMount: function() {
+        this.loadCommentsFromServer();
+    },
+
+    componentWillUnmount: function() {
+        this.serverRequest.abort();
+    },
+
     loadCommentsFromServer: function() {
 
         this.serverRequest = $.get(this.props.url, function (result) {
@@ -16,6 +33,12 @@ var FloorDropdown = React.createClass({
             });
         }.bind(this));
 
+    },
+
+    disableDropdown : function(newBool){
+        this.setState(
+            {disabled : newBool}
+        );
     },
 
     getCurrentFloor : function(){
@@ -37,28 +60,17 @@ var FloorDropdown = React.createClass({
         );
     },
 
-    onClickUpdateFloor : function(e){
+    onClickUpdateFloor : function(event){
         var data = {
-            flData : this.state.data[e.target.value],
-            index : e.target.value
+            event,
+            flData : this.state.data[event.target.value],
+            index : event.target.value
         };
 
         var newFloor = data.flData.floorName + " @ " + data.flData.buildingId;
         this.props.onChange(data);
         this.updateFloor(newFloor);
-        this.updateFloorIndex(e.target.value);
-    },
-
-    getInitialState: function() {
-        return {
-            floorIndex : -1,
-            floorName : 'Select a Floor',
-            data: []
-        };
-    },
-
-    componentDidMount: function() {
-        this.loadCommentsFromServer();
+        this.updateFloorIndex(event.target.value);
     },
 
     render: function() {
@@ -75,7 +87,7 @@ var FloorDropdown = React.createClass({
 
         return (
             <Dropdown tether className="m-y-1" isOpen={this.state.dd4} toggle={() => { this.setState({ dd4: !this.state.dd4 })}}>
-                <DropdownToggle className="floorDropdownToggle" caret color="primary">
+                <DropdownToggle disabled={this.props.disabled} className="floorDropdownToggle" caret color="primary">
                     {this.state.floorName}
                 </DropdownToggle>
                 <DropdownMenu className="floorDropdownMenu">

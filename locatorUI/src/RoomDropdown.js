@@ -8,9 +8,35 @@ import $ from 'jquery';
 
 var RoomDropdown = React.createClass({
 
-    loadCommentsFromServer: function () {
+    getInitialState: function() {
+        return {
+            roomIndex : -1,
+            roomName : 'Select a Room',
+            data: [],
+            disabled : false
+        };
+    },
 
-        this.serverRequest = $.get(this.props.url, function (result) {
+    componentDidMount: function() {
+        this.loadCommentsFromServer();
+    },
+
+    componentWillUnmount: function() {
+        this.serverRequest.abort();
+    },
+
+    loadCommentsFromServer: function (url) {
+
+        var newURL = '';
+
+        if (url == null) {
+            newURL = this.props.url;
+        }
+        else{
+            newURL = url;
+        }
+
+        this.serverRequest = $.get(newURL, function (result) {
             this.setState({
                 data: result
             });
@@ -18,12 +44,10 @@ var RoomDropdown = React.createClass({
 
     },
 
-    getInitialState: function() {
-        return {
-            roomIndex : -1,
-            roomName : 'Select a Room',
-            data: []
-        };
+    disableDropdown : function(newBool){
+        this.setState(
+            {disabled : newBool}
+        );
     },
 
     getRoomData: function(){
@@ -42,10 +66,6 @@ var RoomDropdown = React.createClass({
         };
     },
 
-    componentDidMount: function() {
-        this.loadCommentsFromServer();
-    },
-
     updateRoom : function(newName){
         this.setState(
             {roomName : newName}
@@ -58,17 +78,18 @@ var RoomDropdown = React.createClass({
         );
     },
 
-    onClickUpdateRoom : function(e){
+    onClickUpdateRoom : function(event){
         var data = {
-            roomData : this.state.data[e.target.value],
-            index : e.target.value
+            event,
+            roomData : this.state.data[event.target.value],
+            index : event.target.value
         };
 
         var newRoom = data.roomData.name + " @ " + data.roomData.floorName + " @ " + data.roomData.buildingId;
 
         this.props.onChange(data);
         this.updateRoom(newRoom);
-        this.updateRoomIndex(e.target.value);
+        this.updateRoomIndex(event.target.value);
     },
 
     render: function() {
@@ -88,7 +109,7 @@ var RoomDropdown = React.createClass({
 
         return (
             <Dropdown tether className="m-y-1" isOpen={this.state.dd4} toggle={() => { this.setState({ dd4: !this.state.dd4 })}}>
-                <DropdownToggle className="roomDropdownToggle" caret color="primary">
+                <DropdownToggle disabled={this.props.disabled} className="roomDropdownToggle" caret color="primary">
                     {this.state.roomName}
                 </DropdownToggle>
                 <DropdownMenu className="roomDropdownMenu">

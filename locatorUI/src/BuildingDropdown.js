@@ -10,10 +10,10 @@ var BuildingDropdown = React.createClass({
 
     getInitialState: function() {
         return {
+            buildingName : 'Select a Building',
             buildingIndex: -1,
-            disabled : true,
-            buildingName : 'Choose Building',
-            data: []
+            data: [],
+            disabled : false
         };
     },
 
@@ -57,7 +57,6 @@ var BuildingDropdown = React.createClass({
         };
     },
 
-
     updateBuilding : function(newName){
         this.setState(
             {buildingName : newName}
@@ -70,13 +69,18 @@ var BuildingDropdown = React.createClass({
         );
     },
 
-    onClickUpdateBuilding : function(e){
+    onClickUpdateBuilding : function(event){
 
-        var buildingData = this.state.data[e.target.value];
-        var newBuilding = buildingData.name;
-        this.props.onChange(buildingData);
+        var data = {
+            event,
+            selectedBuilding:this.state.data[event.target.value],
+            selectedIndex: event.target.value
+        }
+
+        this.props.onChange(data);
+        var newBuilding = data.selectedBuilding.name;
         this.updateBuilding(newBuilding);
-        this.updateBuildingIndex(e.target.value);
+        this.updateBuildingIndex(event.target.value);
     },
 
     render: function() {

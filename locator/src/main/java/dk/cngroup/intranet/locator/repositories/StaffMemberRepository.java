@@ -1,7 +1,6 @@
 package dk.cngroup.intranet.locator.repositories;
 
 import dk.cngroup.intranet.locator.actors.StaffMember;
-import dk.cngroup.intranet.locator.actors.StaffMemberCreate;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +16,7 @@ import java.util.List;
  */
 
 @Repository
-public interface StaffMemberRepository extends CrudRepository <StaffMemberCreate, Long> {
+public interface StaffMemberRepository extends CrudRepository <StaffMember, Long> {
 
     /**
      * JPA query to obtain an employee by the firstName and lastName fields

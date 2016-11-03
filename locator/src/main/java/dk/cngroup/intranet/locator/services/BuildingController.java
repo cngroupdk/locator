@@ -6,8 +6,6 @@ import dk.cngroup.intranet.locator.repositories.BuildingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.List;
 /**
  * BuildingController is a class implementing spring rest annotations and will provide REST services to return Building objects
@@ -33,7 +31,7 @@ public class BuildingController {
 
         if (buildings == null) {
             Application.getLogger().info("/buildings failed, no buildings found.");
-            throw new ServiceNotFoundException();
+            throw new BuildingServiceException();
         }
         return buildings;
 
@@ -51,7 +49,6 @@ public class BuildingController {
         Building building = null;
 
         try {
-            buildingId = URLDecoder.decode(buildingId, "UTF-8");
 
             List<Building> buildings = repository.findByBuildingId(buildingId);
 
@@ -60,7 +57,7 @@ public class BuildingController {
 
         }catch(Exception e){
             Application.getLogger().info("/buildings/{building_id} failed, no building found.");
-            throw new ServiceNotFoundException();
+            throw new BuildingServiceException();
         }
 
         return building;
