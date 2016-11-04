@@ -25,9 +25,17 @@ var FloorDropdown = React.createClass({
         this.serverRequest.abort();
     },
 
-    loadCommentsFromServer: function() {
+    loadCommentsFromServer: function(url) {
+        var newURL = '';
 
-        this.serverRequest = $.get(this.props.url, function (result) {
+        if (url == null) {
+            newURL = this.props.url;
+        }
+        else{
+            newURL = url;
+        }
+
+        this.serverRequest = $.get(newURL, function (result) {
             this.setState({
                 data: result
             });

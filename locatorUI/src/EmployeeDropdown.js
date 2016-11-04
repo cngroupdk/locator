@@ -26,8 +26,17 @@ var EmployeeDropdown = React.createClass({
         this.serverRequest.abort();
     },
 
-    loadCommentsFromServer: function() {
-        this.serverRequest = $.get(this.props.url, function (result) {
+    loadCommentsFromServer: function(url) {
+        var newURL = '';
+
+        if (url == null) {
+            newURL = this.props.url;
+        }
+        else{
+            newURL = url;
+        }
+
+        this.serverRequest = $.get(newURL, function (result) {
             this.setState({
                 data: result
             });
@@ -63,6 +72,30 @@ var EmployeeDropdown = React.createClass({
 
     updateName : function(newName){
         this.setState({chosenName : newName});
+    },
+
+    findEmployee : function(data){
+        var length = this.state.data.length;
+        var index = -1;
+        var emplData = null;
+
+        for(var i=0; i < length; i++){
+            emplData =  this.state.data[i];
+            if(emplData.firstName === data.firstName
+            && emplData.lastName === data.lastName){
+                index = i;
+                break;
+            }
+        }
+
+        var foundData = {
+            emplData,
+            index
+        }
+
+        return(
+            foundData
+        );
     },
 
     onClickUpdateName : function(event){

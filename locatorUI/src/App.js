@@ -39,6 +39,19 @@ var App=React.createClass({
   },
 
   componentDidMount: function(){
+    var firstName = this.props.firstName;
+    var lastName = this.props.lastName;
+
+    if (typeof firstName !== "undefined" && typeof lastName !== "undefined") {
+
+        var params = {firstName, lastName};
+        var employeeFound = this.state.myEmployee.findEmployee(params);
+
+        this.onSelectEmployee(employeeFound);
+        this.state.myEmployee.updateName(firstName + " " + lastName);
+        this.state.myEmployee.updateEmployeeIndex(employeeFound.data.index);
+    }
+
   },
 
   setFloorplanPath : function(data){
