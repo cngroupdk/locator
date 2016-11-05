@@ -32,7 +32,7 @@ public class HttpRequestsTest {
             .andExpect(content().json(
                 "[" +
                     "{" +
-                        "\"employeeGuid\":\"0\"," +
+                        "\"employeeGuid\":0," +
                         "\"managerId\":\"dobiasm\"," +
                         "\"firstName\":\"Victor Isaias\"," +
                         "\"lastName\":\"Cano Becerril\"," +
@@ -46,7 +46,7 @@ public class HttpRequestsTest {
                         "\"id\":\"canov\"" +
                     "}," +
                     "{" +
-                        "\"employeeGuid\":\"1\"," +
+                        "\"employeeGuid\":1," +
                         "\"managerId\":\"dobiasm\"," +
                         "\"firstName\":\"Tomas\"," +
                         "\"lastName\":\"Kolaci\"," +
@@ -60,7 +60,7 @@ public class HttpRequestsTest {
                         "\"id\":\"kolacit\"" +
                     "}," +
                     "{" +
-                        "\"employeeGuid\":\"2\"," +
+                        "\"employeeGuid\":2," +
                         "\"managerId\":\"dobiasm\"," +
                         "\"firstName\":\"Vit\"," +
                         "\"lastName\":\"Koma\"," +
@@ -74,7 +74,7 @@ public class HttpRequestsTest {
                         "\"id\":\"komav\"" +
                     "}," +
                     "{" +
-                        "\"employeeGuid\":\"3\"," +
+                        "\"employeeGuid\":3," +
                         "\"managerId\":\"dobiasm\"," +
                         "\"firstName\":\"Pavla\"," +
                         "\"lastName\":\"Melegova\"," +
@@ -88,7 +88,7 @@ public class HttpRequestsTest {
                         "\"id\":\"melegovap\"" +
                     "}," +
                     "{" +
-                        "\"employeeGuid\":\"4\"," +
+                        "\"employeeGuid\":4," +
                         "\"managerId\":\"dobiasm\"," +
                         "\"firstName\":\"Ecaterina\"," +
                         "\"lastName\":\"Zubataia\"," +
@@ -102,7 +102,7 @@ public class HttpRequestsTest {
                         "\"id\":\"zubataiae\"" +
                     "}," +
                     "{" +
-                        "\"employeeGuid\":\"5\"," +
+                        "\"employeeGuid\":5," +
                         "\"managerId\":\"dobiasm\"," +
                         "\"firstName\":\"Michal\"," +
                         "\"lastName\":\"Pipal\"," +
@@ -116,7 +116,7 @@ public class HttpRequestsTest {
                         "\"id\":\"pipalm\"" +
                     "}," +
                     "{" +
-                        "\"employeeGuid\":\"6\"," +
+                        "\"employeeGuid\":6," +
                         "\"managerId\":\"steen_westhn\"," +
                         "\"firstName\":\"Martina\"," +
                         "\"lastName\":\"Volsicka Gombarova\"," +
@@ -139,7 +139,7 @@ public class HttpRequestsTest {
         this.mockMvc.perform(get("/employees/Victor Isaias/Cano Becerril")).andDo(print()).andExpect(status().isOk())
             .andExpect(content().json(
                 "{" +
-                        "\"employeeGuid\":\"0\"," +
+                        "\"employeeGuid\":0," +
                         "\"managerId\":\"dobiasm\"," +
                         "\"firstName\":\"Victor Isaias\"," +
                         "\"lastName\":\"Cano Becerril\"," +

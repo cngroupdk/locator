@@ -40,6 +40,9 @@ var EmployeeDropdown = React.createClass({
             this.setState({
                 data: result
             });
+
+            this.props.onReceipt();
+
         }.bind(this));
 
     },

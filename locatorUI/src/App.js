@@ -22,7 +22,9 @@ var App=React.createClass({
 
   getInitialState: function () {
     return {
+
       notificationSystem : null,
+
       showEmployee: false,
       myMap : null,
       myEmployee : null,
@@ -35,22 +37,11 @@ var App=React.createClass({
       myEditPen : null,
       myEditBuilding : null,
       myEditRoom : null
+
     };
   },
 
   componentDidMount: function(){
-    var firstName = this.props.firstName;
-    var lastName = this.props.lastName;
-
-    if (typeof firstName !== "undefined" && typeof lastName !== "undefined") {
-
-        var params = {firstName, lastName};
-        var employeeFound = this.state.myEmployee.findEmployee(params);
-
-        this.onSelectEmployee(employeeFound);
-        this.state.myEmployee.updateName(firstName + " " + lastName);
-        this.state.myEmployee.updateEmployeeIndex(employeeFound.data.index);
-    }
 
   },
 
@@ -92,6 +83,23 @@ var App=React.createClass({
     });
   },
 
+  onEmployeeDataReceived: function() {
+
+    if (typeof this.props.firstName !== "undefined" && typeof this.props.lastName !== "undefined") {
+
+      var firstName = this.props.firstName;
+      var lastName = this.props.lastName;
+
+      var params = {firstName, lastName};
+      var employeeFound = this.state.myEmployee.findEmployee(params);
+
+      this.onSelectEmployee(employeeFound);
+      this.state.myEmployee.updateName(firstName + " " + lastName);
+      this.state.myEmployee.updateEmployeeIndex(employeeFound.index);
+    }
+
+  },
+
   onSelectEmployee: function(data) {
 
     var res = data.emplData.location.split("@");
@@ -115,6 +123,7 @@ var App=React.createClass({
     this.state.myFloor.updateFloor(inputData.floorName + ' @ ' + inputData.buildingId);
     this.state.myRoom.updateRoom(data.emplData.location);
   },
+
 
   onSelectFloor: function(data) {
 
@@ -278,13 +287,23 @@ var App=React.createClass({
               <CardSubtitle>Select an employee, floor number or room to display the location</CardSubtitle>
               <Row>
                 <Col sm="3">
-                  <EmployeeDropdown className="MyEmployees" onChange={this.onSelectEmployee} url="http://localhost:8080/employees" ref={(ref) => this.state.myEmployee = ref}/>
+                  <EmployeeDropdown className="MyEmployees"
+                                    onChange={this.onSelectEmployee}
+                                    onReceipt={this.onEmployeeDataReceived}
+                                    url="http://localhost:8080/employees"
+                                    ref={(ref) => this.state.myEmployee = ref}/>
                 </Col>
                 <Col sm="3">
-                  <FloorDropdown className="MyFloors" onChange={this.onSelectFloor} url="http://localhost:8080/floors" ref={(ref) => this.state.myFloor = ref}/>
+                  <FloorDropdown className="MyFloors"
+                                 onChange={this.onSelectFloor}
+                                 url="http://localhost:8080/floors"
+                                 ref={(ref) => this.state.myFloor = ref}/>
                 </Col>
                 <Col sm="3">
-                  <RoomDropdown className="MyRooms" onChange={this.onSelectRoom} url="http://localhost:8080/rooms" ref={(ref) => this.state.myRoom = ref}/>
+                  <RoomDropdown className="MyRooms"
+                                onChange={this.onSelectRoom}
+                                url="http://localhost:8080/rooms"
+                                ref={(ref) => this.state.myRoom = ref}/>
                 </Col>
               </Row>
               <Row>
