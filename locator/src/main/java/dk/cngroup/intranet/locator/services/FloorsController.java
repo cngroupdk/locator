@@ -93,7 +93,7 @@ public class FloorsController {
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
-    @RequestMapping(method = RequestMethod.POST, path="/rooms/new/floor")
+    @RequestMapping(method = RequestMethod.POST, path="/floors/new/floor")
     @ResponseBody
     public String addSingleCNFloor(@RequestBody Floor newFloor) {
         try{
@@ -108,7 +108,7 @@ public class FloorsController {
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
-    @RequestMapping(method = RequestMethod.POST, path="/rooms/update/floor")
+    @RequestMapping(method = RequestMethod.POST, path="/floors/update/floor")
     @ResponseBody
     public String updateSingleCNFloor(@RequestBody List<Floor> utilityFloors) {
 

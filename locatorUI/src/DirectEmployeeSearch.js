@@ -7,11 +7,10 @@ import App from './App';
 var DirectEmployeeSearch=React.createClass({
 
     render: function() {
-        var firstName = this.props.params.firstName;
-        var lastName = this.props.params.lastName;
+        var id = this.props.params.employeeId;
 
         return (
-            <App firstName={firstName} lastName={lastName}/>
+            <App employeeId={id}/>
         );
     }
 });

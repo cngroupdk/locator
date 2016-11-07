@@ -7,9 +7,13 @@ body {
   padding: 2rem;
 }
 
-.selectorBox {
+#root {
   padding: 35px;
   background: #e2ecff;
+}
+
+.selectorBox {
+
 }
 
 .Container {

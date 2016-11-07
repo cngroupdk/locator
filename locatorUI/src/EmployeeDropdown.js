@@ -84,8 +84,7 @@ var EmployeeDropdown = React.createClass({
 
         for(var i=0; i < length; i++){
             emplData =  this.state.data[i];
-            if(emplData.firstName === data.firstName
-            && emplData.lastName === data.lastName){
+            if(emplData.id === data.id){
                 index = i;
                 break;
             }

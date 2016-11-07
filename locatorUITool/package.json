@@ -9,8 +9,11 @@
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.3.2",
     "react-addons-transition-group": "^15.3.2",
+    "react-bootstrap-treeview": "^0.1.0",
     "react-dom": "^15.3.2",
-    "reactstrap": "^3.6.0"
+    "react-treebeard": "^1.1.4",
+    "reactstrap": "^3.6.0",
+    "treeview-react-bootstrap": "^0.4.6"
   },
   "scripts": {
     "start": "react-scripts start",

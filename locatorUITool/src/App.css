@@ -7,6 +7,13 @@ body {
   padding: 2rem;
 }
 
-.CoordinateInput{
-  z-index: 0 !important;
+.AddRoomBox {
+  padding: 35px;
+  background: #e2ecff;
+}
+
+.FloorMap {
+  visibility: hidden;
+  border: 5px solid #e2ecff;
+  border-radius: 5px;
 }

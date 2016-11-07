@@ -85,16 +85,15 @@ var App=React.createClass({
 
   onEmployeeDataReceived: function() {
 
-    if (typeof this.props.firstName !== "undefined" && typeof this.props.lastName !== "undefined") {
+    if (typeof this.props.employeeId !== "undefined") {
 
-      var firstName = this.props.firstName;
-      var lastName = this.props.lastName;
+      var id = this.props.employeeId;
 
-      var params = {firstName, lastName};
+      var params = {id};
       var employeeFound = this.state.myEmployee.findEmployee(params);
 
       this.onSelectEmployee(employeeFound);
-      this.state.myEmployee.updateName(firstName + " " + lastName);
+      this.state.myEmployee.updateName(employeeFound.emplData.firstName + " " + employeeFound.emplData.lastName);
       this.state.myEmployee.updateEmployeeIndex(employeeFound.index);
     }
 

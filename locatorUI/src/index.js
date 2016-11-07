@@ -6,17 +6,9 @@ import DirectEmployeeSearch from './DirectEmployeeSearch';
 import './App.css';
 import './index.css';
 
-/*
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
-*/
-
-
 ReactDOM.render((
         <Router history={hashHistory}>
             <Route path="/" component={App}/>
-            <Route path="/:firstName/:lastName" component={DirectEmployeeSearch}/>
+            <Route path="/:employeeId" component={DirectEmployeeSearch}/>
         </Router>
     ), document.getElementById('root'));

@@ -5,6 +5,7 @@ import BuildingDropdown from './BuildingDropdown';
 import FloorDropdown from './FloorDropdown';
 import RoomDropdown from './RoomDropdown';
 import ImageMap from './ImageMap';
+import AssetsTree from './AssetsTree';
 import './App.css';
 
 var App = React.createClass({
@@ -33,7 +34,42 @@ var App = React.createClass({
             refCoordIMG : null,
 
             AddSubmitDisabled: true,
-            CoordSubmitDisabled: true
+            CoordSubmitDisabled: true,
+            assetsData :
+            [
+                {
+                    text: "Parent 1",
+                    nodes: [
+                        {
+                            text: "Child 1",
+                            nodes: [
+                                {
+                                    text: "Grandchild 1"
+                                },
+                                {
+                                    text: "Grandchild 2"
+                                }
+                            ]
+                        },
+                        {
+                            text: "Child 2"
+                        }
+                    ]
+                },
+                {
+                    text: "Parent 2"
+                },
+                {
+                    text: "Parent 3"
+                },
+                {
+                    text: "Parent 4"
+                },
+                {
+                    text: "Parent 5"
+                }
+            ]
+
         };
     },
 
@@ -315,7 +351,7 @@ var App = React.createClass({
 
             var jsonData = JSON.stringify(rawData);
 
-            fetch('http://localhost:8080/rooms/new/floor',{
+            fetch('http://localhost:8080/floors/new/floor',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -390,18 +426,15 @@ var App = React.createClass({
                                 <Col sm="4">
                                     <CardTitle>Add a Room</CardTitle>
                                     <hr/>
-
                                     <BuildingDropdown className="MyBuilding"
                                                       url="http://localhost:8080/buildings"
                                                       onChange={this.onSelectAddRoomSetBuilding}
                                                       ref={(ref) => this.state.refAddRoomBuilding = ref}
                                                       disabled={false}
                                     />
-
                                     <FloorDropdown  className="MyFloor"
                                                     onChange={this.onSelectAddSetFloor}
                                                     ref={(ref) => this.state.refAddRoomFloor = ref} />
-
                                     <InputGroup>
                                         <InputGroupAddon>Room Name</InputGroupAddon>
                                         <Input className="CoordinateInput"
@@ -500,7 +533,8 @@ var App = React.createClass({
                                             onClick={this.onSetCoordSubmitHandler}>Submit</Button>
                                 </Col>
                                 <Col xs="5">
-                                    <ImageMap clickEnter={this.onMouseClickHandler}
+                                    <ImageMap id="floorMap"
+                                              clickEnter={this.onMouseClickHandler}
                                               className="FloorMap"
                                               ref={(ref) => this.state.refCoordMap = ref}/>
                                     <ImageMap clickEnter={this.onMouseClickHandler}
