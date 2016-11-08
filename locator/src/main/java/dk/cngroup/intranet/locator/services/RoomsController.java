@@ -154,4 +154,8 @@ public class RoomsController {
         }
         return "UpdateDone";
     }
+
+    public RoomsRepository getRepository(){
+        return repository;
+    }
 }

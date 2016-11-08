@@ -74,4 +74,8 @@ public class EmployeesController {
         return "UpdateDone";
     }
 
+    public StaffMemberRepository getRepository(){
+        return repository;
+    }
+
 }

@@ -1,8 +1,12 @@
 package dk.cngroup.intranet.locator.services;
 
 import dk.cngroup.intranet.locator.Application;
-import dk.cngroup.intranet.locator.buildings.Building;
+import dk.cngroup.intranet.locator.buildingcomponents.Floor;
+import dk.cngroup.intranet.locator.buildingcomponents.Room;
+import dk.cngroup.intranet.locator.buildings.*;
 import dk.cngroup.intranet.locator.repositories.BuildingsRepository;
+import dk.cngroup.intranet.locator.repositories.FloorsRepository;
+import dk.cngroup.intranet.locator.repositories.RoomsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +21,73 @@ public class BuildingController {
 
     @Autowired
     private BuildingsRepository repository;
+
+    @Autowired
+    private FloorsRepository floorsRepository;
+
+
+    @Autowired
+    private RoomsRepository roomsRepository;
+
+    /**
+     * Rest service to return a list of all floors in all buildings in the database.
+     *
+     * @return an Iterable object of Floor objects
+     */
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping("/tree")
+    public TreeRoot getCNTreeStructure(){
+
+
+        Iterable<Building> buildings = repository.findAllByOrderByBuildingGuid();
+        Iterable<Floor> floors = floorsRepository.findAllByOrderByFloorId();
+        Iterable<Room> rooms = roomsRepository.findAllByOrderByRoomId();
+
+        TreeRoot tr = new TreeRoot();
+
+        for(Building b : buildings){
+
+            TreeBuilding treeBuilding = new TreeBuilding();
+            treeBuilding.setBuildingId(b.getBuildingId());
+            treeBuilding.setBuildingGuid(b.getBuildingGuid());
+            treeBuilding.setName(b.getName());
+
+            tr.addBuilding(treeBuilding);
+
+            for(Floor f : floors){
+
+                if(f.getBuildingId().equals(treeBuilding.getBuildingId()))
+                {
+                    TreeFloor treeFloor = new TreeFloor();
+                    treeFloor.setBuildingId(f.getBuildingId());
+                    treeFloor.setFloorId(f.getFloorId());
+                    treeFloor.setName(f.getFloorName());
+
+                    treeBuilding.addFloor(treeFloor);
+
+                    for(Room r : rooms){
+                        if(treeFloor.getName().equals(r.getFloorName())){
+                            TreeRoom treeRoom = new TreeRoom();
+                            treeRoom.setFloorName(r.getFloorName());
+                            treeRoom.setBuildingId(r.getBuildingId());
+                            treeRoom.setName(r.getName());
+                            treeRoom.setRoomId(r.getRoomId());
+
+                            treeFloor.addRoom(treeRoom);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (tr == null) {
+            Application.getLogger().info("/tree failed, no assets found.");
+            throw new FloorsServiceException();
+        }
+
+        return tr;
+
+    }
 
     /**
      * Rest service to return a list of all buildings in the database.

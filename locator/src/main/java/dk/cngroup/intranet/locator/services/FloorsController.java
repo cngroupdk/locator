@@ -128,4 +128,8 @@ public class FloorsController {
         }
         return "UpdateDone";
     }
+
+    public FloorsRepository getRepository(){
+        return repository;
+    }
 }

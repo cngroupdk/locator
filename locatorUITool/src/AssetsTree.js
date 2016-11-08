@@ -2,7 +2,7 @@
  * Created by cano on 7.11.2016.
  */
 import React from 'react';
-import {TreeView} from 'react-bootstrap-treeview';
+import {Treebeard, decorators, Toggle} from 'react-treebeard';
 
 var AssetsTree = React.createClass({
 
@@ -19,9 +19,35 @@ var AssetsTree = React.createClass({
         });
     },
 
+    onToggle(node, toggled){
+        if(this.state.cursor){
+            this.state.cursor.active = false;
+        }
+        node.active = true;
+        if(node.children){
+            node.toggled = toggled;
+        }
+        this.setState({ cursor: node });
+    },
+
     render(){
+
+        decorators.Header = (props) => {
+            const style = props.style;
+            return (
+                <div style={style.base} onClick={props.onClick}>
+                    <div style={style.title}>
+                        {props.node.name}
+                    </div>
+                </div>
+            );
+        };
+
         return (
-            <TreeView data={this.state.assetsData} />
+
+            <Treebeard decorators={decorators}
+                       data={this.state.assetsData}
+                       onToggle={this.onToggle}/>
         );
     }
 

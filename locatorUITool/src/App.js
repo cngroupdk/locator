@@ -35,39 +35,31 @@ var App = React.createClass({
 
             AddSubmitDisabled: true,
             CoordSubmitDisabled: true,
-            assetsData :
-            [
+            assetsData : [
                 {
-                    text: "Parent 1",
-                    nodes: [
-                        {
-                            text: "Child 1",
-                            nodes: [
-                                {
-                                    text: "Grandchild 1"
-                                },
-                                {
-                                    text: "Grandchild 2"
-                                }
-                            ]
-                        },
-                        {
-                            text: "Child 2"
-                        }
+                name: 'hello',
+                type: '1',
+                toggled: true,
+                children: [
+                    {
+                        name: 'how are you',
+                        type: '2',
+                        children: [
+                            {
+                                name: 'I am in California',
+                                type: '3'
+                            }
+                        ]
+                    }
                     ]
                 },
-                {
-                    text: "Parent 2"
-                },
-                {
-                    text: "Parent 3"
-                },
-                {
-                    text: "Parent 4"
-                },
-                {
-                    text: "Parent 5"
-                }
+                {name: 'who we used to be',
+                 type: '1',
+                 toggled: true,
+                 children:[
+                    {name:'when we were younger and free',
+                     type: '2'}
+                 ]}
             ]
 
         };
@@ -422,6 +414,11 @@ var App = React.createClass({
                     <Container className="Container">
                         <NotificationSystem ref={(ref) => this.state.notificationSystem = ref} />
                         <Row>
+                            <Card block >
+                                <Col sm="4">
+                                    <AssetsTree assetsData={this.state.assetsData}/>
+                                </Col>
+                            </Card>
                             <Card block >
                                 <Col sm="4">
                                     <CardTitle>Add a Room</CardTitle>
