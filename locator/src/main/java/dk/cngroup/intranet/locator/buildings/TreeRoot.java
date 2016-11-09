@@ -8,7 +8,9 @@ import java.util.List;
  */
 public class TreeRoot {
 
+    private String name = "CN Group";
     private boolean toggled = true;
+
     private List<TreeBuilding> children;
 
     public TreeRoot(){
@@ -21,6 +23,14 @@ public class TreeRoot {
 
     public List<TreeBuilding> getChildren(){
         return children;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isToggled() {

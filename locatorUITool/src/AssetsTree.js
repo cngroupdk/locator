@@ -2,7 +2,8 @@
  * Created by cano on 7.11.2016.
  */
 import React from 'react';
-import {Treebeard, decorators, Toggle} from 'react-treebeard';
+import $ from 'jquery';
+import {Treebeard, decorators} from 'react-treebeard';
 
 var AssetsTree = React.createClass({
 
@@ -13,10 +14,23 @@ var AssetsTree = React.createClass({
         };
     },
 
-    updateNodes: function(data) {
-        this.setState({
-            assetsData : data
-        });
+
+    componentDidMount: function() {
+        this.loadCommentsFromServer('http://localhost:8080/tree/');
+    },
+
+    componentWillUnmount: function() {
+        this.serverRequest.abort();
+    },
+
+    loadCommentsFromServer: function(url) {
+
+        this.serverRequest = $.get(url, function (result) {
+            this.setState({
+                assetsData: result
+            });
+        }.bind(this));
+
     },
 
     onToggle(node, toggled){
@@ -28,6 +42,10 @@ var AssetsTree = React.createClass({
             node.toggled = toggled;
         }
         this.setState({ cursor: node });
+
+        var data = {node, toggled};
+
+        this.props.onChange(data);
     },
 
     render(){

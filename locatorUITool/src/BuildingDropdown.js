@@ -22,7 +22,7 @@ var BuildingDropdown = React.createClass({
     },
 
     componentWillUnmount: function() {
-        this.serverRequest.abort();
+
     },
 
     loadCommentsFromServer: function () {

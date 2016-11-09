@@ -21,7 +21,6 @@ public class Building {
     private Integer buildingGuid;
     @Column(name="building_id")
     private String buildingId;
-    @Column(updatable = false, insertable = false)
     private String type;
     private String name;
     private String city;
@@ -80,6 +79,10 @@ public class Building {
 
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getName() {

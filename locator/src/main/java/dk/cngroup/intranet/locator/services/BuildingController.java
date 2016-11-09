@@ -135,4 +135,21 @@ public class BuildingController {
 
     }
 
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping(method = RequestMethod.POST, path="/buildings/new/building")
+    @ResponseBody
+    public String addSingleCNBuilding(@RequestBody Building newBuilding) {
+        try{
+            newBuilding.setBuildingGuid((int)repository.count());
+            repository.save(newBuilding);
+
+        }catch(Exception e){
+            Application.getLogger().info("/buildings/new/building, Building not added.");
+            throw new RoomsServiceException();
+        }
+
+        return "UpdateDone";
+    }
+
 }

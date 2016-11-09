@@ -1,6 +1,6 @@
 import React from 'react';
 import NotificationSystem from 'react-notification-system';
-import { Container, Row, Col, Card, Cardblock, CardTitle, Button, Input, InputGroup, InputGroupAddon} from 'reactstrap';
+import { Container, Row, Col, Card, Cardblock, CardTitle, Button, Input, InputGroup, InputGroupAddon, Jumbotron} from 'reactstrap';
 import BuildingDropdown from './BuildingDropdown';
 import FloorDropdown from './FloorDropdown';
 import RoomDropdown from './RoomDropdown';
@@ -14,6 +14,14 @@ var App = React.createClass({
         return {
 
             notificationSystem : null,
+
+            refTree : null,
+            refAddBuildingId : "",
+            refAddBuildingName : "",
+            refAddBuildingCity : "",
+            refAddBuildingStreet : "",
+            refAddBuildingNumber : "",
+            refAddBuildingPostalCode : "",
 
             refAddRoomBuilding : null,
             refAddRoomFloor : null,
@@ -36,32 +44,14 @@ var App = React.createClass({
             AddSubmitDisabled: true,
             CoordSubmitDisabled: true,
             assetsData : [
-                {
-                name: 'hello',
-                type: '1',
-                toggled: true,
-                children: [
-                    {
-                        name: 'how are you',
-                        type: '2',
-                        children: [
-                            {
-                                name: 'I am in California',
-                                type: '3'
-                            }
-                        ]
-                    }
-                    ]
-                },
-                {name: 'who we used to be',
-                 type: '1',
-                 toggled: true,
-                 children:[
-                    {name:'when we were younger and free',
-                     type: '2'}
-                 ]}
-            ]
-
+            {
+                name: 'Loading...',
+                toggled: false,
+            }
+            ],
+            openBuildingAdd : null,
+            openFloorAdd : null,
+            openRoomAdd : null
         };
     },
 
@@ -184,6 +174,31 @@ var App = React.createClass({
         this.setState({refAddFloorURL: event.target.value});
     },
 
+    onAddBuildingIdInputChange(event){
+        this.setState({refAddBuildingId: event.target.value});
+    },
+
+    onAddBuildingNameInputChange(event){
+      this.setState({refAddBuildingName: event.target.value});
+    },
+
+    onAddBuildingCityInputChange(event){
+        this.setState({refAddBuildingCity: event.target.value});
+    },
+
+    onAddBuildingStreetInputChange(event){
+        this.setState({refAddBuildingStreet: event.target.value});
+    },
+
+
+    onAddBuildingNumberInputChange(event){
+        this.setState({refAddBuildingNumber: event.target.value});
+    },
+
+    onAddBuildingPostalInputChange(event){
+        this.setState({refAddBuildingPostalCode: event.target.value});
+    },
+
     onSetCoordSubmitHandler: function () {
 
         var buildingName = this.state.refCoordBuilding.getCurrentBuilding().currentBuilding;
@@ -249,6 +264,83 @@ var App = React.createClass({
                 type: "info"};
             this.addNotification(message);
         }
+    },
+
+    onAddBuildingSubmitHandler(){
+        var id = this.state.refAddBuildingId;
+        var name = this.state.refAddBuildingName;
+        var city = this.state.refAddBuildingCity;
+        var street = this.state.refAddBuildingStreet;
+        var number = this.state.refAddBuildingNumber;
+        var pc = this.state.refAddBuildingPostalCode;
+
+        if(id !== "" && name !== "" && city !== "" && street !== "" && number !== "" && pc !== "")
+        {
+            var rawData = {
+                buildingGuid : -1,
+                buildingId : id,
+                type : "Office Space",
+                name : name,
+                city : city,
+                postalCode : pc,
+                streetName : street,
+                streetNumber : number
+            };
+
+            var jsonData = JSON.stringify(rawData);
+
+            fetch('http://localhost:8080/buildings/new/building',{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            })
+            .then((response) => {
+
+                var message;
+                if(response.status === 200) {
+                    message = {
+                        content: "Success! New Building Submitted.",
+                        type: "success"
+                    };
+
+                    this.state.refTree.loadCommentsFromServer('http://localhost:8080/tree/');
+                    this.setState({
+                        openBuildingAdd : null,
+                        openFloorAdd : null,
+                        openRoomAdd : null,
+                        refAddBuildingId : "",
+                        refAddBuildingName : "",
+                        refAddBuildingCity : "",
+                        refAddBuildingStreet : "",
+                        refAddBuildingNumber : "",
+                        refAddBuildingPostalCode : ""
+                    });
+
+                }
+                else{
+                    message = {
+                        content: "Error: New Building not added. Contact your Administrator.",
+                        type: "error"
+                    };
+                }
+
+                this.addNotification(message);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+        else{
+            var message = { content: "Please fill all parameters before clicking \"Submit\"",
+                type: "info"};
+            this.addNotification(message);
+        }
+
+
+
     },
 
     onAddRoomSubmitHandler(){
@@ -406,139 +498,238 @@ var App = React.createClass({
         });
     },
 
+    doSomething: function (event) {
+
+        var buildingFormOpenStatus = event.node.buildingGuid;
+        var floorFormOpenStatus = event.node.floorId;
+        var roomFormOpenStatus = event.node.roomId;
+
+        this.setState({
+            openBuildingAdd: buildingFormOpenStatus,
+            openFloorAdd: floorFormOpenStatus,
+            openRoomAdd: roomFormOpenStatus
+        });
+
+    },
+
+    openAddBuildingForm: function() {
+        return(
+            <Col sm="4">
+                <CardTitle>Add a Building</CardTitle>
+                <hr/>
+                <InputGroup>
+                    <InputGroupAddon>Building Id</InputGroupAddon>
+                    <Input className="AddBuilding"
+                           placeholder="Type building ID..."
+                           value={this.state.refAddBuildingId}
+                           onChange={this.onAddBuildingIdInputChange}/>
+                </InputGroup>
+                <br />
+                <InputGroup>
+                    <InputGroupAddon>Building Name</InputGroupAddon>
+                    <Input className="AddBuilding"
+                           placeholder="Type building name..."
+                           value={this.state.refAddBuildingName}
+                           onChange={this.onAddBuildingNameInputChange}/>
+                </InputGroup>
+                <br />
+                <InputGroup>
+                    <InputGroupAddon>City</InputGroupAddon>
+                    <Input className="AddBuilding"
+                           placeholder="Type city..."
+                           value={this.state.refAddBuildingCity}
+                           onChange={this.onAddBuildingCityInputChange}/>
+                </InputGroup>
+                <br />
+                <InputGroup>
+                    <InputGroupAddon>Street</InputGroupAddon>
+                    <Input className="AddBuilding"
+                           placeholder="Type street..."
+                           value={this.state.refAddBuildingStreet}
+                           onChange={this.onAddBuildingStreetInputChange}/>
+                </InputGroup>
+                <br />
+                <InputGroup>
+                    <InputGroupAddon>Number</InputGroupAddon>
+                    <Input className="AddBuilding"
+                           placeholder="Type number..."
+                           value={this.state.refAddBuildingNumber}
+                           onChange={this.onAddBuildingNumberInputChange}/>
+                </InputGroup>
+                <br />
+                <InputGroup>
+                    <InputGroupAddon>Postal Code</InputGroupAddon>
+                    <Input className="AddBuilding"
+                           placeholder="Type Postal Code..."
+                           value={this.state.refAddBuildingPostalCode}
+                           onChange={this.onAddBuildingPostalInputChange}/>
+                </InputGroup>
+                <br />
+                <Button id="AddRoomButton"
+                        color="primary"
+                        onClick={this.onAddBuildingSubmitHandler}>Submit</Button>
+
+            </Col>
+        );
+    },
+
+    openAddRoomForm: function() {
+
+        return (
+            <Col sm="4">
+                <CardTitle>Add a Room</CardTitle>
+                <hr/>
+                <BuildingDropdown className="MyBuilding"
+                                  url="http://localhost:8080/buildings"
+                                  onChange={this.onSelectAddRoomSetBuilding}
+                                  ref={(ref) => this.state.refAddRoomBuilding = ref}
+                                  disabled={false}
+                />
+                <FloorDropdown  className="MyFloor"
+                                onChange={this.onSelectAddSetFloor}
+                                ref={(ref) => this.state.refAddRoomFloor = ref} />
+                <InputGroup>
+                    <InputGroupAddon>Room Name</InputGroupAddon>
+                    <Input className="CoordinateInput"
+                           placeholder="Type room name..."
+                           value={this.state.refAddRoomName}
+                           onChange={this.onAddRoomNameInputChange}/>
+                </InputGroup>
+                <br />
+                <InputGroup>
+                    <InputGroupAddon>Room Capacity</InputGroupAddon>
+                    <Input className="CoordinateInput"
+                           placeholder="Type room capacity..."
+                           value={this.state.refAddRoomCapacity}
+                           onChange={this.onRoomCapacityInputChange}/>
+                </InputGroup>
+                <br />
+                <Button id="AddRoomButton"
+                        color="primary"
+                        onClick={this.onAddRoomSubmitHandler}>Submit</Button>
+            </Col>
+        );
+    },
+
+    openAddFloorForm: function() {
+        return (
+            <Col sm="5">
+                <CardTitle>Add a Floor</CardTitle>
+                <hr/>
+
+                <BuildingDropdown className="MyBuilding"
+                                  url="http://localhost:8080/buildings"
+                                  onChange={this.onSelectAddFloorSetBuilding}
+                                  ref={(ref) => this.state.refAddFloorBuilding = ref}
+                                  disabled={false}
+                />
+                <InputGroup>
+                    <InputGroupAddon>Floor Name</InputGroupAddon>
+                    <Input className="CoordinateInput"
+                           placeholder="Type floor name..."
+                           value={this.state.refAddFloorName}
+                           onChange={this.onAddFloorNameInputChange}/>
+                </InputGroup>
+                <br />
+                <InputGroup>
+                    <InputGroupAddon>Contains</InputGroupAddon>
+                    <Input className="CoordinateInput"
+                           placeholder="Type # of Rooms..."
+                           value={this.state.refAddFloorRoomNumber}
+                           onChange={this.onAddFloorRoomNumberInputChange}/>
+                    <InputGroupAddon>Rooms</InputGroupAddon>
+                </InputGroup>
+                <br />
+                <InputGroup>
+                    <InputGroupAddon>Image File</InputGroupAddon>
+                    <Input className="CoordinateInput"
+                           placeholder="Type floor image file name..."
+                           value={this.state.refAddFloorURL}
+                           onChange={this.onAddFloorURLInputChange}/>
+                </InputGroup>
+                <br />
+                <Button id="AddRoomButton"
+                        color="primary"
+                        onClick={this.onAddFloorSubmitHandler}>Submit</Button>
+            </Col>
+        );
+    },
+
+    openSetRoomCoordinatesForm: function() {
+
+        return(
+
+            <Card block>
+                <Col xs="3">
+                    <CardTitle>Set Room Coordinates</CardTitle>
+                    <hr/>
+                    <BuildingDropdown className="MyBuilding"
+                                      url="http://localhost:8080/buildings"
+                                      onChange={this.onSelectCoordSetBuilding}
+                                      ref={(ref) => this.state.refCoordBuilding = ref}/>
+                    <FloorDropdown className="MyFloor"
+                                   onChange={this.onSelectCoordSetFloor}
+                                   ref={(ref) => this.state.refCoordFloor = ref}/>
+                    <RoomDropdown disabled={true}
+                                  className="MyRoom"
+                                  ref={(ref) => this.state.refCoordRoom = ref}/>
+                    <br />
+                    <InputGroup>
+                        <InputGroupAddon>X</InputGroupAddon>
+                        <Input className="CoordinateInput"
+                               disabled={true}
+                               placeholder="X Coordinate value"
+                               value={this.state.refCoordX}/>
+                    </InputGroup>
+                    <br />
+                    <InputGroup>
+                        <InputGroupAddon>Y</InputGroupAddon>
+                        <Input className="CoordinateInput"
+                               disabled={true}
+                               placeholder="Y Coordinate value"
+                               value={this.state.refCoordY}/>
+                    </InputGroup>
+                    <br />
+                    <Button id="RoomCoordButton"
+                            color="primary"
+                            onClick={this.onSetCoordSubmitHandler}>Submit</Button>
+                </Col>
+                <Col xs="5">
+                    <ImageMap id="floorMap"
+                              clickEnter={this.onMouseClickHandler}
+                              className="FloorMap"
+                              ref={(ref) => this.state.refCoordMap = ref}/>
+                    <ImageMap clickEnter={this.onMouseClickHandler}
+                              className="Icon"
+                              ref={(ref) => this.state.refCoordIMG = ref}/>
+                </Col>
+            </Card>
+        );
+
+    },
+
+
     render:function() {
         return (
             <div className="App">
                 <div className="AddRoomBox">
                     <hr/>
                     <Container className="Container">
+                        <h1 className="display-3">Editor</h1>
+                        <p className="lead">CN Group - Resource Locator</p>
                         <NotificationSystem ref={(ref) => this.state.notificationSystem = ref} />
                         <Row>
                             <Card block >
-                                <Col sm="4">
-                                    <AssetsTree assetsData={this.state.assetsData}/>
+                                <Col sm="3">
+                                    <AssetsTree assetsData={this.state.assetsData}
+                                                onChange={this.doSomething}
+                                                ref={(ref) => this.state.refTree = ref}/>
                                 </Col>
+                                {this.state.openBuildingAdd != null ? this.openAddBuildingForm() : null}
+                                {this.state.openFloorAdd != null ? this.openAddFloorForm() : null}
+                                {this.state.openRoomAdd != null ? this.openAddRoomForm() : null}
                             </Card>
-                            <Card block >
-                                <Col sm="4">
-                                    <CardTitle>Add a Room</CardTitle>
-                                    <hr/>
-                                    <BuildingDropdown className="MyBuilding"
-                                                      url="http://localhost:8080/buildings"
-                                                      onChange={this.onSelectAddRoomSetBuilding}
-                                                      ref={(ref) => this.state.refAddRoomBuilding = ref}
-                                                      disabled={false}
-                                    />
-                                    <FloorDropdown  className="MyFloor"
-                                                    onChange={this.onSelectAddSetFloor}
-                                                    ref={(ref) => this.state.refAddRoomFloor = ref} />
-                                    <InputGroup>
-                                        <InputGroupAddon>Room Name</InputGroupAddon>
-                                        <Input className="CoordinateInput"
-                                               placeholder="Type room name..."
-                                               value={this.state.refAddRoomName}
-                                               onChange={this.onAddRoomNameInputChange}/>
-                                    </InputGroup>
-                                    <br />
-                                    <InputGroup>
-                                        <InputGroupAddon>Room Capacity</InputGroupAddon>
-                                        <Input className="CoordinateInput"
-                                               placeholder="Type room capacity..."
-                                               value={this.state.refAddRoomCapacity}
-                                               onChange={this.onRoomCapacityInputChange}/>
-                                    </InputGroup>
-                                    <br />
-                                    <Button id="AddRoomButton"
-                                            color="primary"
-                                            onClick={this.onAddRoomSubmitHandler}>Submit</Button>
-                                </Col>
-                            </Card>
-                            <Card block >
-                                <Col sm="5">
-                                    <CardTitle>Add a Floor</CardTitle>
-                                    <hr/>
-
-                                    <BuildingDropdown className="MyBuilding"
-                                                      url="http://localhost:8080/buildings"
-                                                      onChange={this.onSelectAddFloorSetBuilding}
-                                                      ref={(ref) => this.state.refAddFloorBuilding = ref}
-                                                      disabled={false}
-                                    />
-                                    <InputGroup>
-                                        <InputGroupAddon>Floor Name</InputGroupAddon>
-                                        <Input className="CoordinateInput"
-                                               placeholder="Type floor name..."
-                                               value={this.state.refAddFloorName}
-                                               onChange={this.onAddFloorNameInputChange}/>
-                                    </InputGroup>
-                                    <br />
-                                    <InputGroup>
-                                        <InputGroupAddon>Contains</InputGroupAddon>
-                                        <Input className="CoordinateInput"
-                                               placeholder="Type # of Rooms..."
-                                               value={this.state.refAddFloorRoomNumber}
-                                               onChange={this.onAddFloorRoomNumberInputChange}/>
-                                        <InputGroupAddon>Rooms</InputGroupAddon>
-                                    </InputGroup>
-                                    <br />
-                                    <InputGroup>
-                                        <InputGroupAddon>Image File</InputGroupAddon>
-                                        <Input className="CoordinateInput"
-                                               placeholder="Type floor image file name..."
-                                               value={this.state.refAddFloorURL}
-                                               onChange={this.onAddFloorURLInputChange}/>
-                                    </InputGroup>
-                                    <br />
-                                    <Button id="AddRoomButton"
-                                            color="primary"
-                                            onClick={this.onAddFloorSubmitHandler}>Submit</Button>
-                                </Col>
-                            </Card>
-                            <Card block>
-                                <Col xs="3">
-                                    <CardTitle>Set Room Coordinates</CardTitle>
-                                    <hr/>
-                                    <BuildingDropdown className="MyBuilding"
-                                                      url="http://localhost:8080/buildings"
-                                                      onChange={this.onSelectCoordSetBuilding}
-                                                      ref={(ref) => this.state.refCoordBuilding = ref}/>
-                                    <FloorDropdown className="MyFloor"
-                                                   onChange={this.onSelectCoordSetFloor}
-                                                   ref={(ref) => this.state.refCoordFloor = ref}/>
-                                    <RoomDropdown disabled={true}
-                                                  className="MyRoom"
-                                                  ref={(ref) => this.state.refCoordRoom = ref}/>
-                                    <br />
-                                    <InputGroup>
-                                        <InputGroupAddon>X</InputGroupAddon>
-                                        <Input className="CoordinateInput"
-                                               disabled={true}
-                                               placeholder="X Coordinate value"
-                                               value={this.state.refCoordX}/>
-                                    </InputGroup>
-                                    <br />
-                                    <InputGroup>
-                                        <InputGroupAddon>Y</InputGroupAddon>
-                                        <Input className="CoordinateInput"
-                                               disabled={true}
-                                               placeholder="Y Coordinate value"
-                                               value={this.state.refCoordY}/>
-                                    </InputGroup>
-                                    <br />
-                                    <Button id="RoomCoordButton"
-                                            color="primary"
-                                            onClick={this.onSetCoordSubmitHandler}>Submit</Button>
-                                </Col>
-                                <Col xs="5">
-                                    <ImageMap id="floorMap"
-                                              clickEnter={this.onMouseClickHandler}
-                                              className="FloorMap"
-                                              ref={(ref) => this.state.refCoordMap = ref}/>
-                                    <ImageMap clickEnter={this.onMouseClickHandler}
-                                              className="Icon"
-                                              ref={(ref) => this.state.refCoordIMG = ref}/>
-                                </Col>
-                            </Card>
+                            {this.state.openRoomAdd != null ? this.openSetRoomCoordinatesForm() : null}
                         </Row>
                     </Container>
                     <hr/>

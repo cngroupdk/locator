@@ -22,7 +22,7 @@ var FloorDropdown = React.createClass({
     },
 
     componentWillUnmount: function() {
-        this.serverRequest.abort();
+
     },
 
     loadCommentsFromServer: function(url) {
