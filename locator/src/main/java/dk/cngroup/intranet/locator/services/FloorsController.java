@@ -100,11 +100,25 @@ public class FloorsController {
             newFloor.setFloorId((int)repository.count());
             repository.save(newFloor);
         }catch(Exception e){
-            Application.getLogger().info("/rooms/new/floor, Floor not added.");
+            Application.getLogger().info("/floors/new/floor, Floor not added.");
             throw new FloorsServiceException();
         }
 
-        return "UpdateDone";
+        return "Added Floor in CN Database";
+    }
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping(method = RequestMethod.POST, path="/floors/delete/floor")
+    @ResponseBody
+    public String deleteSingleCNFloor(@RequestBody Floor newFloor) {
+        try{
+            repository.delete(newFloor);
+        }catch(Exception e){
+            Application.getLogger().info("/floors/delete/floor, Floor not added.");
+            throw new FloorsServiceException();
+        }
+
+        return "Deleted Floor in CN Database";
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
@@ -123,10 +137,10 @@ public class FloorsController {
 
             repository.save(dbRoom);
         }catch(Exception e){
-            Application.getLogger().info("/rooms/update/floor, Floor not updated.");
+            Application.getLogger().info("/floors/update/floor, Floor not updated.");
             throw new FloorsServiceException();
         }
-        return "UpdateDone";
+        return "Updated Floor in CN Database";
     }
 
     public FloorsRepository getRepository(){

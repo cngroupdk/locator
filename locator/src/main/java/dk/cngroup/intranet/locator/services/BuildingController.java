@@ -38,51 +38,52 @@ public class BuildingController {
     @RequestMapping("/tree")
     public TreeRoot getCNTreeStructure(){
 
-
-        Iterable<Building> buildings = repository.findAllByOrderByBuildingGuid();
-        Iterable<Floor> floors = floorsRepository.findAllByOrderByFloorId();
-        Iterable<Room> rooms = roomsRepository.findAllByOrderByRoomId();
-
         TreeRoot tr = new TreeRoot();
 
-        for(Building b : buildings){
+        try{
 
-            TreeBuilding treeBuilding = new TreeBuilding();
-            treeBuilding.setBuildingId(b.getBuildingId());
-            treeBuilding.setBuildingGuid(b.getBuildingGuid());
-            treeBuilding.setName(b.getName());
+            Iterable<Building> buildings = repository.findAllByOrderByBuildingGuid();
+            Iterable<Floor> floors = floorsRepository.findAllByOrderByFloorId();
+            Iterable<Room> rooms = roomsRepository.findAllByOrderByRoomId();
 
-            tr.addBuilding(treeBuilding);
+            for(Building b : buildings){
 
-            for(Floor f : floors){
+                TreeBuilding treeBuilding = new TreeBuilding();
+                treeBuilding.setBuildingId(b.getBuildingId());
+                treeBuilding.setBuildingGuid(b.getBuildingGuid());
+                treeBuilding.setName(b.getName());
 
-                if(f.getBuildingId().equals(treeBuilding.getBuildingId()))
-                {
-                    TreeFloor treeFloor = new TreeFloor();
-                    treeFloor.setBuildingId(f.getBuildingId());
-                    treeFloor.setFloorId(f.getFloorId());
-                    treeFloor.setName(f.getFloorName());
+                tr.addBuilding(treeBuilding);
 
-                    treeBuilding.addFloor(treeFloor);
+                for(Floor f : floors){
 
-                    for(Room r : rooms){
-                        if(treeFloor.getName().equals(r.getFloorName())){
-                            TreeRoom treeRoom = new TreeRoom();
-                            treeRoom.setFloorName(r.getFloorName());
-                            treeRoom.setBuildingId(r.getBuildingId());
-                            treeRoom.setName(r.getName());
-                            treeRoom.setRoomId(r.getRoomId());
+                    if(f.getBuildingId().equals(treeBuilding.getBuildingId()))
+                    {
+                        TreeFloor treeFloor = new TreeFloor();
+                        treeFloor.setBuildingId(f.getBuildingId());
+                        treeFloor.setFloorId(f.getFloorId());
+                        treeFloor.setName(f.getFloorName());
 
-                            treeFloor.addRoom(treeRoom);
+                        treeBuilding.addFloor(treeFloor);
+
+                        for(Room r : rooms){
+                            if(treeFloor.getName().equals(r.getFloorName())){
+                                TreeRoom treeRoom = new TreeRoom();
+                                treeRoom.setFloorName(r.getFloorName());
+                                treeRoom.setBuildingId(r.getBuildingId());
+                                treeRoom.setName(r.getName());
+                                treeRoom.setRoomId(r.getRoomId());
+
+                                treeFloor.addRoom(treeRoom);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if (tr == null) {
-            Application.getLogger().info("/tree failed, no assets found.");
-            throw new FloorsServiceException();
+        }catch(Exception e){
+            Application.getLogger().info("/tree failed, CN Asset list could not be generated.");
+            throw new BuildingServiceException();
         }
 
         return tr;
@@ -149,7 +150,21 @@ public class BuildingController {
             throw new RoomsServiceException();
         }
 
-        return "UpdateDone";
+        return "Added Building in CN Database";
+    }
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping(method = RequestMethod.POST, path="/buildings/delete/building")
+    @ResponseBody
+    public String deleteSingleCNBuilding(@RequestBody Building newBuilding) {
+        try{
+            repository.delete(newBuilding);
+        }catch(Exception e){
+            Application.getLogger().info("/buildings/delete/building, Building not added.");
+            throw new RoomsServiceException();
+        }
+
+        return "Deleted Building in CN Database";
     }
 
 }

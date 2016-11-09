@@ -133,7 +133,21 @@ public class RoomsController {
             throw new RoomsServiceException();
         }
 
-        return "UpdateDone";
+        return "Added Room to CN Database";
+    }
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping(method = RequestMethod.POST, path="/rooms/delete/room")
+    @ResponseBody
+    public String deleteSingleCNRoom(@RequestBody Room newRoom) {
+        try{
+            repository.delete(newRoom);
+        }catch(Exception e){
+            Application.getLogger().info("/rooms/delete/room, Room not added.");
+            throw new RoomsServiceException();
+        }
+
+        return "Deleted Room in CN Database";
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
@@ -152,7 +166,7 @@ public class RoomsController {
             Application.getLogger().info("/rooms/update/room, Room not updated.");
             throw new RoomsServiceException();
         }
-        return "UpdateDone";
+        return "Updated Room in CN Database";
     }
 
     public RoomsRepository getRepository(){
