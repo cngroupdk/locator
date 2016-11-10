@@ -5,6 +5,7 @@ import React from 'react';
 import { Col, CardTitle, Button, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 import BuildingDropdown from './BuildingDropdown';
 import FloorDropdown from './FloorDropdown';
+import $ from 'jquery';
 
 var AddRoomForm = React.createClass({
 
@@ -15,12 +16,36 @@ var AddRoomForm = React.createClass({
             refAddRoomFloor : null,
             refAddRoomName : "",
             refAddRoomCapacity: "",
+            nodeInfo : this.props.nodeInfo,
+            disableAdd : this.props.disableAdd,
+            selectedRoom : null
 
         };
     },
 
     componentDidMount() {
-        this.state.refAddRoomFloor.disableDropdown(true);
+        this.loadRoomDetails(this.state.nodeInfo);
+    },
+
+    loadRoomDetails(node){
+        if(!(node == null)){
+            var buildingURL = 'http://localhost:8080/rooms/' + node.buildingId + '/' + node.name;
+
+            this.serverRequest = $.get(buildingURL, function (result) {
+
+                if(!(this.state.refAddRoomBuilding == null)) {
+                    this.state.refAddRoomBuilding.updateBuilding(result.buildingId);
+                    this.state.refAddRoomFloor.updateFloor(result.floorName);
+
+                    this.setState({
+                        refAddRoomName : result.name,
+                        refAddRoomCapacity: result.capacity,
+                        selectedRoom: result
+                    });
+                }
+
+            }.bind(this));
+        }
     },
 
     onSelectAddRoomSetBuilding : function(buildingData){
@@ -37,8 +62,19 @@ var AddRoomForm = React.createClass({
         this.setState({refAddRoomCapacity: event.target.value});
     },
 
+    onAddRoomSubmit(){
+        this.onRoomSubmitHandler('add');
+    },
 
-    onAddRoomSubmitHandler(){
+    onDeleteRoomSubmit(){
+        this.onRoomSubmitHandler('delete');
+    },
+
+    onRoomSubmitHandler(type){
+
+        var url = 'http://localhost:8080/rooms/new/room';
+        if (type === "delete")
+            url = 'http://localhost:8080/rooms/delete/room';
 
         var buildingName = this.state.refAddRoomBuilding.getCurrentBuilding().currentBuilding;
         var floorName = this.state.refAddRoomFloor.getCurrentFloor().currentFloor;
@@ -51,23 +87,43 @@ var AddRoomForm = React.createClass({
         if( buildingName!== 'Choose Building' &&
             floorName!== 'Choose Floor' &&
             roomName !== '' &&
-            roomCapacity !== ''){
+            roomCapacity !== '') {
 
-            var rawData = {
-                name : roomName,
-                type : 'Development',
-                capacity : roomCapacity,
-                assignedPeople : 0,
-                buildingId : buildingData.selectedBuilding.buildingId,
-                roomId : 0,
-                styleTop: '0px',
-                styleLeft: '0px',
-                floorName : floorData.selectedFloor.floorName
-            };
+            var rawData = null;
+
+            if (type === "delete") {
+
+                var selected = this.state.selectedRoom;
+                rawData = {
+                    name: selected.name,
+                    type: selected.type,
+                    capacity: selected.capacity,
+                    assignedPeople: selected.assignedPeople,
+                    buildingId: selected.buildingId,
+                    roomId: selected.roomId,
+                    styleTop: selected.styleTop,
+                    styleLeft: selected.styleLeft,
+                    floorName: selected.floorName
+                };
+            }
+            else {
+
+                rawData = {
+                    name: roomName,
+                    type: 'Development',
+                    capacity: roomCapacity,
+                    assignedPeople: 0,
+                    buildingId: buildingData.selectedBuilding.buildingId,
+                    roomId: 0,
+                    styleTop: '0px',
+                    styleLeft: '0px',
+                    floorName: floorData.selectedFloor.floorName
+                };
+            }
 
             var jsonData = JSON.stringify(rawData);
 
-            fetch('http://localhost:8080/rooms/new/room',{
+            fetch(url,{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -102,23 +158,26 @@ var AddRoomForm = React.createClass({
         return (
 
             <Col sm="4">
-                <CardTitle>Add a Room</CardTitle>
+                {this.state.disableAdd === false ? <CardTitle>Add a Room</CardTitle> : null}
+                {this.state.disableAdd === true ? <CardTitle>Room Details</CardTitle> : null}
                 <hr/>
                 <BuildingDropdown className="MyBuilding"
                                   url="http://localhost:8080/buildings"
                                   onChange={this.onSelectAddRoomSetBuilding}
                                   ref={(ref) => this.state.refAddRoomBuilding = ref}
-                                  disabled={false}
+                                  disabled={this.state.disableAdd}
                 />
                 <FloorDropdown  className="MyFloor"
                                 onChange={this.onSelectFloor}
-                                ref={(ref) => this.state.refAddRoomFloor = ref} />
+                                ref={(ref) => this.state.refAddRoomFloor = ref}
+                                disabled={this.state.disableAdd}/>
                 <InputGroup>
                     <InputGroupAddon>Room Name</InputGroupAddon>
                     <Input className="CoordinateInput"
                            placeholder="Type room name..."
                            value={this.state.refAddRoomName}
-                           onChange={this.onAddRoomNameInputChange}/>
+                           onChange={this.onAddRoomNameInputChange}
+                           disabled={this.state.disableAdd}/>
                 </InputGroup>
                 <br />
                 <InputGroup>
@@ -126,12 +185,18 @@ var AddRoomForm = React.createClass({
                     <Input className="CoordinateInput"
                            placeholder="Type room capacity..."
                            value={this.state.refAddRoomCapacity}
-                           onChange={this.onAddRoomCapacityInputChange}/>
+                           onChange={this.onAddRoomCapacityInputChange}
+                           disabled={this.state.disableAdd}/>
                 </InputGroup>
                 <br />
-                <Button id="AddRoomButton"
-                        color="primary"
-                        onClick={this.onAddRoomSubmitHandler}>Submit</Button>
+                {this.state.disableAdd === false ?
+                    <Button id="AddRoomButton"
+                            color="primary"
+                            onClick={this.onAddRoomSubmit}>Submit</Button> : null }
+                {this.state.disableAdd === true ?
+                    <Button id="AddRoomButton"
+                            color="primary"
+                            onClick={this.onDeleteRoomSubmit}>Delete</Button> : null }
             </Col>
         );
     }

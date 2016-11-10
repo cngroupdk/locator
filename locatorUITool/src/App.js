@@ -15,6 +15,10 @@ var App = React.createClass({
 
             notificationSystem : null,
             refTree : null,
+            refSelectedBuilding : null,
+            refSelectedFloor : null,
+            refSelectedRoom : null,
+            openNode : null,
 
             assetsData : [
             {
@@ -48,10 +52,25 @@ var App = React.createClass({
         var roomFormOpenStatus = event.node.roomId;
 
         this.setState({
+            openNode : event.node,
             openBuildingAdd: buildingFormOpenStatus,
             openFloorAdd: floorFormOpenStatus,
             openRoomAdd: roomFormOpenStatus
         });
+
+
+        if(!(this.state.refSelectedBuilding ==null))
+        {
+            this.state.refSelectedBuilding.loadBuildingDetails(event.node);
+        }
+        if(!(this.state.refSelectedFloor == null))
+        {
+            this.state.refSelectedFloor.loadFloorDetails(event.node);
+        }
+        if(!(this.state.refSelectedRoom == null))
+        {
+            this.state.refSelectedRoom.loadRoomDetails(event.node);
+        }
 
     },
 
@@ -106,11 +125,29 @@ var App = React.createClass({
                                                 ref={(ref) => this.state.refTree = ref}/>
                                 </Col>
                                 {this.state.openBuildingAdd != null ? <AddBuildingForm onChange={this.onResponseFromUpdate}
-                                                                                        onValidate={this.showValidationMessage}/> : null}
+                                                                                        onValidate={this.showValidationMessage}
+                                                                                        disableAdd={false} /> : null}
+                                {this.state.openBuildingAdd != null ? <AddBuildingForm ref={(ref) => this.state.refSelectedBuilding = ref}
+                                                                                       onChange={this.onResponseFromUpdate}
+                                                                                       onValidate={this.showValidationMessage}
+                                                                                       disableAdd={true}
+                                                                                       nodeInfo={this.state.openNode}/> : null}
                                 {this.state.openFloorAdd != null ? <AddFloorForm onChange={this.onResponseFromUpdate}
-                                                                                    onValidate={this.showValidationMessage}/>  : null}
+                                                                                    onValidate={this.showValidationMessage}
+                                                                                    disableAdd={false}/>  : null}
+                                {this.state.openFloorAdd != null ? <AddFloorForm ref={(ref) => this.state.refSelectedFloor = ref}
+                                                                                 onChange={this.onResponseFromUpdate}
+                                                                                 onValidate={this.showValidationMessage}
+                                                                                 disableAdd={true}
+                                                                                 nodeInfo={this.state.openNode}/>  : null}
                                 {this.state.openRoomAdd != null ? <AddRoomForm onChange={this.onResponseFromUpdate}
-                                                                                onValidate={this.showValidationMessage}/> : null}
+                                                                               onValidate={this.showValidationMessage}
+                                                                               disableAdd={false}/> : null}
+                                {this.state.openRoomAdd != null ? <AddRoomForm ref={(ref) => this.state.refSelectedRoom = ref}
+                                                                               onChange={this.onResponseFromUpdate}
+                                                                               onValidate={this.showValidationMessage}
+                                                                               disableAdd={true}
+                                                                               nodeInfo={this.state.openNode}/> : null}
                             </Card>
                             {this.state.openRoomAdd != null ? <AddRoomCoordForm onChange={this.onResponseFromUpdate}
                                                                            onValidate={this.showValidationMessage}/> : null}

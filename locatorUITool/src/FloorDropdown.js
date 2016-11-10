@@ -35,6 +35,29 @@ var FloorDropdown = React.createClass({
 
     },
 
+    findFloor : function(data){
+        var length = this.state.data.length;
+        var index = -1;
+        var floorData = null;
+
+        for(var i=0; i < length; i++){
+            floorData =  this.state.data[i];
+            if(floorData.floorName === data.floorName){
+                index = i;
+                break;
+            }
+        }
+
+        var foundData = {
+            floorData,
+            index
+        }
+
+        return(
+            foundData
+        );
+    },
+
     disableDropdown : function(newBool){
         this.setState(
             {disabled : newBool}

@@ -35,6 +35,29 @@ var BuildingDropdown = React.createClass({
 
     },
 
+    findBuilding : function(data){
+        var length = this.state.data.length;
+        var index = -1;
+        var buildingData = null;
+
+        for(var i=0; i < length; i++){
+            buildingData =  this.state.data[i];
+            if(buildingData.buildingId === data.buildingId){
+                index = i;
+                break;
+            }
+        }
+
+        var foundData = {
+            buildingData,
+            index
+        }
+
+        return(
+            foundData
+        );
+    },
+
     disableDropdown : function(newBool){
         this.setState(
             {disabled : newBool}

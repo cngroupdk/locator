@@ -35,6 +35,29 @@ var RoomDropdown = React.createClass({
 
     },
 
+    findRoom : function(data){
+        var length = this.state.data.length;
+        var index = -1;
+        var roomData = null;
+
+        for(var i=0; i < length; i++){
+            roomData =  this.state.data[i];
+            if(roomData.name === data.name){
+                index = i;
+                break;
+            }
+        }
+
+        var foundData = {
+            roomData,
+            index
+        }
+
+        return(
+            foundData
+        );
+    },
+
     getRoomData: function(){
 
         var selectedRoom = this.state.data[this.state.roomIndex];
