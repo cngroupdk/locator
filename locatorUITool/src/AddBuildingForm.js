@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Col, CardTitle, Button, Input, InputGroup, InputGroupAddon} from 'reactstrap';
+import { CardTitle, Button, Input, InputGroup, InputGroupAddon, Modal, ModalHeader, ModalBody} from 'reactstrap';
 import $ from 'jquery';
 
 
@@ -11,7 +11,7 @@ var AddBuildingForm = React.createClass({
 
     getInitialState: function () {
         return {
-
+            modal: false,
             refAddBuildingId : "",
             refAddBuildingName : "",
             refAddBuildingCity : "",
@@ -93,6 +93,26 @@ var AddBuildingForm = React.createClass({
         this.onBuildingSubmitHandler('delete');
     },
 
+    toggle() {
+        var id = this.state.refAddBuildingId;
+        var name = this.state.refAddBuildingName;
+        var city = this.state.refAddBuildingCity;
+        var street = this.state.refAddBuildingStreet;
+        var number = this.state.refAddBuildingNumber;
+        var pc = this.state.refAddBuildingPostalCode;
+
+        if(id !== "" && name !== "" && city !== "" && street !== "" && number !== "" && pc !== "")
+        {
+            this.setState({
+                modal: !this.state.modal
+            });
+        }
+        else{
+            this.props.onValidate();
+        }
+
+    },
+
     onBuildingSubmitHandler(type){
 
         var url = 'http://localhost:8080/buildings/new/building';
@@ -171,7 +191,7 @@ var AddBuildingForm = React.createClass({
 
     render:function() {
         return (
-            <Col sm="4">
+            <div>
                 {this.state.disableAdd === false ? <CardTitle>Add a Building</CardTitle> : null}
                 {this.state.disableAdd === true ? <CardTitle>Building Details</CardTitle> : null}
                 <hr/>
@@ -232,12 +252,35 @@ var AddBuildingForm = React.createClass({
                 {this.state.disableAdd === false ?
                 <Button id="AddRoomButton"
                         color="primary"
-                        onClick={this.onAddBuildingSubmit}>Submit</Button> : null}
+                        onClick={this.toggle}>Submit</Button> : null}
                 {this.state.disableAdd === true ?
                     <Button id="AddRoomButton"
                         color="primary"
-                        onClick={this.onDeleteBuildingSubmit}>Delete</Button> : null}
-            </Col>
+                        onClick={this.toggle}>Delete</Button> : null}
+                <Modal id="AddBuilding"
+                   isOpen={this.state.modal}
+                   toggle={this.toggle}
+                >
+                    <ModalHeader>Confirmation</ModalHeader>
+                    <ModalBody>
+                        <p>Are you sure?</p>
+                        {this.state.disableAdd === false ?
+                        <Button id="EditLocationButton"
+                                onClick={this.onAddBuildingSubmit}>
+                            Submit
+                        </Button> : null}
+                        {this.state.disableAdd === true ?
+                            <Button id="EditLocationButton"
+                                    onClick={this.onDeleteBuildingSubmit}>
+                                Submit
+                            </Button> : null}
+                        <Button id="EditLocationButton"
+                                onClick={this.toggle}>
+                            Cancel
+                        </Button>
+                    </ModalBody>
+                </Modal>
+            </div>
         );
     }
 

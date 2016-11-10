@@ -2,19 +2,22 @@
  * Created by cano on 9.11.2016.
  */
 import React from 'react';
-import { Col, CardTitle, Button, Input, InputGroup, InputGroupAddon} from 'reactstrap';
+import request from 'superagent';
+import { CardTitle, Button, Input, InputGroup, InputGroupAddon, Modal, ModalHeader, ModalBody} from 'reactstrap';
 import BuildingDropdown from './BuildingDropdown';
+import Dropzone from 'react-dropzone';
 import $ from 'jquery';
 
 var AddFloorForm = React.createClass({
 
     getInitialState: function () {
         return {
-
+            modal : false,
             refAddFloorBuilding: null,
             refAddFloorName : "",
             refAddFloorRoomNumber : "",
             refAddFloorURL: "",
+            refNewFile: null,
             nodeInfo : this.props.nodeInfo,
             disableAdd : this.props.disableAdd,
             selectedFloor : null
@@ -64,6 +67,37 @@ var AddFloorForm = React.createClass({
 
     onDeleteFloorSubmit(){
         this.onBuildingSubmitHandler('delete');
+    },
+
+    toggle() {
+        var buildingName = this.state.refAddFloorBuilding.getCurrentBuilding().currentBuilding;
+        var floorName = this.state.refAddFloorName;
+        var floorRoomsNumber = this.state.refAddFloorRoomNumber;
+        var floorURL = this.state.refAddFloorURL;
+
+        if( buildingName!== 'Choose Building' &&
+            floorName !== '' &&
+            floorURL !== '' &&
+            floorRoomsNumber !== ''){
+            this.setState({
+                modal: !this.state.modal
+            });
+        }
+        else{
+            this.props.onValidate();
+        }
+
+    },
+    onSubmitNewFloorplan(){
+        var req = request.post('http://localhost:8080/files/upload').type('image/jpeg');
+        this.state.refNewFile.forEach((file)=> {
+            req.attach(file.name, file);
+        });
+        req.end(
+            console.log('Accepted files')
+        );
+
+        var test = "hello"
     },
 
     onAddFloorSubmitHandler(type){
@@ -143,9 +177,19 @@ var AddFloorForm = React.createClass({
 
     },
 
+    onDrop: function (acceptedFiles, rejectedFiles) {
+        if(acceptedFiles.length > 0 && rejectedFiles.length == 0) {
+            this.setState({
+                refNewFile: acceptedFiles
+            });
+        }
+        console.log('Accepted files: ', acceptedFiles);
+        console.log('Rejected files: ', rejectedFiles);
+    },
+
     render:function() {
         return (
-            <Col sm="4">
+            <div>
                 {this.state.disableAdd === false ? <CardTitle>Add a Floor</CardTitle> : null}
                 {this.state.disableAdd === true ? <CardTitle>Floor Details</CardTitle> : null}
                 <hr/>
@@ -177,21 +221,63 @@ var AddFloorForm = React.createClass({
                 <InputGroup>
                     <InputGroupAddon>Image File</InputGroupAddon>
                     <Input className="CoordinateInput"
-                           placeholder="Type floor image file name..."
+                           placeholder="Add image file name..."
                            value={this.state.refAddFloorURL}
                            onChange={this.onAddFloorURLInputChange}
-                           disabled={this.state.disableAdd}/>
+                           disabled={true}/>
                 </InputGroup>
-                <br />
+                <br/>
+                <Dropzone onDrop={this.onDrop}>
+                    <div>Drop image / Click to Select.</div>
+                </Dropzone>
+
+                {this.state.refNewFile ?
+                <div>
+                    <p>Uploading {this.state.refNewFile.length} files...</p>
+                    <div>{this.state.refNewFile.map((file) => <img id="FloorMapPreview" src={file.preview} />)}</div>
+                    <Button id="AddRoomButton"
+                            color="primary"
+                            onClick={this.onSubmitNewFloorplan}>Upload Image</Button>
+                    <br/>
+                </div> : null}
+
                 {this.state.disableAdd === false ?
                 <Button id="AddRoomButton"
                         color="primary"
-                        onClick={this.onAddFloorSubmit}>Submit</Button> : null }
+                        onClick={this.toggle}>Submit</Button> : null }
+
                 {this.state.disableAdd === true ?
                     <Button id="AddRoomButton"
                             color="primary"
-                            onClick={this.onDeleteFloorSubmit}>Delete</Button> : null }
-            </Col>
+                            onClick={this.toggle}>Delete</Button> : null }
+
+                <Modal id="AddBuilding"
+                       isOpen={this.state.modal}
+                       toggle={this.toggle}
+                >
+                    <ModalHeader>Confirmation</ModalHeader>
+                    <ModalBody>
+                        <p>Are you sure?</p>
+
+                        {this.state.disableAdd === false ?
+                            <Button id="EditLocationButton"
+                                    onClick={this.onAddFloorSubmit}>
+                                Submit
+                            </Button> : null}
+
+                        {this.state.disableAdd === true ?
+                            <Button id="EditLocationButton"
+                                    onClick={this.onDeleteFloorSubmit}>
+                                Submit
+                            </Button> : null}
+
+                        <Button id="EditLocationButton"
+                                onClick={this.toggle}>
+                            Cancel
+                        </Button>
+                    </ModalBody>
+                </Modal>
+            </div>
         );
     }
 });

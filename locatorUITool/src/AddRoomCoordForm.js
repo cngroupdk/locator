@@ -2,7 +2,7 @@
  * Created by cano on 9.11.2016.
  */
 import React from 'react';
-import { Col, Card, CardTitle, Button, Input, InputGroup, InputGroupAddon} from 'reactstrap';
+import { Col, Card, CardTitle, Button, Input, InputGroup, InputGroupAddon, Modal, ModalHeader, ModalBody} from 'reactstrap';
 import BuildingDropdown from './BuildingDropdown';
 import FloorDropdown from './FloorDropdown';
 import RoomDropdown from './RoomDropdown';
@@ -15,6 +15,7 @@ var AddRoomCoordForm = React.createClass({
 
             notificationSystem : null,
             refTree : null,
+            modal : false,
 
             refCoordBuilding : null,
             refCoordFloor : null,
@@ -128,6 +129,29 @@ var AddRoomCoordForm = React.createClass({
         this.state.refCoordIMG.setStyleProps(style);
     },
 
+    toggle() {
+        var buildingName = this.state.refCoordBuilding.getCurrentBuilding().currentBuilding;
+        var floorName = this.state.refCoordFloor.getCurrentFloor().currentFloor;
+        var roomName = this.state.refCoordRoom.getCurrentRoom().currentRoom;
+        var top = this.state.refCoordY;
+        var left = this.state.refCoordX;
+
+        if( buildingName!== 'Choose Building' &&
+            floorName!== 'Choose Floor' &&
+            roomName !== 'Choose Room' &&
+            top!== '' &&
+            left!== '')
+        {
+            this.setState({
+                modal: !this.state.modal
+            });
+        }
+        else{
+            this.props.onValidate();
+        }
+
+    },
+
     onSetCoordSubmitHandler: function () {
 
         var buildingName = this.state.refCoordBuilding.getCurrentBuilding().currentBuilding;
@@ -226,7 +250,24 @@ var AddRoomCoordForm = React.createClass({
                     <br />
                     <Button id="RoomCoordButton"
                             color="primary"
-                            onClick={this.onSetCoordSubmitHandler}>Submit</Button>
+                            onClick={this.toggle}>Submit</Button>
+                    <Modal id="AddBuilding"
+                           isOpen={this.state.modal}
+                           toggle={this.toggle}
+                    >
+                        <ModalHeader>Confirmation</ModalHeader>
+                        <ModalBody>
+                            <p>Are you sure?</p>
+                            <Button id="EditLocationButton"
+                                    onClick={this.onSetCoordSubmitHandler}>
+                                Submit
+                            </Button>
+                            <Button id="EditLocationButton"
+                                    onClick={this.toggle}>
+                                Cancel
+                            </Button>
+                        </ModalBody>
+                    </Modal>
                 </Col>
                 <Col xs="5">
                     <ImageMap id="floorMap"

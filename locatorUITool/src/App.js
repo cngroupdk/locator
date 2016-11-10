@@ -1,6 +1,6 @@
 import React from 'react';
 import NotificationSystem from 'react-notification-system';
-import { Container, Row, Col, Card} from 'reactstrap';
+import { Container, Row, Col, Card, Button} from 'reactstrap';
 import AssetsTree from './AssetsTree';
 import AddBuildingForm from './AddBuildingForm';
 import AddFloorForm from './AddFloorForm';
@@ -27,9 +27,14 @@ var App = React.createClass({
             }
             ],
 
+            openBuildingDetails : null,
+            openFloorDetails : null,
+            openRoomDetails : null,
+
             openBuildingAdd : null,
             openFloorAdd : null,
             openRoomAdd : null
+
         };
     },
 
@@ -53,9 +58,13 @@ var App = React.createClass({
 
         this.setState({
             openNode : event.node,
-            openBuildingAdd: buildingFormOpenStatus,
-            openFloorAdd: floorFormOpenStatus,
-            openRoomAdd: roomFormOpenStatus
+            openBuildingDetails: buildingFormOpenStatus,
+            openFloorDetails: floorFormOpenStatus,
+            openRoomDetails: roomFormOpenStatus,
+
+            openBuildingAdd : null,
+            openFloorAdd : null,
+            openRoomAdd : null
         });
 
 
@@ -96,6 +105,10 @@ var App = React.createClass({
         this.showReply(responseData);
         this.state.refTree.loadCommentsFromServer('http://localhost:8080/tree/');
         this.setState({
+            openBuildingDetails : null,
+            openFloorDetails : null,
+            openRoomDetails : null,
+
             openBuildingAdd : null,
             openFloorAdd : null,
             openRoomAdd : null
@@ -106,6 +119,27 @@ var App = React.createClass({
         var message = { content: "Please fill all parameters before clicking \"Submit\"",
             type: "info"};
         this.addNotification(message);
+    },
+
+    openAddBuildingForm:function(){
+        var openBuildingDetails = this.state.openBuildingDetails;
+        this.setState({
+            openBuildingAdd : openBuildingDetails
+        });
+    },
+
+    openAddFloorForm:function(){
+        var openFloorDetails = this.state.openFloorDetails;
+        this.setState({
+            openFloorAdd : openFloorDetails
+        });
+    },
+
+    openAddRoomForm:function(){
+        var openRoomDetails = this.state.openRoomDetails;
+        this.setState({
+            openRoomAdd : openRoomDetails
+        });
     },
 
     render:function() {
@@ -119,37 +153,58 @@ var App = React.createClass({
                         <NotificationSystem ref={(ref) => this.state.notificationSystem = ref} />
                         <Row>
                             <Card block >
-                                <Col sm="3">
-                                    <AssetsTree assetsData={this.state.assetsData}
-                                                onChange={this.updateFormStatus}
-                                                ref={(ref) => this.state.refTree = ref}/>
-                                </Col>
-                                {this.state.openBuildingAdd != null ? <AddBuildingForm onChange={this.onResponseFromUpdate}
-                                                                                        onValidate={this.showValidationMessage}
-                                                                                        disableAdd={false} /> : null}
-                                {this.state.openBuildingAdd != null ? <AddBuildingForm ref={(ref) => this.state.refSelectedBuilding = ref}
-                                                                                       onChange={this.onResponseFromUpdate}
-                                                                                       onValidate={this.showValidationMessage}
-                                                                                       disableAdd={true}
-                                                                                       nodeInfo={this.state.openNode}/> : null}
-                                {this.state.openFloorAdd != null ? <AddFloorForm onChange={this.onResponseFromUpdate}
-                                                                                    onValidate={this.showValidationMessage}
-                                                                                    disableAdd={false}/>  : null}
-                                {this.state.openFloorAdd != null ? <AddFloorForm ref={(ref) => this.state.refSelectedFloor = ref}
+                            <Col sm="3">
+                                <AssetsTree assetsData={this.state.assetsData}
+                                            onChange={this.updateFormStatus}
+                                            ref={(ref) => this.state.refTree = ref}/>
+                            </Col>
+                            <Col sm="4">
+                                {this.state.openBuildingDetails != null ? <AddBuildingForm ref={(ref) => this.state.refSelectedBuilding = ref}
+                                                                                           onChange={this.onResponseFromUpdate}
+                                                                                           onValidate={this.showValidationMessage}
+                                                                                           disableAdd={true}
+                                                                                           nodeInfo={this.state.openNode}/> : null}
+                                {this.state.openBuildingDetails != null ? <br /> : null}
+                                {this.state.openBuildingDetails != null ? <Button onClick={this.openAddBuildingForm}>Create a New Building</Button> : null}
+                            </Col>
+                            <Col sm="4">
+                                {(this.state.openBuildingDetails != null && this.state.openBuildingAdd != null)?
+                                                                          <AddBuildingForm onChange={this.onResponseFromUpdate}
+                                                                                           onValidate={this.showValidationMessage}
+                                                                                           disableAdd={false} /> : null}
+                            </Col>
+                            <Col sm="4">
+                                {this.state.openFloorDetails != null ? <AddFloorForm ref={(ref) => this.state.refSelectedFloor = ref}
                                                                                  onChange={this.onResponseFromUpdate}
                                                                                  onValidate={this.showValidationMessage}
                                                                                  disableAdd={true}
                                                                                  nodeInfo={this.state.openNode}/>  : null}
-                                {this.state.openRoomAdd != null ? <AddRoomForm onChange={this.onResponseFromUpdate}
-                                                                               onValidate={this.showValidationMessage}
-                                                                               disableAdd={false}/> : null}
-                                {this.state.openRoomAdd != null ? <AddRoomForm ref={(ref) => this.state.refSelectedRoom = ref}
+                                {this.state.openFloorDetails != null ? <br /> : null}
+                                {this.state.openFloorDetails != null ? <Button onClick={this.openAddFloorForm}>Create a New Floor</Button> : null}
+                            </Col>
+                            <Col sm="4">
+                                {(this.state.openFloorDetails != null && this.state.openFloorAdd != null) ?
+                                                                        <AddFloorForm onChange={this.onResponseFromUpdate}
+                                                                                      onValidate={this.showValidationMessage}
+                                                                                      disableAdd={false}/>  : null}
+                            </Col>
+                            <Col sm="4">
+                                {this.state.openRoomDetails != null ? <AddRoomForm ref={(ref) => this.state.refSelectedRoom = ref}
                                                                                onChange={this.onResponseFromUpdate}
                                                                                onValidate={this.showValidationMessage}
                                                                                disableAdd={true}
                                                                                nodeInfo={this.state.openNode}/> : null}
+                                {this.state.openRoomDetails != null ? <br /> : null}
+                                {this.state.openRoomDetails != null ? <Button onClick={this.openAddRoomForm}>Create a New Room</Button> : null}
+                            </Col>
+                            <Col sm="4">
+                                {(this.state.openRoomDetails != null && this.state.openRoomAdd != null) ?
+                                                                      <AddRoomForm onChange={this.onResponseFromUpdate}
+                                                                                   onValidate={this.showValidationMessage}
+                                                                                   disableAdd={false}/> : null}
+                            </Col>
                             </Card>
-                            {this.state.openRoomAdd != null ? <AddRoomCoordForm onChange={this.onResponseFromUpdate}
+                            {this.state.openRoomDetails != null ? <AddRoomCoordForm onChange={this.onResponseFromUpdate}
                                                                            onValidate={this.showValidationMessage}/> : null}
                         </Row>
                     </Container>

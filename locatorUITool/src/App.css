@@ -17,3 +17,7 @@ body {
   border: 5px solid #e2ecff;
   border-radius: 5px;
 }
+
+#FloorMapPreview {
+  max-width: 200px;
+}
