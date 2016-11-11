@@ -20,7 +20,8 @@ var AddFloorForm = React.createClass({
             refNewFile: null,
             nodeInfo : this.props.nodeInfo,
             disableAdd : this.props.disableAdd,
-            selectedFloor : null
+            selectedFloor : null,
+            disableIMG : true,
         };
     },
 
@@ -87,17 +88,10 @@ var AddFloorForm = React.createClass({
             this.props.onValidate();
         }
 
-    },
-    onSubmitNewFloorplan(){
-        var req = request.post('http://localhost:8080/files/upload').type('image/jpeg');
-        this.state.refNewFile.forEach((file)=> {
-            req.attach(file.name, file);
+        this.setState({
+            disableIMG: true
         });
-        req.end(
-            console.log('Accepted files')
-        );
 
-        var test = "hello"
     },
 
     onAddFloorSubmitHandler(type){
@@ -187,6 +181,34 @@ var AddFloorForm = React.createClass({
         console.log('Rejected files: ', rejectedFiles);
     },
 
+    onShowConfirmation(){
+        this.setState({
+            disableIMG : false,
+            modal: !this.state.modal
+        });
+    },
+
+    onSubmitNewFloorplan(){
+
+        var req = request.post('http://localhost:8080/files/upload');
+
+        this.state.refNewFile.forEach((file)=> {
+            req.attach('file', file);
+        });
+
+        req.end(
+            function(error, response){
+                var messageContent = "Success! New Picture Submitted.";
+                this.props.onChange({response, messageContent});
+            }
+        );
+
+        this.setState({
+            disableIMG : false
+        });
+
+    },
+
     render:function() {
         return (
             <div>
@@ -235,12 +257,13 @@ var AddFloorForm = React.createClass({
                 <div>
                     <p>Uploading {this.state.refNewFile.length} files...</p>
                     <div>{this.state.refNewFile.map((file) => <img id="FloorMapPreview" src={file.preview} />)}</div>
+                    <br/>
                     <Button id="AddRoomButton"
                             color="primary"
-                            onClick={this.onSubmitNewFloorplan}>Upload Image</Button>
+                            onClick={this.onShowConfirmation}>Upload Image</Button>
                     <br/>
                 </div> : null}
-
+                <br/>
                 {this.state.disableAdd === false ?
                 <Button id="AddRoomButton"
                         color="primary"
@@ -265,10 +288,17 @@ var AddFloorForm = React.createClass({
                                 Submit
                             </Button> : null}
 
-                        {this.state.disableAdd === true ?
+                        {(this.state.disableAdd === true && this.state.disableIMG === true)?
                             <Button id="EditLocationButton"
                                     onClick={this.onDeleteFloorSubmit}>
-                                Submit
+                                Submit Deletion
+                            </Button> : null}
+
+
+                        {this.state.disableIMG === false ?
+                            <Button id="EditLocationButton"
+                                    onClick={this.onSubmitNewFloorplan}>
+                                Submit Image
                             </Button> : null}
 
                         <Button id="EditLocationButton"

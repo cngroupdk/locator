@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.nio.file.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -53,13 +54,22 @@ public class FileUploadController {
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
-    @PostMapping("/files/upload")
+    @PostMapping(path="/files/upload", headers=("content-type=multipart/*"), consumes = "image/jpeg")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
 
         storageService.store(file);
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        Path movefrom = storageService.load(file.getOriginalFilename());
+        Path target = Paths.get("src/main/resources/static",file.getOriginalFilename());
+
+        try {
+            Files.move(movefrom, target, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            System.err.println(e);
+        }
 
         return "redirect:/";
     }

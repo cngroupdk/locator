@@ -280,9 +280,10 @@ var App=React.createClass({
         <div className="selectorBox">
           <Container className="Container">
             <NotificationSystem ref={(ref) => this.state.notificationSystem = ref} />
+            <hr/>
+            <h1 className="display-3">Locator</h1>
+            <p className="lead">CN Group - Staff Locator</p>
             <Card block>
-              <CardTitle>Resource Locator</CardTitle>
-              <hr/>
               <CardSubtitle>Select an employee, floor number or room to display the location</CardSubtitle>
               <Row>
                 <Col sm="3">
@@ -306,7 +307,6 @@ var App=React.createClass({
                 </Col>
               </Row>
               <Row>
-                <hr/>
                 <Col xs="12">
                   <ImageMap id="FloorMap"
                             ref={(ref) => this.state.myMap = ref}
