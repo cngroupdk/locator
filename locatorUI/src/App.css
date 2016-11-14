@@ -9,11 +9,11 @@ body {
 
 #root {
   padding: 35px;
-  background: #e2ecff;
+  background: azure;
 }
 
-.selectorBox {
-
+.card {
+  background: inherit;
 }
 
 .Container {
@@ -23,7 +23,10 @@ body {
 .EditLocationCard{
   padding: 15px;
 }
-
+#FloorMap {
+  border: 5px solid azure;
+  border-radius: 25px;
+}
 #Staff.cardImg{
   visibility: hidden;
   transition: all 0.5s;

@@ -185,6 +185,8 @@ var AddRoomCoordForm = React.createClass({
             var jsonData = JSON.stringify(rawData);
             fetch('http://localhost:8080/rooms/update/room',{
                 method: 'POST',
+                mode: 'cors',
+                redirect: 'follow',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'

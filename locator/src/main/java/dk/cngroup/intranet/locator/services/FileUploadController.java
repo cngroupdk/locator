@@ -55,6 +55,7 @@ public class FileUploadController {
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @PostMapping(path="/files/upload", headers=("content-type=multipart/*"), consumes = "image/jpeg")
+    @ResponseBody
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
 

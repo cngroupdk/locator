@@ -2,7 +2,6 @@
  * Created by cano on 9.11.2016.
  */
 import React from 'react';
-import request from 'superagent';
 import { CardTitle, Button, Input, InputGroup, InputGroupAddon, Modal, ModalHeader, ModalBody} from 'reactstrap';
 import BuildingDropdown from './BuildingDropdown';
 import Dropzone from 'react-dropzone';
@@ -63,11 +62,11 @@ var AddFloorForm = React.createClass({
     },
 
     onAddFloorSubmit(){
-        this.onBuildingSubmitHandler('add');
+        this.onFloorSubmitHandler('add');
     },
 
     onDeleteFloorSubmit(){
-        this.onBuildingSubmitHandler('delete');
+        this.onFloorSubmitHandler('delete');
     },
 
     toggle() {
@@ -94,11 +93,14 @@ var AddFloorForm = React.createClass({
 
     },
 
-    onAddFloorSubmitHandler(type){
+    onFloorSubmitHandler(type){
 
         var url = 'http://localhost:8080/floors/new/floor';
-        if (type === "delete")
+        var messageContent = "Success! New Floor Submitted.";
+        if (type === "delete"){
             url = 'http://localhost:8080/floors/delete/floor';
+            messageContent = "Success! New Floor Deleted.";
+        }
 
         var buildingName = this.state.refAddFloorBuilding.getCurrentBuilding().currentBuilding;
         var floorName = this.state.refAddFloorName;
@@ -141,6 +143,8 @@ var AddFloorForm = React.createClass({
 
             fetch(url,{
                 method: 'POST',
+                mode: 'cors',
+                redirect: 'follow',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -148,10 +152,9 @@ var AddFloorForm = React.createClass({
                 body: jsonData
             })
             .then((response) => {
-                var messageContent = "Success! New Floor Submitted.";
                 this.props.onChange({response, messageContent});
             }).catch((response) => {
-                var messageContent = "Error, New Floor Not Submitted. Please Contact Your Administrator.";
+                var messageContent = "Error, Floor Update Not Submitted. Please Contact Your Administrator.";
                 this.props.onChange({response, messageContent});
             });
         }
@@ -190,18 +193,26 @@ var AddFloorForm = React.createClass({
 
     onSubmitNewFloorplan(){
 
-        var req = request.post('http://localhost:8080/files/upload');
+        var data = new FormData();
 
         this.state.refNewFile.forEach((file)=> {
-            req.attach('file', file);
+            data.append('file', file);
         });
 
-        req.end(
-            function(error, response){
-                var messageContent = "Success! New Picture Submitted.";
-                this.props.onChange({response, messageContent});
-            }
-        );
+
+        fetch('http://localhost:8080/files/upload',{
+            method: 'POST',
+            mode: 'cors',
+            redirect: 'follow',
+            body: data
+        })
+        .then((response) => {
+            var messageContent = "Success! New Building Submitted.";
+            this.props.onChange({response, messageContent});
+        }).catch((response) => {
+            var messageContent = "Error, New Building Not Submitted. Please Contact Your Administrator.";
+            this.props.onChange({response, messageContent});
+        });
 
         this.setState({
             disableIMG : false
@@ -246,7 +257,7 @@ var AddFloorForm = React.createClass({
                            placeholder="Add image file name..."
                            value={this.state.refAddFloorURL}
                            onChange={this.onAddFloorURLInputChange}
-                           disabled={true}/>
+                           disabled={this.state.disableAdd}/>
                 </InputGroup>
                 <br/>
                 <Dropzone onDrop={this.onDrop}>

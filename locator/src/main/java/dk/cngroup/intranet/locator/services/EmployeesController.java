@@ -71,7 +71,7 @@ public class EmployeesController {
             throw new EmployeesServiceException();
         }
 
-        return "UpdateDone";
+        return "redirect:/";
     }
 
     public StaffMemberRepository getRepository(){

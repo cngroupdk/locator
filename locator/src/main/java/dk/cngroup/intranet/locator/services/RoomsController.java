@@ -133,7 +133,7 @@ public class RoomsController {
             throw new RoomsServiceException();
         }
 
-        return "Added Room to CN Database";
+        return "redirect:/";
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
@@ -147,7 +147,7 @@ public class RoomsController {
             throw new RoomsServiceException();
         }
 
-        return "Deleted Room in CN Database";
+        return "redirect:/";
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
@@ -166,7 +166,7 @@ public class RoomsController {
             Application.getLogger().info("/rooms/update/room, Room not updated.");
             throw new RoomsServiceException();
         }
-        return "Updated Room in CN Database";
+        return "redirect:/";
     }
 
     public RoomsRepository getRepository(){

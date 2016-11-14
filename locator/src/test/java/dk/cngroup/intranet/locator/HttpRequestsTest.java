@@ -93,7 +93,7 @@ public class HttpRequestsTest {
                         "\"lastName\":\"Melegova\"," +
                         "\"abbreviation\":\"PME\"," +
                         "\"role\":\"Developer\"," +
-                        "\"email\":\"prakovce1@gmail.com\"," +
+                        "\"email\":\"melegova@gmail.com\"," +
                         "\"location\":\"KM1@Mezzanine@KR9\"," +
                         "\"detail\":\"\"," +
                         "\"extension\":\"\"," +
@@ -107,7 +107,7 @@ public class HttpRequestsTest {
                         "\"lastName\":\"Zubataia\"," +
                         "\"abbreviation\":\"EZU\"," +
                         "\"role\":\"Developer\"," +
-                        "\"email\":\"ecaterina.zubataia@cngroup.cz\"," +
+                        "\"email\":\"zubataia@cngroup.cz\"," +
                         "\"location\":\"K5@2nd Floor@KR9\"," +
                         "\"detail\":\"\"," +
                         "\"extension\":\"\"," +
@@ -127,20 +127,6 @@ public class HttpRequestsTest {
                         "\"extension\":\"\"," +
                         "\"voIP\":\"\"," +
                         "\"id\":\"pipal\"" +
-                    "}," +
-                    "{" +
-                        "\"employeeGuid\":6," +
-                        "\"managerId\":\"steen_westh\"," +
-                        "\"firstName\":\"Martina\"," +
-                        "\"lastName\":\"Volsicka Gombarova\"," +
-                        "\"abbreviation\":\"MVG\"," +
-                        "\"role\":\"HR\"," +
-                        "\"email\":\"volsicka_gombarova@cngroup.cz\"," +
-                        "\"location\":\"106@1st Floor@20\"," +
-                        "\"detail\":\"CFO\"," +
-                        "\"extension\":\"157\"," +
-                        "\"voIP\":\"357\"," +
-                        "\"id\":\"volsicka_gombarova\"" +
                     "}" +
                 "]"
             ));

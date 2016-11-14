@@ -150,7 +150,7 @@ public class BuildingController {
             throw new RoomsServiceException();
         }
 
-        return "Added Building in CN Database";
+        return "redirect:/";
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
@@ -164,7 +164,7 @@ public class BuildingController {
             throw new RoomsServiceException();
         }
 
-        return "Deleted Building in CN Database";
+        return "redirect:/";
     }
 
 }

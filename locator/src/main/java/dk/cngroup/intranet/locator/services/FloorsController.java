@@ -104,7 +104,7 @@ public class FloorsController {
             throw new FloorsServiceException();
         }
 
-        return "Added Floor in CN Database";
+        return "redirect:/";
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
@@ -118,7 +118,7 @@ public class FloorsController {
             throw new FloorsServiceException();
         }
 
-        return "Deleted Floor in CN Database";
+        return "redirect:/";
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
@@ -140,7 +140,7 @@ public class FloorsController {
             Application.getLogger().info("/floors/update/floor, Floor not updated.");
             throw new FloorsServiceException();
         }
-        return "Updated Floor in CN Database";
+        return "redirect:/";
     }
 
     public FloorsRepository getRepository(){

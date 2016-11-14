@@ -228,6 +228,8 @@ var App=React.createClass({
       var jsonData = JSON.stringify(employeeData);
       fetch('http://localhost:8080/employees/update/employee',{
         method: 'POST',
+        mode: 'cors',
+        redirect: 'follow',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -283,7 +285,7 @@ var App=React.createClass({
             <hr/>
             <h1 className="display-3">Locator</h1>
             <p className="lead">CN Group - Staff Locator</p>
-            <Card block>
+            <Card className="card" block>
               <CardSubtitle>Select an employee, floor number or room to display the location</CardSubtitle>
               <Row>
                 <Col sm="3">

@@ -160,6 +160,8 @@ var AddBuildingForm = React.createClass({
 
             fetch(url,{
                 method: 'POST',
+                mode: 'cors',
+                redirect: 'follow',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'

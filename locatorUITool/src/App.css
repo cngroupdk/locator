@@ -7,9 +7,17 @@ body {
   padding: 2rem;
 }
 
+#root {
+  padding: 35px;
+  background: azure;
+}
+
+.card{
+  background: inherit;
+}
+
 .AddRoomBox {
   padding: 35px;
-  background: #e2ecff;
 }
 
 .FloorMap {
