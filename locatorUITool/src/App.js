@@ -122,23 +122,28 @@ var App = React.createClass({
     },
 
     openAddBuildingForm:function(){
-        var openBuildingDetails = this.state.openBuildingDetails;
+
         this.setState({
-            openBuildingAdd : openBuildingDetails
+            openBuildingDetails : null,
+            openBuildingAdd : true,
+            openFloorDetails : null,
+            openFloorAdd : null,
+            openRoomAdd : null,
+            openRoomDetails : null
         });
     },
 
     openAddFloorForm:function(){
-        var openFloorDetails = this.state.openFloorDetails;
+        var openBuildingDetails = this.state.openBuildingDetails;
         this.setState({
-            openFloorAdd : openFloorDetails
+            openFloorAdd : openBuildingDetails
         });
     },
 
     openAddRoomForm:function(){
-        var openRoomDetails = this.state.openRoomDetails;
+        var openFloorDetails = this.state.openFloorDetails;
         this.setState({
-            openRoomAdd : openRoomDetails
+            openRoomAdd : openFloorDetails
         });
     },
 
@@ -157,55 +162,81 @@ var App = React.createClass({
                                 <AssetsTree assetsData={this.state.assetsData}
                                             onChange={this.updateFormStatus}
                                             ref={(ref) => this.state.refTree = ref}/>
+                                {(this.state.openBuildingDetails == null && this.state.openFloorDetails == null)?
+                                    <div>
+                                        <hr/>
+                                        <Button onClick={this.openAddBuildingForm}>Create a New Building</Button>
+                                    </div>
+                                    : null }
+                                {this.state.openBuildingDetails != null ?
+                                    <div>
+                                        <hr/>
+                                        <Button onClick={this.openAddFloorForm}>Create a New Floor</Button>
+                                    </div>
+                                    : null }
+                                {this.state.openFloorDetails != null ?
+                                    <div>
+                                        <hr/>
+                                        <Button onClick={this.openAddRoomForm}>Create a New Room</Button>
+                                    </div>
+                                    : null }
                             </Col>
+                            {this.state.openBuildingDetails != null ?
                             <Col sm="4">
-                                {this.state.openBuildingDetails != null ? <AddBuildingForm ref={(ref) => this.state.refSelectedBuilding = ref}
+                                <AddBuildingForm ref={(ref) => this.state.refSelectedBuilding = ref}
                                                                                            onChange={this.onResponseFromUpdate}
                                                                                            onValidate={this.showValidationMessage}
                                                                                            disableAdd={true}
-                                                                                           nodeInfo={this.state.openNode}/> : null}
-                                {this.state.openBuildingDetails != null ? <br /> : null}
-                                {this.state.openBuildingDetails != null ? <Button onClick={this.openAddBuildingForm}>Create a New Building</Button> : null}
-                            </Col>
+                                                                                           nodeInfo={this.state.openNode}/>
+                            </Col> : null}
+                            {this.state.openBuildingAdd != null ?
                             <Col sm="4">
-                                {(this.state.openBuildingDetails != null && this.state.openBuildingAdd != null)?
-                                                                          <AddBuildingForm onChange={this.onResponseFromUpdate}
-                                                                                           onValidate={this.showValidationMessage}
-                                                                                           disableAdd={false} /> : null}
+                                <AddBuildingForm onChange={this.onResponseFromUpdate}
+                                                 onValidate={this.showValidationMessage}
+                                                 disableAdd={false} />
                             </Col>
+                            : null}
+                            {this.state.openFloorDetails != null ?
                             <Col sm="4">
-                                {this.state.openFloorDetails != null ? <AddFloorForm ref={(ref) => this.state.refSelectedFloor = ref}
+                                 <AddFloorForm ref={(ref) => this.state.refSelectedFloor = ref}
                                                                                  onChange={this.onResponseFromUpdate}
                                                                                  onValidate={this.showValidationMessage}
                                                                                  disableAdd={true}
-                                                                                 nodeInfo={this.state.openNode}/>  : null}
-                                {this.state.openFloorDetails != null ? <br /> : null}
-                                {this.state.openFloorDetails != null ? <Button onClick={this.openAddFloorForm}>Create a New Floor</Button> : null}
+                                                                                 nodeInfo={this.state.openNode}/>
                             </Col>
+                            : null}
+                            {this.state.openFloorAdd != null ?
                             <Col sm="4">
-                                {(this.state.openFloorDetails != null && this.state.openFloorAdd != null) ?
-                                                                        <AddFloorForm onChange={this.onResponseFromUpdate}
-                                                                                      onValidate={this.showValidationMessage}
-                                                                                      disableAdd={false}/>  : null}
+                                <AddFloorForm onChange={this.onResponseFromUpdate}
+                                              onValidate={this.showValidationMessage}
+                                              disableAdd={false}
+                                              nodeInfo={this.state.openNode}
+                                              addingFloor ={false}/>
                             </Col>
+                            : null}
+                            {this.state.openRoomDetails != null ?
                             <Col sm="4">
-                                {this.state.openRoomDetails != null ? <AddRoomForm ref={(ref) => this.state.refSelectedRoom = ref}
-                                                                               onChange={this.onResponseFromUpdate}
-                                                                               onValidate={this.showValidationMessage}
-                                                                               disableAdd={true}
-                                                                               nodeInfo={this.state.openNode}/> : null}
-                                {this.state.openRoomDetails != null ? <br /> : null}
-                                {this.state.openRoomDetails != null ? <Button onClick={this.openAddRoomForm}>Create a New Room</Button> : null}
+                                <AddRoomForm ref={(ref) => this.state.refSelectedRoom = ref}
+                                             onChange={this.onResponseFromUpdate}
+                                             onValidate={this.showValidationMessage}
+                                             disableAdd={true}
+                                             nodeInfo={this.state.openNode}/>
+                                <br />
                             </Col>
+                            : null}
+                            {this.state.openRoomAdd != null ?
                             <Col sm="4">
-                                {(this.state.openRoomDetails != null && this.state.openRoomAdd != null) ?
-                                                                      <AddRoomForm onChange={this.onResponseFromUpdate}
-                                                                                   onValidate={this.showValidationMessage}
-                                                                                   disableAdd={false}/> : null}
+                                <AddRoomForm onChange={this.onResponseFromUpdate}
+                                             onValidate={this.showValidationMessage}
+                                             nodeInfo={this.state.openNode}
+                                             addingRoom ={true}
+                                             disableAdd={false}/>
                             </Col>
+                                : null}
                             </Card>
                             {this.state.openRoomDetails != null ? <AddRoomCoordForm onChange={this.onResponseFromUpdate}
-                                                                           onValidate={this.showValidationMessage}/> : null}
+                                                                                    onValidate={this.showValidationMessage}
+                                                                                    nodeInfo={this.state.openNode}/> : null}
                         </Row>
                     </Container>
                     <hr/>

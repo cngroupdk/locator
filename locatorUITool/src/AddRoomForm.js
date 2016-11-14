@@ -29,7 +29,11 @@ var AddRoomForm = React.createClass({
 
     loadRoomDetails(node){
         if(!(node == null)){
-            var buildingURL = 'http://localhost:8080/rooms/' + node.buildingId + '/' + node.name;
+            var buildingURL = 'http://localhost:8080/floors/' + node.buildingId + '/' + node.name;
+
+            if(this.props.addingRoom == null) {
+                buildingURL = 'http://localhost:8080/rooms/' + node.buildingId + '/' + node.name;
+            }
 
             this.serverRequest = $.get(buildingURL, function (result) {
 
@@ -37,11 +41,13 @@ var AddRoomForm = React.createClass({
                     this.state.refAddRoomBuilding.updateBuilding(result.buildingId);
                     this.state.refAddRoomFloor.updateFloor(result.floorName);
 
-                    this.setState({
-                        refAddRoomName : result.name,
-                        refAddRoomCapacity: result.capacity,
-                        selectedRoom: result
-                    });
+                    if(this.props.addingRoom == null) {
+                        this.setState({
+                            refAddRoomName : result.name,
+                            refAddRoomCapacity: result.capacity,
+                            selectedRoom: result
+                        });
+                    }
                 }
 
             }.bind(this));
@@ -63,11 +69,13 @@ var AddRoomForm = React.createClass({
     },
 
     onAddRoomSubmit(){
-        this.onRoomSubmitHandler('add');
+        this.onRoomSubmitHandler({type:'add', url:'http://localhost:8080/rooms/new/room',
+        messageContent:'Room Added'});
     },
 
     onDeleteRoomSubmit(){
-        this.onRoomSubmitHandler('delete');
+        this.onRoomSubmitHandler({type:'delete', url:'http://localhost:8080/rooms/delete/room',
+        messageContent:'Room Deleted'});
     },
 
     toggle() {
@@ -90,16 +98,17 @@ var AddRoomForm = React.createClass({
 
     },
 
-    onRoomSubmitHandler(type){
+    onRoomSubmitHandler(data){
 
-        var url = 'http://localhost:8080/rooms/new/room';
-        if (type === "delete")
-            url = 'http://localhost:8080/rooms/delete/room';
+        var url = data.url;
+        var type = data.type;
+        var messageContent = data.messageContent;
 
         var buildingName = this.state.refAddRoomBuilding.getCurrentBuilding().currentBuilding;
         var floorName = this.state.refAddRoomFloor.getCurrentFloor().currentFloor;
         var roomName = this.state.refAddRoomName;
         var roomCapacity = this.state.refAddRoomCapacity;
+        var passedValidation = false;
 
         var buildingData = this.state.refAddRoomBuilding.getBuildingData();
         var floorData = this.state.refAddRoomFloor.getFloorData();
@@ -133,11 +142,11 @@ var AddRoomForm = React.createClass({
                     type: 'Development',
                     capacity: roomCapacity,
                     assignedPeople: 0,
-                    buildingId: buildingData.selectedBuilding.buildingId,
+                    buildingId: buildingName,
                     roomId: 0,
                     styleTop: '0px',
                     styleLeft: '0px',
-                    floorName: floorData.selectedFloor.floorName
+                    floorName: floorName
                 };
             }
 
@@ -154,22 +163,25 @@ var AddRoomForm = React.createClass({
                 body: jsonData
             })
             .then((response) => {
-                var messageContent = "Success! New Room Submitted.";
                 this.props.onChange({response, messageContent});
+                passedValidation = true;
             }).catch((response) => {
-                var messageContent = "Error, New Room Not Submitted. Please Contact Your Administrator.";
+                var messageContent = "Error, Process Not Completed. Please Contact Your Administrator.";
                 this.props.onChange({response, messageContent});
             });
         }
         else{
             this.props.onValidate();
         }
-        this.state.refAddRoomBuilding.updateBuilding("Choose Building");
-        this.state.refAddRoomFloor.updateFloor("Choose Floor");
-        this.setState({
-            refAddRoomName : "",
-            refAddRoomCapacity : ""
-        });
+
+        if(passedValidation === true){
+            this.state.refAddRoomBuilding.updateBuilding("Choose Building");
+            this.state.refAddRoomFloor.updateFloor("Choose Floor");
+            this.setState({
+                refAddRoomName : "",
+                refAddRoomCapacity : ""
+            });
+        }
     },
 
     onSelectFloor : function() {
@@ -187,7 +199,7 @@ var AddRoomForm = React.createClass({
                                   url="http://localhost:8080/buildings"
                                   onChange={this.onSelectAddRoomSetBuilding}
                                   ref={(ref) => this.state.refAddRoomBuilding = ref}
-                                  disabled={this.state.disableAdd}
+                                  disabled={true}
                 />
                 <FloorDropdown  className="MyFloor"
                                 onChange={this.onSelectFloor}
@@ -214,7 +226,7 @@ var AddRoomForm = React.createClass({
                 {this.state.disableAdd === false ?
                     <Button id="AddRoomButton"
                             color="primary"
-                            onClick={this.toggle}>Submit</Button> : null }
+                            onClick={this.onAddRoomSubmit}>Submit</Button> : null }
                 {this.state.disableAdd === true ?
                     <Button id="AddRoomButton"
                             color="primary"
@@ -226,15 +238,10 @@ var AddRoomForm = React.createClass({
                     <ModalHeader>Confirmation</ModalHeader>
                     <ModalBody>
                         <p>Are you sure?</p>
-                        {this.state.disableAdd === false ?
-                            <Button id="EditLocationButton"
-                                    onClick={this.onAddRoomSubmit}>
-                                Submit
-                            </Button> : null}
                         {this.state.disableAdd === true ?
                             <Button id="EditLocationButton"
                                     onClick={this.onDeleteRoomSubmit}>
-                                Submit
+                                Submit Deletion
                             </Button> : null}
                         <Button id="EditLocationButton"
                                 onClick={this.toggle}>

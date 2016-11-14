@@ -89,6 +89,10 @@ var AddBuildingForm = React.createClass({
         this.onBuildingSubmitHandler('add');
     },
 
+    onUpdateBuildingSubmit(){
+        this.onBuildingSubmitHandler('update');
+    },
+
     onDeleteBuildingSubmit(){
         this.onBuildingSubmitHandler('delete');
     },
@@ -125,6 +129,8 @@ var AddBuildingForm = React.createClass({
         var street = this.state.refAddBuildingStreet;
         var number = this.state.refAddBuildingNumber;
         var pc = this.state.refAddBuildingPostalCode;
+
+        var passedValidation = false;
 
         if(id !== "" && name !== "" && city !== "" && street !== "" && number !== "" && pc !== "")
         {
@@ -171,6 +177,7 @@ var AddBuildingForm = React.createClass({
             .then((response) => {
                 var messageContent = "Success! New Building Submitted.";
                 this.props.onChange({response, messageContent});
+                passedValidation = true;
             }).catch((response) => {
                 var messageContent = "Error, New Building Not Submitted. Please Contact Your Administrator.";
                 this.props.onChange({response, messageContent});
@@ -180,14 +187,16 @@ var AddBuildingForm = React.createClass({
             this.props.onValidate();
         }
 
-        this.setState({
-            refAddBuildingId : "",
-            refAddBuildingName : "",
-            refAddBuildingCity : "",
-            refAddBuildingStreet : "",
-            refAddBuildingNumber : "",
-            refAddBuildingPostalCode : ""
-        });
+        if(passedValidation === true) {
+            this.setState({
+                refAddBuildingId: "",
+                refAddBuildingName: "",
+                refAddBuildingCity: "",
+                refAddBuildingStreet: "",
+                refAddBuildingNumber: "",
+                refAddBuildingPostalCode: ""
+            });
+        }
 
     },
 
@@ -254,7 +263,7 @@ var AddBuildingForm = React.createClass({
                 {this.state.disableAdd === false ?
                 <Button id="AddRoomButton"
                         color="primary"
-                        onClick={this.toggle}>Submit</Button> : null}
+                        onClick={this.onAddBuildingSubmit}>Submit</Button> : null}
                 {this.state.disableAdd === true ?
                     <Button id="AddRoomButton"
                         color="primary"
@@ -266,11 +275,6 @@ var AddBuildingForm = React.createClass({
                     <ModalHeader>Confirmation</ModalHeader>
                     <ModalBody>
                         <p>Are you sure?</p>
-                        {this.state.disableAdd === false ?
-                        <Button id="EditLocationButton"
-                                onClick={this.onAddBuildingSubmit}>
-                            Submit
-                        </Button> : null}
                         {this.state.disableAdd === true ?
                             <Button id="EditLocationButton"
                                     onClick={this.onDeleteBuildingSubmit}>

@@ -7,6 +7,7 @@ import BuildingDropdown from './BuildingDropdown';
 import FloorDropdown from './FloorDropdown';
 import RoomDropdown from './RoomDropdown';
 import ImageMap from './ImageMap';
+import $ from 'jquery';
 
 var AddRoomCoordForm = React.createClass({
 
@@ -16,6 +17,7 @@ var AddRoomCoordForm = React.createClass({
             notificationSystem : null,
             refTree : null,
             modal : false,
+            nodeInfo : this.props.nodeInfo,
 
             refCoordBuilding : null,
             refCoordFloor : null,
@@ -36,6 +38,44 @@ var AddRoomCoordForm = React.createClass({
             openFloorAdd : null,
             openRoomAdd : null
         };
+    },
+
+    componentDidMount() {
+        this.loadRoomDetails(this.state.nodeInfo);
+    },
+
+    loadRoomDetails(node){
+        if(!(node == null)){
+
+            var url = 'http://localhost:8080/rooms/' + node.buildingId + '/' + node.name;
+
+            this.serverRequest = $.get(url, function (result) {
+
+                if(!(this.state.refCoordBuilding == null)) {
+
+                    this.state.refCoordBuilding.updateBuilding(result.buildingId);
+                    this.state.refCoordFloor.updateFloor(result.floorName);
+                    this.state.refCoordRoom.updateRoom(result.name);
+
+                    this.setState({
+                        selectedRoom: result
+                    });
+                }
+
+            }.bind(this));
+
+            url = 'http://localhost:8080/floors/' + node.buildingId + '/' + node.floorName;
+            this.serverRequest = $.get(url, function (result) {
+
+                if(!(this.state.refCoordBuilding == null)) {
+                    this.state.refCoordMap.setMapPath('http://localhost:8080' + result.floorplanUrl);
+                    var style = { visibility: 'visible' };
+                    this.state.refCoordMap.setStyleProps(style);
+                }
+
+            }.bind(this));
+
+        }
     },
 
     onXCoordinateInputChange(event) {
@@ -175,11 +215,11 @@ var AddRoomCoordForm = React.createClass({
                 type: 'Development',
                 capacity: 0,
                 assignedPeople: 0,
-                buildingId: buildingData.selectedBuilding.buildingId,
+                buildingId: buildingName,
                 roomId: 0,
                 styleTop: top + 'px',
                 styleLeft: left + 'px',
-                floorName: floorData.selectedFloor.floorName
+                floorName: floorName
             };
 
             var jsonData = JSON.stringify(rawData);
@@ -194,7 +234,7 @@ var AddRoomCoordForm = React.createClass({
                 body: jsonData
             })
             .then((response) => {
-                var messageContent = "Success! New Room XY Coordinates Submitted.";
+                var messageContent = "New Room XY Coordinates Submitted.";
                 this.props.onChange({response, messageContent});
             }).catch((response) => {
                 var messageContent = "Error, New Room XY Coordinates Not Submitted. Please Contact Your Administrator.";
@@ -226,7 +266,8 @@ var AddRoomCoordForm = React.createClass({
                     <BuildingDropdown className="MyBuilding"
                                       url="http://localhost:8080/buildings"
                                       onChange={this.onSelectCoordSetBuilding}
-                                      ref={(ref) => this.state.refCoordBuilding = ref}/>
+                                      ref={(ref) => this.state.refCoordBuilding = ref}
+                                      disabled={true}/>
                     <FloorDropdown className="MyFloor"
                                    onChange={this.onSelectCoordSetFloor}
                                    ref={(ref) => this.state.refCoordFloor = ref}/>
@@ -238,7 +279,7 @@ var AddRoomCoordForm = React.createClass({
                         <InputGroupAddon>X</InputGroupAddon>
                         <Input className="CoordinateInput"
                                disabled={true}
-                               placeholder="X Coordinate value"
+                               placeholder="New X Coordinate value"
                                value={this.state.refCoordX}/>
                     </InputGroup>
                     <br />
@@ -246,7 +287,7 @@ var AddRoomCoordForm = React.createClass({
                         <InputGroupAddon>Y</InputGroupAddon>
                         <Input className="CoordinateInput"
                                disabled={true}
-                               placeholder="Y Coordinate value"
+                               placeholder="New Y Coordinate value"
                                value={this.state.refCoordY}/>
                     </InputGroup>
                     <br />

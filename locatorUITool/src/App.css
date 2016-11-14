@@ -28,4 +28,10 @@ body {
 
 #FloorMapPreview {
   max-width: 200px;
+  max-height: 200px;
+}
+
+.Dropzone{
+  max-width: 200px;
+  max-height: 200px;
 }

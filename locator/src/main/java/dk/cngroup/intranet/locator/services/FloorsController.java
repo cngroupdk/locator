@@ -124,22 +124,15 @@ public class FloorsController {
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @RequestMapping(method = RequestMethod.POST, path="/floors/update/floor")
     @ResponseBody
-    public String updateSingleCNFloor(@RequestBody List<Floor> utilityFloors) {
+    public String updateSingleCNFloor(@RequestBody Floor updateFloor) {
 
         try{
-            Floor oldRoom = utilityFloors.get(0);
-            Floor newRoom = utilityFloors.get(1);
-
-            Floor dbRoom = getSingleCNFloor(oldRoom.getFloorName(),oldRoom.getBuildingId());
-            dbRoom.setFloorName(newRoom.getFloorName());
-            dbRoom.setRoomsNumber(newRoom.getRoomsNumber());
-            dbRoom.setFloorplanUrl(newRoom.getFloorplanUrl());
-
-            repository.save(dbRoom);
+            repository.save(updateFloor);
         }catch(Exception e){
             Application.getLogger().info("/floors/update/floor, Floor not updated.");
             throw new FloorsServiceException();
         }
+
         return "redirect:/";
     }
 

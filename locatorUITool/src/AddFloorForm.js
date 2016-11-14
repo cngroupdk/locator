@@ -18,9 +18,7 @@ var AddFloorForm = React.createClass({
             refAddFloorURL: "",
             refNewFile: null,
             nodeInfo : this.props.nodeInfo,
-            disableAdd : this.props.disableAdd,
-            selectedFloor : null,
-            disableIMG : true,
+            selectedFloor : null
         };
     },
 
@@ -30,19 +28,27 @@ var AddFloorForm = React.createClass({
 
     loadFloorDetails(node){
         if(!(node == null)){
-            var buildingURL = 'http://localhost:8080/floors/' + node.buildingId + '/' + node.name;
+
+            var buildingURL =
+            'http://localhost:8080/floors/' + node.buildingId + '/' + node.name;
+            if(this.props.disableAdd === false) {
+                buildingURL = 'http://localhost:8080/buildings/' + node.buildingId;
+            }
 
             this.serverRequest = $.get(buildingURL, function (result) {
 
                 if(!(this.state.refAddFloorBuilding == null)) {
+
                     this.state.refAddFloorBuilding.updateBuilding(result.buildingId);
 
-                    this.setState({
-                        refAddFloorName: result.floorName,
-                        refAddFloorRoomNumber: result.roomsNumber,
-                        refAddFloorURL: result.floorplanUrl,
-                        selectedFloor: result
-                    });
+                    if(this.props.disableAdd === true) {
+                        this.setState({
+                            refAddFloorName: result.floorName,
+                            refAddFloorRoomNumber: result.roomsNumber,
+                            refAddFloorURL: result.floorplanUrl,
+                            selectedFloor: result
+                        });
+                    }
                 }
 
             }.bind(this));
@@ -62,11 +68,33 @@ var AddFloorForm = React.createClass({
     },
 
     onAddFloorSubmit(){
-        this.onFloorSubmitHandler('add');
+        this.onFloorSubmitHandler({
+            type: 'add',
+            url: 'http://localhost:8080/floors/new/floor',
+            messageContent: "New Floor Added."});
     },
 
     onDeleteFloorSubmit(){
-        this.onFloorSubmitHandler('delete');
+        this.onFloorSubmitHandler({
+            type: 'delete',
+            url: 'http://localhost:8080/floors/delete/floor',
+            messageContent:"New Floor Deleted."});
+    },
+
+
+    onUpdateFloorSubmit(){
+
+        if(this.state.refNewFile != null) {
+
+            this.onFloorSubmitHandler({
+                type: 'update',
+                url: 'http://localhost:8080/floors/update/floor',
+                messageContent: "Floor Data Updated."
+            });
+        }
+        else{
+            this.props.onValidate();
+        }
     },
 
     toggle() {
@@ -87,25 +115,33 @@ var AddFloorForm = React.createClass({
             this.props.onValidate();
         }
 
-        this.setState({
-            disableIMG: true
-        });
+    },
+
+    onSelectBuilding : function() {
 
     },
 
-    onFloorSubmitHandler(type){
+    onDrop: function (acceptedFiles, rejectedFiles) {
 
-        var url = 'http://localhost:8080/floors/new/floor';
-        var messageContent = "Success! New Floor Submitted.";
-        if (type === "delete"){
-            url = 'http://localhost:8080/floors/delete/floor';
-            messageContent = "Success! New Floor Deleted.";
+        if(acceptedFiles.length > 0 && rejectedFiles.length == 0) {
+            this.setState({
+                refAddFloorURL : '/' + acceptedFiles[0].name,
+                refNewFile: acceptedFiles
+            });
         }
+    },
+
+    onFloorSubmitHandler(data){
+
+        var url = data.url;
+        var type = data.type;
+        var messageContent = data.messageContent;
 
         var buildingName = this.state.refAddFloorBuilding.getCurrentBuilding().currentBuilding;
         var floorName = this.state.refAddFloorName;
         var floorRoomsNumber = this.state.refAddFloorRoomNumber;
         var floorURL = this.state.refAddFloorURL;
+        var passedValidation = false;
 
         var buildingData = this.state.refAddFloorBuilding.getBuildingData();
 
@@ -114,16 +150,20 @@ var AddFloorForm = React.createClass({
             floorURL !== '' &&
             floorRoomsNumber !== ''){
 
+            if(this.state.refNewFile != null){
+                this.onSubmitNewFloorplan();
+            }
+
             var rawData = null;
 
-            if (type === "delete") {
+            if (type !== "add") {
 
                 var selected = this.state.selectedFloor;
                 rawData = {
                     floorId: selected.floorId,
                     floorName: selected.floorName,
                     roomsNumber: selected.roomsNumber,
-                    floorplanUrl: selected.floorplanUrl,
+                    floorplanUrl: floorURL,
                     type: selected.type,
                     buildingId: selected.buildingId
                 };
@@ -133,9 +173,9 @@ var AddFloorForm = React.createClass({
                     floorId: 0,
                     floorName: floorName,
                     roomsNumber: floorRoomsNumber,
-                    floorplanUrl: '/' + floorURL,
+                    floorplanUrl: floorURL,
                     type: 'General',
-                    buildingId: buildingData.selectedBuilding.buildingId
+                    buildingId: buildingName
                 };
             }
 
@@ -153,42 +193,26 @@ var AddFloorForm = React.createClass({
             })
             .then((response) => {
                 this.props.onChange({response, messageContent});
+                passedValidation = true;
             }).catch((response) => {
                 var messageContent = "Error, Floor Update Not Submitted. Please Contact Your Administrator.";
                 this.props.onChange({response, messageContent});
             });
+
         }
         else{
             this.props.onValidate();
         }
 
-        this.state.refAddFloorBuilding.updateBuilding("Choose Building");
-        this.setState({
-            refAddFloorName : "",
-            refAddFloorRoomNumber : "",
-            refAddFloorURL: "",
-        });
-    },
-
-    onSelectBuilding : function() {
-
-    },
-
-    onDrop: function (acceptedFiles, rejectedFiles) {
-        if(acceptedFiles.length > 0 && rejectedFiles.length == 0) {
+        if(passedValidation === true) {
+            this.state.refAddFloorBuilding.updateBuilding("Choose Building");
             this.setState({
-                refNewFile: acceptedFiles
+                refAddFloorName : "",
+                refAddFloorRoomNumber : "",
+                refAddFloorURL: "",
+                refNewFile: null
             });
         }
-        console.log('Accepted files: ', acceptedFiles);
-        console.log('Rejected files: ', rejectedFiles);
-    },
-
-    onShowConfirmation(){
-        this.setState({
-            disableIMG : false,
-            modal: !this.state.modal
-        });
     },
 
     onSubmitNewFloorplan(){
@@ -207,15 +231,11 @@ var AddFloorForm = React.createClass({
             body: data
         })
         .then((response) => {
-            var messageContent = "Success! New Building Submitted.";
+            var messageContent = "New Image Added to Database.";
             this.props.onChange({response, messageContent});
         }).catch((response) => {
             var messageContent = "Error, New Building Not Submitted. Please Contact Your Administrator.";
             this.props.onChange({response, messageContent});
-        });
-
-        this.setState({
-            disableIMG : false
         });
 
     },
@@ -223,14 +243,14 @@ var AddFloorForm = React.createClass({
     render:function() {
         return (
             <div>
-                {this.state.disableAdd === false ? <CardTitle>Add a Floor</CardTitle> : null}
-                {this.state.disableAdd === true ? <CardTitle>Floor Details</CardTitle> : null}
+                {this.props.disableAdd === false ? <CardTitle>Add a Floor</CardTitle> : null}
+                {this.props.disableAdd === true ? <CardTitle>Floor Details</CardTitle> : null}
                 <hr/>
                 <BuildingDropdown className="MyBuilding"
                                   url="http://localhost:8080/buildings"
                                   ref={(ref) => this.state.refAddFloorBuilding = ref}
                                   onChange={this.onSelectBuilding}
-                                  disabled={this.state.disableAdd}
+                                  disabled={true}
                 />
                 <InputGroup>
                     <InputGroupAddon>Floor Name</InputGroupAddon>
@@ -238,7 +258,7 @@ var AddFloorForm = React.createClass({
                            placeholder="Type floor name..."
                            value={this.state.refAddFloorName}
                            onChange={this.onAddFloorNameInputChange}
-                           disabled={this.state.disableAdd}/>
+                           disabled={this.props.disableAdd}/>
                 </InputGroup>
                 <br />
                 <InputGroup>
@@ -247,44 +267,46 @@ var AddFloorForm = React.createClass({
                            placeholder="Type # of Rooms..."
                            value={this.state.refAddFloorRoomNumber}
                            onChange={this.onAddFloorRoomNumberInputChange}
-                           disabled={this.state.disableAdd}/>
+                           disabled={this.props.disableAdd}/>
                     <InputGroupAddon>Rooms</InputGroupAddon>
                 </InputGroup>
                 <br />
                 <InputGroup>
                     <InputGroupAddon>Image File</InputGroupAddon>
                     <Input className="CoordinateInput"
-                           placeholder="Add image file name..."
+                           placeholder="Drop image / Click below ..."
                            value={this.state.refAddFloorURL}
                            onChange={this.onAddFloorURLInputChange}
-                           disabled={this.state.disableAdd}/>
+                           disabled={true}/>
                 </InputGroup>
+                {this.props.disableAdd === false ?
+                    <div>
+                        <br/>
+                        <Button id="AddRoomButton"
+                            color="primary"
+                            onClick={this.onAddFloorSubmit}>Submit</Button>
+                    </div>
+                : null }
+
+                <hr/>
+
+                {this.props.disableAdd === true ?
+                    <div>
+                        <Button id="AddRoomButton"
+                            onClick={this.onUpdateFloorSubmit}>Update Floor Image</Button>
+
+                        <Button id="AddRoomButton"
+                                onClick={this.toggle}>Delete</Button>
+                    </div>
+                : null }
                 <br/>
                 <Dropzone onDrop={this.onDrop}>
-                    <div>Drop image / Click to Select.</div>
+                    {this.state.refNewFile ?
+                        <div>{this.state.refNewFile.map((file) => <img id="FloorMapPreview" src={file.preview} key={0}/>)}</div>
+                        :
+                        <div>Drop image / Click to Select.</div>}
                 </Dropzone>
-
-                {this.state.refNewFile ?
-                <div>
-                    <p>Uploading {this.state.refNewFile.length} files...</p>
-                    <div>{this.state.refNewFile.map((file) => <img id="FloorMapPreview" src={file.preview} />)}</div>
-                    <br/>
-                    <Button id="AddRoomButton"
-                            color="primary"
-                            onClick={this.onShowConfirmation}>Upload Image</Button>
-                    <br/>
-                </div> : null}
-                <br/>
-                {this.state.disableAdd === false ?
-                <Button id="AddRoomButton"
-                        color="primary"
-                        onClick={this.toggle}>Submit</Button> : null }
-
-                {this.state.disableAdd === true ?
-                    <Button id="AddRoomButton"
-                            color="primary"
-                            onClick={this.toggle}>Delete</Button> : null }
-
+                {this.state.refNewFile ? <div>Drop image / Click to Select.</div>: null}
                 <Modal id="AddBuilding"
                        isOpen={this.state.modal}
                        toggle={this.toggle}
@@ -293,23 +315,10 @@ var AddFloorForm = React.createClass({
                     <ModalBody>
                         <p>Are you sure?</p>
 
-                        {this.state.disableAdd === false ?
-                            <Button id="EditLocationButton"
-                                    onClick={this.onAddFloorSubmit}>
-                                Submit
-                            </Button> : null}
-
-                        {(this.state.disableAdd === true && this.state.disableIMG === true)?
+                        {this.props.disableAdd === true?
                             <Button id="EditLocationButton"
                                     onClick={this.onDeleteFloorSubmit}>
                                 Submit Deletion
-                            </Button> : null}
-
-
-                        {this.state.disableIMG === false ?
-                            <Button id="EditLocationButton"
-                                    onClick={this.onSubmitNewFloorplan}>
-                                Submit Image
                             </Button> : null}
 
                         <Button id="EditLocationButton"
