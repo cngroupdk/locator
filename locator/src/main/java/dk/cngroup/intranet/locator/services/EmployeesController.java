@@ -1,9 +1,22 @@
 package dk.cngroup.intranet.locator.services;
 import dk.cngroup.intranet.locator.Application;
+import dk.cngroup.intranet.locator.actors.Person;
 import dk.cngroup.intranet.locator.repositories.StaffMemberRepository;
 import dk.cngroup.intranet.locator.actors.StaffMember;
+import dk.cngroup.intranet.locator.services.storage.StoragePhotoFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,6 +29,9 @@ public class EmployeesController {
 
     @Autowired
     private StaffMemberRepository repository;
+
+    @Value("${intranet.photos.url}")
+    private String photoUrl;
 
     /**
      * Rest service to return a list of all employees in the database.
@@ -61,6 +77,14 @@ public class EmployeesController {
     }
 
     @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @RequestMapping("/employees/photo/folder")
+    public StoragePhotoFolder getEmployeePhotoFolder(){
+        StoragePhotoFolder photoFolder = new StoragePhotoFolder();
+        photoFolder.setUrl(photoUrl);
+        return photoFolder;
+    }
+
+    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
     @RequestMapping(method = RequestMethod.POST, path="/employees/update/employee")
     @ResponseBody
     public String updateSingleEmployee(@RequestBody StaffMember updatedEmployee) {
@@ -76,6 +100,30 @@ public class EmployeesController {
 
     public StaffMemberRepository getRepository(){
         return repository;
+    }
+
+    private static final Logger log = LoggerFactory.getLogger(EmployeesController.class);
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+    @Value("${timur.persons.url}")
+    private String timurURL;
+
+    @Scheduled(fixedDelayString = "${schedule.task.interval}")
+    public void getTimurNames(){
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<List<Person>> rateResponse =
+                restTemplate.exchange(  timurURL,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<Person>>() {}
+                );
+
+        List<Person> employees = rateResponse.getBody();
+
+        log.info("Connected to Persons at " + dateFormat.format(new Date()));
+
     }
 
 }

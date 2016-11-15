@@ -55,6 +55,21 @@ var App=React.createClass({
   },
 
   setEmployeeImages : function(data){
+
+    fetch('http://localhost:8080/employees/photo/folder')
+    .then((response) => {
+      return response.json()
+    })
+    .then(function(response){
+
+      var employeePhoto = response.url + data.employeeId + '.jpg';
+
+      data.refToImage.setMapPath(employeePhoto);
+
+    }).catch((error) => {
+      console.error(error);
+    });
+
     fetch('http://localhost:8080/rooms/' + data.buildingId + '/' + data.roomName).then((response) => {return response.json()}).then(function(roomData){
 
       var style =
@@ -64,7 +79,6 @@ var App=React.createClass({
         left: roomData.styleLeft
       };
 
-      data.refToImage.setMapPath('http://localhost:8080/' + data.employeeId + '.jpg');
       data.refToImage.setStyleProps(style);
 
       var newTop = parseInt(style.top.replace('px', ''), 10);

@@ -11,8 +11,6 @@ import javax.persistence.*;
  */
 
 @Entity
-@Inheritance
-@DiscriminatorColumn(name="role", discriminatorType = DiscriminatorType.STRING)
 @Table(name="employees")
 public class StaffMember{
 
