@@ -34,7 +34,7 @@ public class BuildingController {
      *
      * @return an Iterable object of Floor objects
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/tree")
     public TreeRoot getCNTreeStructure(){
 
@@ -67,7 +67,9 @@ public class BuildingController {
                         treeBuilding.addFloor(treeFloor);
 
                         for(Room r : rooms){
-                            if(treeFloor.getName().equals(r.getFloorName())){
+                            if( treeFloor.getName().equals(r.getFloorName())
+                             && treeFloor.getBuildingId().equals(r.getBuildingId())
+                             ){
                                 TreeRoom treeRoom = new TreeRoom();
                                 treeRoom.setFloorName(r.getFloorName());
                                 treeRoom.setBuildingId(r.getBuildingId());
@@ -95,7 +97,7 @@ public class BuildingController {
      *
      * @return an Iterable object of Building objects
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/buildings")
     public Iterable<Building> getCNBuildings(){
 
@@ -114,7 +116,7 @@ public class BuildingController {
      *
      * @return a Building object
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("buildings/{building_id}")
     public Building getSingleCNBuilding(@PathVariable("building_id") String buildingId){
 
@@ -137,12 +139,13 @@ public class BuildingController {
     }
 
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/buildings/new/building")
     @ResponseBody
-    public String addSingleCNBuilding(@RequestBody Building newBuilding) {
+    public String addSingleCNBuilding(@RequestBody Building inputBuilding) {
         try{
-            newBuilding.setBuildingGuid((int)repository.count());
+
+            Building newBuilding = new Building(inputBuilding);
             repository.save(newBuilding);
 
         }catch(Exception e){
@@ -153,12 +156,14 @@ public class BuildingController {
         return "redirect:/";
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/buildings/delete/building")
     @ResponseBody
-    public String deleteSingleCNBuilding(@RequestBody Building newBuilding) {
+    public String deleteSingleCNBuilding(@RequestBody Building delBuilding) {
         try{
-            repository.delete(newBuilding);
+            repository.delete(delBuilding);
+            floorsRepository.removeByBuildingId(delBuilding.getBuildingId());
+            roomsRepository.removeByBuildingId(delBuilding.getBuildingId());
         }catch(Exception e){
             Application.getLogger().info("/buildings/delete/building, Building not added.");
             throw new RoomsServiceException();

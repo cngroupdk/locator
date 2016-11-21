@@ -24,6 +24,7 @@ body {
   visibility: hidden;
   border: 5px solid #e2ecff;
   border-radius: 5px;
+  max-width: 750px;
 }
 
 #FloorMapPreview {

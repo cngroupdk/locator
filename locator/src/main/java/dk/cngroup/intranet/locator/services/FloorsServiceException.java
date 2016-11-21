@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Created by cano on 14.10.2016.
  */
 
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+@CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
 @ResponseStatus(value= HttpStatus.NOT_FOUND, reason="No Floors Service Found.")  // 404
 public class FloorsServiceException extends RuntimeException{
 

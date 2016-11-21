@@ -14,7 +14,6 @@ var AddFloorForm = React.createClass({
             modal : false,
             refAddFloorBuilding: null,
             refAddFloorName : "",
-            refAddFloorRoomNumber : "",
             refAddFloorURL: "",
             refNewFile: null,
             nodeInfo : this.props.nodeInfo,
@@ -44,7 +43,6 @@ var AddFloorForm = React.createClass({
                     if(this.props.disableAdd === true) {
                         this.setState({
                             refAddFloorName: result.floorName,
-                            refAddFloorRoomNumber: result.roomsNumber,
                             refAddFloorURL: result.floorplanUrl,
                             selectedFloor: result
                         });
@@ -57,10 +55,6 @@ var AddFloorForm = React.createClass({
 
     onAddFloorNameInputChange(event) {
         this.setState({refAddFloorName: event.target.value});
-    },
-
-    onAddFloorRoomNumberInputChange(event) {
-        this.setState({refAddFloorRoomNumber: event.target.value});
     },
 
     onAddFloorURLInputChange(event) {
@@ -100,13 +94,11 @@ var AddFloorForm = React.createClass({
     toggle() {
         var buildingName = this.state.refAddFloorBuilding.getCurrentBuilding().currentBuilding;
         var floorName = this.state.refAddFloorName;
-        var floorRoomsNumber = this.state.refAddFloorRoomNumber;
         var floorURL = this.state.refAddFloorURL;
 
         if( buildingName!== 'Choose Building' &&
             floorName !== '' &&
-            floorURL !== '' &&
-            floorRoomsNumber !== ''){
+            floorURL !== ''){
             this.setState({
                 modal: !this.state.modal
             });
@@ -139,7 +131,6 @@ var AddFloorForm = React.createClass({
 
         var buildingName = this.state.refAddFloorBuilding.getCurrentBuilding().currentBuilding;
         var floorName = this.state.refAddFloorName;
-        var floorRoomsNumber = this.state.refAddFloorRoomNumber;
         var floorURL = this.state.refAddFloorURL;
         var passedValidation = false;
 
@@ -147,8 +138,7 @@ var AddFloorForm = React.createClass({
 
         if( buildingName!== 'Choose Building' &&
             floorName !== '' &&
-            floorURL !== '' &&
-            floorRoomsNumber !== ''){
+            floorURL !== '' ){
 
             if(this.state.refNewFile != null){
                 this.onSubmitNewFloorplan();
@@ -162,7 +152,6 @@ var AddFloorForm = React.createClass({
                 rawData = {
                     floorId: selected.floorId,
                     floorName: selected.floorName,
-                    roomsNumber: selected.roomsNumber,
                     floorplanUrl: floorURL,
                     type: selected.type,
                     buildingId: selected.buildingId
@@ -172,7 +161,6 @@ var AddFloorForm = React.createClass({
                 rawData = {
                     floorId: 0,
                     floorName: floorName,
-                    roomsNumber: floorRoomsNumber,
                     floorplanUrl: floorURL,
                     type: 'General',
                     buildingId: buildingName
@@ -208,7 +196,6 @@ var AddFloorForm = React.createClass({
             this.state.refAddFloorBuilding.updateBuilding("Choose Building");
             this.setState({
                 refAddFloorName : "",
-                refAddFloorRoomNumber : "",
                 refAddFloorURL: "",
                 refNewFile: null
             });
@@ -259,16 +246,6 @@ var AddFloorForm = React.createClass({
                            value={this.state.refAddFloorName}
                            onChange={this.onAddFloorNameInputChange}
                            disabled={this.props.disableAdd}/>
-                </InputGroup>
-                <br />
-                <InputGroup>
-                    <InputGroupAddon>Contains</InputGroupAddon>
-                    <Input className="CoordinateInput"
-                           placeholder="Type # of Rooms..."
-                           value={this.state.refAddFloorRoomNumber}
-                           onChange={this.onAddFloorRoomNumberInputChange}
-                           disabled={this.props.disableAdd}/>
-                    <InputGroupAddon>Rooms</InputGroupAddon>
                 </InputGroup>
                 <br />
                 <InputGroup>

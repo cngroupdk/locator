@@ -26,7 +26,7 @@ public class FileUploadController {
         this.storageService = storageService;
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @GetMapping("/files")
     public String listUploadedFiles(Model model) throws IOException {
 
@@ -41,7 +41,7 @@ public class FileUploadController {
         return "uploadForm";
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
@@ -53,7 +53,7 @@ public class FileUploadController {
                 .body(file);
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @PostMapping(path="/files/upload", headers=("content-type=multipart/*"), consumes = "image/jpeg")
     @ResponseBody
     public String handleFileUpload(@RequestParam("file") MultipartFile file,

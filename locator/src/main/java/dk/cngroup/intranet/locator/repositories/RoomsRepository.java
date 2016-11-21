@@ -3,6 +3,7 @@ package dk.cngroup.intranet.locator.repositories;
 import dk.cngroup.intranet.locator.buildingcomponents.Room;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -45,4 +46,10 @@ public interface RoomsRepository extends CrudRepository<Room, Long> {
      * @return
      */
     Iterable<Room> findAllByOrderByRoomId();
+
+    @Transactional
+    List<Room> removeByFloorName(String FloorName);
+
+    @Transactional
+    List<Room> removeByBuildingId(String BuildingId);
 }

@@ -15,12 +15,12 @@ import javax.persistence.*;
 public class Floor {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "floors_floor_id_seq")
+    @SequenceGenerator(name = "floors_floor_id_seq", sequenceName = "floors_floor_id_seq", allocationSize=1)
     @Column(name = "floor_id")
     private Integer floorId;
     @Column(name = "floor_name")
     private String floorName;
-    @Column(name = "rooms_number")
-    private Integer roomsNumber;
     @Column(name = "floorplan_url")
     private String floorplanUrl;
     private String type;
@@ -33,12 +33,10 @@ public class Floor {
 
     public Floor(Floor f){
 
-        this.setBuildingId(f.getBuildingId());
-        this.setFloorId(f.getFloorId());
-        this.setFloorName(f.getFloorName());
-        this.setFloorplanUrl(f.getFloorplanUrl());
-        this.setRoomsNumber(f.getRoomsNumber());
-
+        this.floorName = f.getFloorName();
+        this.floorplanUrl = f.getFloorplanUrl();
+        this.type = f.getType();
+        this.buildingId = f.getBuildingId();
     }
 
     @Override
@@ -92,14 +90,6 @@ public class Floor {
 
     public void setFloorName(String floorName) {
         this.floorName = floorName;
-    }
-
-    public Integer getRoomsNumber() {
-        return roomsNumber;
-    }
-
-    public void setRoomsNumber(Integer roomsNumber) {
-        this.roomsNumber = roomsNumber;
     }
 
     public String getFloorplanUrl() {

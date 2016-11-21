@@ -15,6 +15,8 @@ import javax.persistence.*;
 public class StaffMember{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employees_employee_guid_seq")
+    @SequenceGenerator(name = "employees_employee_guid_seq", sequenceName = "employees_employee_guid_seq", allocationSize=1)
     @Column(name = "employee_guid")
     private Integer employeeGuid;
     @Column(name = "employee_id")
@@ -29,13 +31,20 @@ public class StaffMember{
     private String role;
     private String email;
     private String location;
-    private String detail;
-    private String extension;
-    @Column(name="voip")
-    private String voIP;
 
-    protected StaffMember(){
+    public StaffMember(){
 
+    }
+
+    public StaffMember(StaffMember sm){
+        this.employeeId = sm.getId();
+        this.managerId = sm.getManagerId();
+        this.firstName = sm.getFirstName();
+        this.lastName = sm.getLastName();
+        this.abbreviation = sm.getAbbreviation();
+        this.role = sm.getRole();
+        this.email = sm.getEmail();
+        this.location = sm.getLocation();
     }
 
     @Override
@@ -79,14 +88,6 @@ public class StaffMember{
         this.employeeGuid = employeeGuid;
     }
 
-    public String getVoIP() {
-        return voIP;
-    }
-
-    public void setVoIP(String voIP) {
-        this.voIP = voIP;
-    }
-
     public String getId() {
         return employeeId;
     }
@@ -127,14 +128,6 @@ public class StaffMember{
         this.abbreviation = abbreviation;
     }
 
-    public String getExtension() {
-        return extension;
-    }
-
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
     public String getRole() {
         return role;
     }
@@ -155,14 +148,6 @@ public class StaffMember{
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
     }
 
 }

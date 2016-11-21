@@ -26,6 +26,7 @@ body {
 #FloorMap {
   border: 5px solid azure;
   border-radius: 25px;
+  max-width: 750px;
 }
 #Staff.cardImg{
   visibility: hidden;

@@ -15,9 +15,7 @@ var AddBuildingForm = React.createClass({
             refAddBuildingId : "",
             refAddBuildingName : "",
             refAddBuildingCity : "",
-            refAddBuildingStreet : "",
-            refAddBuildingNumber : "",
-            refAddBuildingPostalCode : "",
+            refAddBuildingAddress : "",
             nodeInfo : this.props.nodeInfo,
             disableAdd : this.props.disableAdd,
             selectedBuilding : null
@@ -41,9 +39,7 @@ var AddBuildingForm = React.createClass({
                         refAddBuildingId: result.buildingId,
                         refAddBuildingName: result.name,
                         refAddBuildingCity: result.city,
-                        refAddBuildingStreet: result.streetName,
-                        refAddBuildingNumber: result.streetNumber,
-                        refAddBuildingPostalCode: result.postalCode,
+                        refAddBuildingAddress: result.address,
                         selectedBuilding: result
                     });
 
@@ -72,17 +68,8 @@ var AddBuildingForm = React.createClass({
         this.setState({refAddBuildingCity: event.target.value});
     },
 
-    onAddBuildingStreetInputChange(event){
-        this.setState({refAddBuildingStreet: event.target.value});
-    },
-
-
-    onAddBuildingNumberInputChange(event){
-        this.setState({refAddBuildingNumber: event.target.value});
-    },
-
-    onAddBuildingPostalInputChange(event){
-        this.setState({refAddBuildingPostalCode: event.target.value});
+    onAddBuildingAddressInputChange(event){
+        this.setState({refAddBuildingAddress: event.target.value});
     },
 
     onAddBuildingSubmit(){
@@ -101,11 +88,9 @@ var AddBuildingForm = React.createClass({
         var id = this.state.refAddBuildingId;
         var name = this.state.refAddBuildingName;
         var city = this.state.refAddBuildingCity;
-        var street = this.state.refAddBuildingStreet;
-        var number = this.state.refAddBuildingNumber;
-        var pc = this.state.refAddBuildingPostalCode;
+        var address = this.state.refAddBuildingAddress;
 
-        if(id !== "" && name !== "" && city !== "" && street !== "" && number !== "" && pc !== "")
+        if(id !== "" && name !== "" && city !== "" && address !== "")
         {
             this.setState({
                 modal: !this.state.modal
@@ -126,13 +111,11 @@ var AddBuildingForm = React.createClass({
         var id = this.state.refAddBuildingId;
         var name = this.state.refAddBuildingName;
         var city = this.state.refAddBuildingCity;
-        var street = this.state.refAddBuildingStreet;
-        var number = this.state.refAddBuildingNumber;
-        var pc = this.state.refAddBuildingPostalCode;
+        var address = this.state.refAddBuildingAddress;
 
         var passedValidation = false;
 
-        if(id !== "" && name !== "" && city !== "" && street !== "" && number !== "" && pc !== "")
+        if(id !== "" && name !== "" && city !== "" && address !== "")
         {
             var rawData = null;
 
@@ -145,9 +128,7 @@ var AddBuildingForm = React.createClass({
                     type: selected.type,
                     name: selected.name,
                     city: selected.city,
-                    postalCode: selected.postalCode,
-                    streetName: selected.streetName,
-                    streetNumber: selected.streetNumber
+                    address: selected.address
                 };
             }
             else {
@@ -157,9 +138,7 @@ var AddBuildingForm = React.createClass({
                     type: "Office Space",
                     name: name,
                     city: city,
-                    postalCode: pc,
-                    streetName: street,
-                    streetNumber: number
+                    address: address,
                 };
             }
             var jsonData = JSON.stringify(rawData);
@@ -192,9 +171,7 @@ var AddBuildingForm = React.createClass({
                 refAddBuildingId: "",
                 refAddBuildingName: "",
                 refAddBuildingCity: "",
-                refAddBuildingStreet: "",
-                refAddBuildingNumber: "",
-                refAddBuildingPostalCode: ""
+                refAddBuildingAddress: ""
             });
         }
 
@@ -234,29 +211,11 @@ var AddBuildingForm = React.createClass({
                 </InputGroup>
                 <br />
                 <InputGroup>
-                    <InputGroupAddon>Street</InputGroupAddon>
+                    <InputGroupAddon>Address</InputGroupAddon>
                     <Input className="AddBuilding"
-                           placeholder="Type street..."
-                           value={this.state.refAddBuildingStreet}
-                           onChange={this.onAddBuildingStreetInputChange}
-                           disabled={this.state.disableAdd}/>
-                </InputGroup>
-                <br />
-                <InputGroup>
-                    <InputGroupAddon>Number</InputGroupAddon>
-                    <Input className="AddBuilding"
-                           placeholder="Type number..."
-                           value={this.state.refAddBuildingNumber}
-                           onChange={this.onAddBuildingNumberInputChange}
-                           disabled={this.state.disableAdd}/>
-                </InputGroup>
-                <br />
-                <InputGroup>
-                    <InputGroupAddon>Postal Code</InputGroupAddon>
-                    <Input className="AddBuilding"
-                           placeholder="Type Postal Code..."
-                           value={this.state.refAddBuildingPostalCode}
-                           onChange={this.onAddBuildingPostalInputChange}
+                           placeholder="Type address..."
+                           value={this.state.refAddBuildingAddress}
+                           onChange={this.onAddBuildingAddressInputChange}
                            disabled={this.state.disableAdd}/>
                 </InputGroup>
                 <br />

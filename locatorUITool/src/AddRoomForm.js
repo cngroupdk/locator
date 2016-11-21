@@ -15,7 +15,6 @@ var AddRoomForm = React.createClass({
             refAddRoomBuilding : null,
             refAddRoomFloor : null,
             refAddRoomName : "",
-            refAddRoomCapacity: "",
             nodeInfo : this.props.nodeInfo,
             disableAdd : this.props.disableAdd,
             selectedRoom : null
@@ -44,7 +43,6 @@ var AddRoomForm = React.createClass({
                     if(this.props.addingRoom == null) {
                         this.setState({
                             refAddRoomName : result.name,
-                            refAddRoomCapacity: result.capacity,
                             selectedRoom: result
                         });
                     }
@@ -64,10 +62,6 @@ var AddRoomForm = React.createClass({
         this.setState({refAddRoomName: event.target.value});
     },
 
-    onAddRoomCapacityInputChange(event) {
-        this.setState({refAddRoomCapacity: event.target.value});
-    },
-
     onAddRoomSubmit(){
         this.onRoomSubmitHandler({type:'add', url:'http://localhost:8080/rooms/new/room',
         messageContent:'Room Added'});
@@ -82,12 +76,10 @@ var AddRoomForm = React.createClass({
         var buildingName = this.state.refAddRoomBuilding.getCurrentBuilding().currentBuilding;
         var floorName = this.state.refAddRoomFloor.getCurrentFloor().currentFloor;
         var roomName = this.state.refAddRoomName;
-        var roomCapacity = this.state.refAddRoomCapacity;
 
         if( buildingName!== 'Choose Building' &&
             floorName!== 'Choose Floor' &&
-            roomName !== '' &&
-            roomCapacity !== '') {
+            roomName !== '') {
             this.setState({
                 modal: !this.state.modal
             });
@@ -107,7 +99,6 @@ var AddRoomForm = React.createClass({
         var buildingName = this.state.refAddRoomBuilding.getCurrentBuilding().currentBuilding;
         var floorName = this.state.refAddRoomFloor.getCurrentFloor().currentFloor;
         var roomName = this.state.refAddRoomName;
-        var roomCapacity = this.state.refAddRoomCapacity;
         var passedValidation = false;
 
         var buildingData = this.state.refAddRoomBuilding.getBuildingData();
@@ -115,8 +106,7 @@ var AddRoomForm = React.createClass({
 
         if( buildingName!== 'Choose Building' &&
             floorName!== 'Choose Floor' &&
-            roomName !== '' &&
-            roomCapacity !== '') {
+            roomName !== '') {
 
             var rawData = null;
 
@@ -126,8 +116,6 @@ var AddRoomForm = React.createClass({
                 rawData = {
                     name: selected.name,
                     type: selected.type,
-                    capacity: selected.capacity,
-                    assignedPeople: selected.assignedPeople,
                     buildingId: selected.buildingId,
                     roomId: selected.roomId,
                     styleTop: selected.styleTop,
@@ -140,8 +128,6 @@ var AddRoomForm = React.createClass({
                 rawData = {
                     name: roomName,
                     type: 'Development',
-                    capacity: roomCapacity,
-                    assignedPeople: 0,
                     buildingId: buildingName,
                     roomId: 0,
                     styleTop: '0px',
@@ -178,8 +164,7 @@ var AddRoomForm = React.createClass({
             this.state.refAddRoomBuilding.updateBuilding("Choose Building");
             this.state.refAddRoomFloor.updateFloor("Choose Floor");
             this.setState({
-                refAddRoomName : "",
-                refAddRoomCapacity : ""
+                refAddRoomName : ""
             });
         }
     },
@@ -211,15 +196,6 @@ var AddRoomForm = React.createClass({
                            placeholder="Type room name..."
                            value={this.state.refAddRoomName}
                            onChange={this.onAddRoomNameInputChange}
-                           disabled={this.state.disableAdd}/>
-                </InputGroup>
-                <br />
-                <InputGroup>
-                    <InputGroupAddon>Room Capacity</InputGroupAddon>
-                    <Input className="CoordinateInput"
-                           placeholder="Type room capacity..."
-                           value={this.state.refAddRoomCapacity}
-                           onChange={this.onAddRoomCapacityInputChange}
                            disabled={this.state.disableAdd}/>
                 </InputGroup>
                 <br />

@@ -293,24 +293,7 @@ var AddRoomCoordForm = React.createClass({
                     <br />
                     <Button id="RoomCoordButton"
                             color="primary"
-                            onClick={this.toggle}>Submit</Button>
-                    <Modal id="AddBuilding"
-                           isOpen={this.state.modal}
-                           toggle={this.toggle}
-                    >
-                        <ModalHeader>Confirmation</ModalHeader>
-                        <ModalBody>
-                            <p>Are you sure?</p>
-                            <Button id="EditLocationButton"
-                                    onClick={this.onSetCoordSubmitHandler}>
-                                Submit
-                            </Button>
-                            <Button id="EditLocationButton"
-                                    onClick={this.toggle}>
-                                Cancel
-                            </Button>
-                        </ModalBody>
-                    </Modal>
+                            onClick={this.onSetCoordSubmitHandler}>Submit</Button>
                 </Col>
                 <Col xs="5">
                     <ImageMap id="floorMap"

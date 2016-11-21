@@ -1,9 +1,6 @@
 package dk.cngroup.intranet.locator.buildings;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Building class that represents such an entity.
@@ -17,6 +14,8 @@ import javax.persistence.Table;
 public class Building {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "buildings_building_guid_seq")
+    @SequenceGenerator(name = "buildings_building_guid_seq", sequenceName = "buildings_building_guid_seq", allocationSize=1)
     @Column(name="building_guid")
     private Integer buildingGuid;
     @Column(name="building_id")
@@ -24,12 +23,19 @@ public class Building {
     private String type;
     private String name;
     private String city;
-    @Column(name="postal_code")
-    private String postalCode;
-    @Column(name="street_name")
-    private String streetName;
-    @Column(name="street_number")
-    private String streetNumber;
+    private String address;
+
+    public Building(){
+
+    }
+
+    public Building(Building b){
+        this.buildingId = b.getBuildingId();
+        this.type = b.getType();
+        this.name = b.getName();
+        this.city = b.getCity();
+        this.address = b.getAddress();
+    }
 
     @Override
     public boolean equals(Object obj){
@@ -101,28 +107,12 @@ public class Building {
         this.city = city;
     }
 
-    public String getPostalCode() {
-        return postalCode;
+    public String getAddress() {
+        return address;
     }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public String getStreetName() {
-        return streetName;
-    }
-
-    public void setStreetName(String street) {
-        this.streetName = street;
-    }
-
-    public String getStreetNumber() {
-        return streetNumber;
-    }
-
-    public void setStreetNumber(String number) {
-        this.streetNumber = number;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
 }

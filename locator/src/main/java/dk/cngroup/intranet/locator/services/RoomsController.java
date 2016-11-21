@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * RoomsController is a class implementing spring rest annotations and will provide REST services to return Room objects.
@@ -24,7 +25,7 @@ public class RoomsController {
      *
      * @return an Iterable object of Room objects
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/rooms")
     public Iterable<Room> getCNRooms(){
 
@@ -44,7 +45,7 @@ public class RoomsController {
      *
      * @return a Room object
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/rooms/{building_id}/{room_name}")
     public Room getSingleCNRoom(@PathVariable(value="room_name") String room_name,
                                 @PathVariable(value="building_id") String buildingId){
@@ -72,7 +73,7 @@ public class RoomsController {
      *
      * @return a Room object
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/rooms/{building_id}")
     public List<Room> getCNRoomsByBuilding(@PathVariable(value="building_id") String buildingId){
 
@@ -97,7 +98,7 @@ public class RoomsController {
      *
      * @return a Room object
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/rooms/byfloor/{building_id}/{floor_name}")
     public List<Room> getCNRoomsByBuildingAndFloor(@PathVariable(value="floor_name") String floor_name,
                                      @PathVariable(value="building_id") String buildingId){
@@ -119,13 +120,13 @@ public class RoomsController {
     }
 
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/rooms/new/room")
     @ResponseBody
-    public String addSingleCNRoom(@RequestBody Room newRoom) {
+    public String addSingleCNRoom(@RequestBody Room inputRoom) {
         try{
-            newRoom.setRoomId((int)repository.count());
 
+            Room newRoom = new Room(inputRoom);
             repository.save(newRoom);
 
         }catch(Exception e){
@@ -136,7 +137,7 @@ public class RoomsController {
         return "redirect:/";
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/rooms/delete/room")
     @ResponseBody
     public String deleteSingleCNRoom(@RequestBody Room newRoom) {
@@ -150,7 +151,7 @@ public class RoomsController {
         return "redirect:/";
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/rooms/update/room")
     @ResponseBody
     public String updateSingleCNRoom(@RequestBody Room utilityRoom) {

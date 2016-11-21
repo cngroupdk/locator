@@ -30,7 +30,7 @@ public class EmployeesController {
     @Autowired
     private StaffMemberRepository repository;
 
-    @Value("${intranet.photos.url}")
+    @Value("${intranet.photos.url.home}")
     private String photoUrl;
 
     /**
@@ -38,7 +38,7 @@ public class EmployeesController {
      *
      * @return an Iterable object of StaffMemberCreate objects
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/employees")
     public List<StaffMember> getEmployeeList(){
 
@@ -53,7 +53,7 @@ public class EmployeesController {
 
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/employees/{first_name}/{last_name}")
     public StaffMember getSingleEmployee(@PathVariable(value="first_name") String firstName,
                                          @PathVariable(value="last_name") String lastName){
@@ -76,7 +76,7 @@ public class EmployeesController {
 
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/employees/photo/folder")
     public StoragePhotoFolder getEmployeePhotoFolder(){
         StoragePhotoFolder photoFolder = new StoragePhotoFolder();
@@ -84,7 +84,7 @@ public class EmployeesController {
         return photoFolder;
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/employees/update/employee")
     @ResponseBody
     public String updateSingleEmployee(@RequestBody StaffMember updatedEmployee) {
@@ -113,14 +113,14 @@ public class EmployeesController {
     public void getTimurNames(){
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<List<Person>> rateResponse =
+        /*ResponseEntity<List<Person>> rateResponse =
                 restTemplate.exchange(  timurURL,
                         HttpMethod.GET,
                         null,
                         new ParameterizedTypeReference<List<Person>>() {}
                 );
 
-        List<Person> employees = rateResponse.getBody();
+        List<Person> employees = rateResponse.getBody();*/
 
         log.info("Connected to Persons at " + dateFormat.format(new Date()));
 

@@ -14,13 +14,12 @@ import javax.persistence.*;
 public class Room {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rooms_room_id_seq")
+    @SequenceGenerator(name = "rooms_room_id_seq", sequenceName = "rooms_room_id_seq", allocationSize=1)
     @Column(name = "room_id")
     private Integer roomId;
     private String name;
     private String type;
-    private Integer capacity;
-    @Column(name = "assigned_people")
-    private Integer assignedPeople;
     @Column(name = "floor_name")
     private String floorName;
     @Column(name = "building_id")
@@ -29,6 +28,20 @@ public class Room {
     private String styleTop;
     @Column(name = "style_left")
     private String styleLeft;
+
+    public Room(){
+
+    }
+
+    public Room(Room r){
+        this.name = r.name;
+        this.type = r.type;
+        this.floorName = r.floorName;
+        this.buildingId = r.buildingId;
+        this.styleTop = r.styleTop;
+        this.styleLeft = r.styleLeft;
+    }
+
     @Override
     public boolean equals(Object obj) {
         boolean result;
@@ -82,22 +95,6 @@ public class Room {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public Integer getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
-    }
-
-    public Integer getAssignedPeople() {
-        return assignedPeople;
-    }
-
-    public void setAssignedPeople(Integer assignedPeople) {
-        this.assignedPeople = assignedPeople;
     }
 
     public String getFloorName() {

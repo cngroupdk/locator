@@ -2,6 +2,7 @@ package dk.cngroup.intranet.locator.services;
 import dk.cngroup.intranet.locator.Application;
 import dk.cngroup.intranet.locator.buildingcomponents.Floor;
 import dk.cngroup.intranet.locator.repositories.FloorsRepository;
+import dk.cngroup.intranet.locator.repositories.RoomsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +19,15 @@ public class FloorsController {
     @Autowired
     private FloorsRepository repository;
 
+    @Autowired
+    private RoomsRepository roomRepository;
+
     /**
      * Rest service to return a list of all floors in all buildings in the database.
      *
      * @return an Iterable object of Floor objects
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/floors")
     public Iterable<Floor> getCNFloors(){
 
@@ -43,7 +47,7 @@ public class FloorsController {
      *
      * @return a Floor object
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/floors/{building_id}")
     public List<Floor> getCNFloorsByBuilding(@PathVariable(value="building_id") String buildingId){
 
@@ -68,7 +72,7 @@ public class FloorsController {
      *
      * @return a Floor object
      */
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/floors/{building_id}/{floor_name}")
     public Floor getSingleCNFloor(@PathVariable(value="floor_name") String floorName,
                                   @PathVariable(value="building_id") String buildingId){
@@ -92,13 +96,15 @@ public class FloorsController {
 
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/floors/new/floor")
     @ResponseBody
-    public String addSingleCNFloor(@RequestBody Floor newFloor) {
+    public String addSingleCNFloor(@RequestBody Floor inputFloor) {
         try{
-            newFloor.setFloorId((int)repository.count());
+
+            Floor newFloor = new Floor(inputFloor);
             repository.save(newFloor);
+
         }catch(Exception e){
             Application.getLogger().info("/floors/new/floor, Floor not added.");
             throw new FloorsServiceException();
@@ -107,12 +113,13 @@ public class FloorsController {
         return "redirect:/";
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/floors/delete/floor")
     @ResponseBody
-    public String deleteSingleCNFloor(@RequestBody Floor newFloor) {
+    public String deleteSingleCNFloor(@RequestBody Floor deleteFloor) {
         try{
-            repository.delete(newFloor);
+            repository.delete(deleteFloor);
+            roomRepository.removeByFloorName(deleteFloor.getFloorName());
         }catch(Exception e){
             Application.getLogger().info("/floors/delete/floor, Floor not added.");
             throw new FloorsServiceException();
@@ -121,7 +128,7 @@ public class FloorsController {
         return "redirect:/";
     }
 
-    @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/floors/update/floor")
     @ResponseBody
     public String updateSingleCNFloor(@RequestBody Floor updateFloor) {
