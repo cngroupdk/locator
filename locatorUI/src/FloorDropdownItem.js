@@ -10,7 +10,7 @@ var FloorDropdownItem = React.createClass({
         return (
             <DropdownItem className="floorItem"
                           onClick={this.props.update}
-                          value={this.props.floorData.floorId}>
+                          value={this.props.counter}>
                 {this.props.floorData.floorName + " @ " + this.props.floorData.buildingId}
             </DropdownItem>
         );

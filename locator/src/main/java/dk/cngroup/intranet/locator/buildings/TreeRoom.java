@@ -1,7 +1,10 @@
 package dk.cngroup.intranet.locator.buildings;
 
 /**
- * Created by cano on 8.11.2016.
+ *
+ * The TreeRoom class is used to build the front end CN Asset tree structure and represents a room
+ *
+ * @author Victor Cano
  */
 public class TreeRoom {
 

@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by cano on 8.11.2016.
+ *
+ * The TreeRoot class is used as a starting point to build the front end CN Asset tree structure
+ *
+ * @author Victor Cano
  */
 public class TreeRoot {
 

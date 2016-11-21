@@ -68,7 +68,7 @@ var AddRoomCoordForm = React.createClass({
             this.serverRequest = $.get(url, function (result) {
 
                 if(!(this.state.refCoordBuilding == null)) {
-                    this.state.refCoordMap.setMapPath('http://localhost:8080' + result.floorplanUrl);
+                    this.state.refCoordMap.setMapPath('http://localhost:8080/files' + result.floorplanUrl);
                     var style = { visibility: 'visible' };
                     this.state.refCoordMap.setStyleProps(style);
                 }
@@ -107,7 +107,7 @@ var AddRoomCoordForm = React.createClass({
         this.state.refCoordRoom.disableDropdown(false);
         this.state.refCoordRoom.updateRoom("Choose Room");
 
-        this.state.refCoordMap.setMapPath('http://localhost:8080' + flData.floorplanUrl);
+        this.state.refCoordMap.setMapPath('http://localhost:8080/files' + flData.floorplanUrl);
         var style = { visibility: 'visible' };
         this.state.refCoordMap.setStyleProps(style);
     },
@@ -165,7 +165,7 @@ var AddRoomCoordForm = React.createClass({
             left: XY.x + 23
         };
 
-        this.state.refCoordIMG.setMapPath('http://localhost:8080/marker-location.png');
+        this.state.refCoordIMG.setMapPath('http://localhost:8080/files/marker-location.png');
         this.state.refCoordIMG.setStyleProps(style);
     },
 

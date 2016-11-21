@@ -48,7 +48,7 @@ var App=React.createClass({
   setFloorplanPath : function(data){
 
     fetch('http://localhost:8080/floors/' + data.buildingId + '/' + data.floorName).then((response) => {return response.json()}).then(function(floorData){
-      data.refToFloor.setMapPath('http://localhost:8080' + floorData.floorplanUrl);
+      data.refToFloor.setMapPath('http://localhost:8080/files' + floorData.floorplanUrl);
     }).catch((error) => {
       console.error(error);
     });
@@ -89,7 +89,7 @@ var App=React.createClass({
         top: newTop,
         left: newLeft
       };
-      data.refToPen.setMapPath('http://localhost:8080/marker-pen.png');
+      data.refToPen.setMapPath('http://localhost:8080/files/marker-pen.png');
       data.refToPen.setStyleProps(style);
 
     }).catch((error) => {
@@ -179,7 +179,7 @@ var App=React.createClass({
       top: newTop,
       left: newLeft
     };
-    this.state.myImage.setMapPath('http://localhost:8080/marker-location.png');
+    this.state.myImage.setMapPath('http://localhost:8080/files/marker-location.png');
     this.state.myImage.setStyleProps(style);
 
     style =

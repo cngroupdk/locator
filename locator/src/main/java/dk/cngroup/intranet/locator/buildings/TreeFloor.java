@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by cano on 8.11.2016.
+ *
+ * The TreeFloor class is used to build the front end CN Asset tree structure and represents a floor
+ *
+ * @author Victor Cano
  */
 public class TreeFloor {
 

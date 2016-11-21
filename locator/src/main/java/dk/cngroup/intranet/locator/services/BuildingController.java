@@ -15,7 +15,6 @@ import java.util.List;
  * BuildingController is a class implementing spring rest annotations and will provide REST services to return Building objects
  * @author Victor Cano
  */
-
 @RestController
 public class BuildingController {
 

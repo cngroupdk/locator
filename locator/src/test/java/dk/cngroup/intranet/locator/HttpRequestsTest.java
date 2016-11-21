@@ -108,7 +108,7 @@ public class HttpRequestsTest {
                         "\"abbreviation\":\"MPP\"," +
                         "\"role\":\"Developer\"," +
                         "\"email\":\"pipal@cngroup.cz\"," +
-                        "\"location\":\"207@2nd Floor@20\"," +
+                        "\"location\":\"205@2nd Floor@20\"," +
                         "\"id\":\"pipal\"" +
                     "}" +
                 "]"

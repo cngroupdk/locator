@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by victorcano on 15/11/2016.
+ *
+ * The Person class is used to consume the Timur Web Services API
+ *
+ * @author Victor Cano
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Person {

@@ -10,7 +10,7 @@ var BuildingDropdownItem = React.createClass({
         return (
             <DropdownItem className="buildingItem"
                           onClick={this.props.update}
-                          value={this.props.buildingData.buildingGuid}>
+                          value={this.props.counter}>
                 {this.props.buildingData.name}
             </DropdownItem>
         );

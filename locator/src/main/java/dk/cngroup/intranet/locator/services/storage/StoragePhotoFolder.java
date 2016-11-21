@@ -3,7 +3,10 @@ package dk.cngroup.intranet.locator.services.storage;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
- * Created by victorcano on 15/11/2016.
+ *
+ * The StoragePhotoFolder class is used by the API to provide information on the location of the employeee photo folder
+ *
+ * @author Victor Cano
  */
 public class StoragePhotoFolder {
 

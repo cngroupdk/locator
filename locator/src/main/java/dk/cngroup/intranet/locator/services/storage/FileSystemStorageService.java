@@ -18,10 +18,12 @@ import java.util.stream.Stream;
 public class FileSystemStorageService implements StorageService {
 
     private final Path rootLocation;
+    private final Path tempLocation;
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
+        this.tempLocation = Paths.get(properties.getTempLocation());
     }
 
     @Override
@@ -30,7 +32,7 @@ public class FileSystemStorageService implements StorageService {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(), this.tempLocation.resolve(file.getOriginalFilename()));
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
@@ -54,6 +56,11 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
+    public Path loadFromTemp(String filename) {
+        return tempLocation.resolve(filename);
+    }
+
+    @Override
     public Resource loadAsResource(String filename) {
         try {
             Path file = load(filename);
@@ -72,13 +79,13 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public void deleteAll() {
-        FileSystemUtils.deleteRecursively(rootLocation.toFile());
+        FileSystemUtils.deleteRecursively(tempLocation.toFile());
     }
 
     @Override
     public void init() {
         try {
-            Files.createDirectory(rootLocation);
+            Files.createDirectory(tempLocation);
         } catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
         }

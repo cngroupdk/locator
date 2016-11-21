@@ -82,12 +82,16 @@ var FloorDropdown = React.createClass({
     },
 
     render: function() {
+
+        var counter=0;
+
         var floorNodes = this.state.data.map(
             function (floor) {
                 return (
                     <FloorDropdownItem className="floorDropdownItem"
                                        floorData={floor}
-                                       key={floor.floorId}
+                                       key={counter}
+                                       counter={counter++}
                                        update={this.onClickUpdateFloor}/>
                 );
             }

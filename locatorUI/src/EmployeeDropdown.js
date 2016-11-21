@@ -113,12 +113,16 @@ var EmployeeDropdown = React.createClass({
     },
 
     render: function() {
+
+        var counter=0;
+
         var employeeNodes = this.state.data.map(
             function (employee) {
                 return (
                     <EmployeeDropdownItem className="EmployeeDropdownItem"
                                           employeeData={employee}
-                                          key={employee.employeeGuid}
+                                          key={counter}
+                                          counter={counter++}
                                           update={this.onClickUpdateName}
                     />
                 );

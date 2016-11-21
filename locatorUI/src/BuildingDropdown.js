@@ -91,13 +91,17 @@ var BuildingDropdown = React.createClass({
     },
 
     render: function() {
+
+        var counter=0;
+
         var buildingNodes = this.state.data.map(
             function (building) {
                 return (
-                    <BuildingDropdownItem className="buildingDropdownItem"
-                                       buildingData={building}
-                                       key={building.buildingGuid}
-                                       update={this.onClickUpdateBuilding}/>
+                    <BuildingDropdownItem   className="buildingDropdownItem"
+                                            buildingData={building}
+                                            key={counter}
+                                            counter={counter++}
+                                            update={this.onClickUpdateBuilding}/>
                 );
             }
             , this);

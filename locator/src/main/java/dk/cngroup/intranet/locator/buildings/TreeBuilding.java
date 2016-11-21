@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by cano on 8.11.2016.
+ *
+ * The TreeBuilding class is used to build the front end CN Asset tree structure and represents a building
+ *
+ * @author Victor Cano
  */
 public class TreeBuilding {
 

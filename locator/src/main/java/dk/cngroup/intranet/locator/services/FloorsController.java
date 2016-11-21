@@ -96,6 +96,11 @@ public class FloorsController {
 
     }
 
+    /**
+     * Rest service to add a floor in the database
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/floors/new/floor")
     @ResponseBody
@@ -113,13 +118,20 @@ public class FloorsController {
         return "redirect:/";
     }
 
+    /**
+     * Rest service to delete a floor in the database
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/floors/delete/floor")
     @ResponseBody
     public String deleteSingleCNFloor(@RequestBody Floor deleteFloor) {
         try{
+            
             repository.delete(deleteFloor);
             roomRepository.removeByFloorName(deleteFloor.getFloorName());
+
         }catch(Exception e){
             Application.getLogger().info("/floors/delete/floor, Floor not added.");
             throw new FloorsServiceException();
@@ -128,6 +140,11 @@ public class FloorsController {
         return "redirect:/";
     }
 
+    /**
+     * Rest service to update a floor in the database
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/floors/update/floor")
     @ResponseBody

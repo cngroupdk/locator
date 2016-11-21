@@ -12,10 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.stream.Collectors;
 
+/**
+ * EmployeesController will provide REST services to handle user upload of files
+ * @author Victor Cano
+ */
 @Controller
 public class FileUploadController {
 
@@ -26,6 +31,11 @@ public class FileUploadController {
         this.storageService = storageService;
     }
 
+    /**
+     * Rest service to list uploaded files a floor in the database
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @GetMapping("/files")
     public String listUploadedFiles(Model model) throws IOException {
@@ -41,6 +51,11 @@ public class FileUploadController {
         return "uploadForm";
     }
 
+    /**
+     * Rest service to load a file and serve it
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
@@ -53,6 +68,11 @@ public class FileUploadController {
                 .body(file);
     }
 
+    /**
+     * Rest service to upload an image file in the database
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @PostMapping(path="/files/upload", headers=("content-type=multipart/*"), consumes = "image/jpeg")
     @ResponseBody
@@ -63,8 +83,8 @@ public class FileUploadController {
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-        Path movefrom = storageService.load(file.getOriginalFilename());
-        Path target = Paths.get("src/main/resources/static",file.getOriginalFilename());
+        Path movefrom = storageService.loadFromTemp(file.getOriginalFilename());
+        Path target = storageService.load(file.getOriginalFilename());
 
         try {
             Files.move(movefrom, target, StandardCopyOption.REPLACE_EXISTING);
@@ -78,6 +98,17 @@ public class FileUploadController {
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity handleStorageFileNotFound(StorageFileNotFoundException exc) {
         return ResponseEntity.notFound().build();
+    }
+
+    public String deleteFileFromFloor(String filename){
+        try {
+            Path target = storageService.load(filename);
+            Files.delete(target);
+        }catch (IOException e) {
+            System.err.println(e);
+        }
+
+        return "Done";
     }
 
 }

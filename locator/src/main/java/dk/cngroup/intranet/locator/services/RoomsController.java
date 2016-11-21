@@ -13,7 +13,6 @@ import java.util.UUID;
  * RoomsController is a class implementing spring rest annotations and will provide REST services to return Room objects.
  * @author Victor Cano
  */
-
 @RestController
 public class RoomsController {
 
@@ -119,7 +118,11 @@ public class RoomsController {
 
     }
 
-
+    /**
+     * Rest service to add a room in the database
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/rooms/new/room")
     @ResponseBody
@@ -137,6 +140,11 @@ public class RoomsController {
         return "redirect:/";
     }
 
+    /**
+     * Rest service to delete a room in the database
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/rooms/delete/room")
     @ResponseBody
@@ -151,6 +159,11 @@ public class RoomsController {
         return "redirect:/";
     }
 
+    /**
+     * Rest service to update a room in the database
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/rooms/update/room")
     @ResponseBody

@@ -30,13 +30,13 @@ public class EmployeesController {
     @Autowired
     private StaffMemberRepository repository;
 
-    @Value("${intranet.photos.url.home}")
+    @Value("${intranet.photos.url}")
     private String photoUrl;
 
     /**
      * Rest service to return a list of all employees in the database.
      *
-     * @return an Iterable object of StaffMemberCreate objects
+     * @return an Iterable object of StaffMember objects
      */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/employees")
@@ -53,6 +53,11 @@ public class EmployeesController {
 
     }
 
+    /**
+     * Rest service to return information on a single employee.
+     *
+     * @return a StaffMember object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/employees/{first_name}/{last_name}")
     public StaffMember getSingleEmployee(@PathVariable(value="first_name") String firstName,
@@ -76,6 +81,11 @@ public class EmployeesController {
 
     }
 
+    /**
+     * Rest service to return location of employee photo folders.
+     *
+     * @return a StoragePhotoFolder object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping("/employees/photo/folder")
     public StoragePhotoFolder getEmployeePhotoFolder(){
@@ -84,6 +94,11 @@ public class EmployeesController {
         return photoFolder;
     }
 
+    /**
+     * Rest service to update an employee in the database
+     *
+     * @return a String object
+     */
     @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
     @RequestMapping(method = RequestMethod.POST, path="/employees/update/employee")
     @ResponseBody
@@ -109,18 +124,23 @@ public class EmployeesController {
     @Value("${timur.persons.url}")
     private String timurURL;
 
+    /**
+     * Scheduled service to update employees in the database from TIMUR
+     *
+     * @return a String object
+     */
     @Scheduled(fixedDelayString = "${schedule.task.interval}")
     public void getTimurNames(){
         RestTemplate restTemplate = new RestTemplate();
 
-        /*ResponseEntity<List<Person>> rateResponse =
+        ResponseEntity<List<Person>> rateResponse =
                 restTemplate.exchange(  timurURL,
                         HttpMethod.GET,
                         null,
                         new ParameterizedTypeReference<List<Person>>() {}
                 );
 
-        List<Person> employees = rateResponse.getBody();*/
+        List<Person> employees = rateResponse.getBody();
 
         log.info("Connected to Persons at " + dateFormat.format(new Date()));
 

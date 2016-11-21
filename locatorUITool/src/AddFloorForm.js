@@ -41,9 +41,11 @@ var AddFloorForm = React.createClass({
                     this.state.refAddFloorBuilding.updateBuilding(result.buildingId);
 
                     if(this.props.disableAdd === true) {
+
                         this.setState({
                             refAddFloorName: result.floorName,
                             refAddFloorURL: result.floorplanUrl,
+                            refNewFile: null,
                             selectedFloor: result
                         });
                     }
@@ -277,11 +279,15 @@ var AddFloorForm = React.createClass({
                     </div>
                 : null }
                 <br/>
+                <p>Drop an image / Click to choose file</p>
                 <Dropzone onDrop={this.onDrop}>
                     {this.state.refNewFile ?
                         <div>{this.state.refNewFile.map((file) => <img id="FloorMapPreview" src={file.preview} key={0}/>)}</div>
                         :
-                        <div>Drop image / Click to Select.</div>}
+                        (this.state.refAddFloorURL !== '' && !this.state.refNewFile)?
+                        <div>
+                            <img id="FloorMapPreview" src={"http://localhost:8080/files" + this.state.refAddFloorURL} key={0}/>
+                        </div> : null}
                 </Dropzone>
                 {this.state.refNewFile ? <div>Drop image / Click to Select.</div>: null}
                 <Modal id="AddBuilding"
