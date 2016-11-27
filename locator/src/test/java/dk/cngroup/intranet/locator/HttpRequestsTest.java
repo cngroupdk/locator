@@ -40,88 +40,12 @@ public class HttpRequestsTest {
     private RoomsRepository roomRepository;
 
     @Test
-    public void employeesRequestReturnsJSONData() throws Exception {
-
-        this.mockMvc.perform(get("/employees")).andDo(print()).andExpect(status().isOk())
-            .andExpect(content().json(
-                "[" +
-                    "{" +
-                        "\"employeeGuid\":6," +
-                        "\"managerId\":\"dobias\"," +
-                        "\"firstName\":\"Victor Isaias\"," +
-                        "\"lastName\":\"Cano Becerril\"," +
-                        "\"abbreviation\":\"VCB\"," +
-                        "\"role\":\"Developer\"," +
-                        "\"email\":\"cano@cngroup.cz\"," +
-                        "\"location\":\"K1@2nd Floor@KR9\"," +
-                        "\"id\":\"cano\"" +
-                    "}," +
-                    "{" +
-                        "\"employeeGuid\":4," +
-                        "\"managerId\":\"dobias\"," +
-                        "\"firstName\":\"Tomas\"," +
-                        "\"lastName\":\"Kolaci\"," +
-                        "\"abbreviation\":\"TKO\"," +
-                        "\"role\":\"Developer\"," +
-                        "\"email\":\"kolaci@cngroup.cz\"," +
-                        "\"location\":\"E13@Ground@20\"," +
-                        "\"id\":\"kolaci\"" +
-                    "}," +
-                    "{" +
-                        "\"employeeGuid\":1," +
-                        "\"managerId\":\"dobias\"," +
-                        "\"firstName\":\"Vit\"," +
-                        "\"lastName\":\"Koma\"," +
-                        "\"abbreviation\":\"VKO\"," +
-                        "\"role\":\"Developer\"," +
-                        "\"email\":\"koma@cngroup.cz\"," +
-                        "\"location\":\"K1@2nd Floor@KR9\"," +
-                        "\"id\":\"koma\"" +
-                    "}," +
-                    "{" +
-                        "\"employeeGuid\":5," +
-                        "\"managerId\":\"dobias\"," +
-                        "\"firstName\":\"Pavla\"," +
-                        "\"lastName\":\"Melegova\"," +
-                        "\"abbreviation\":\"PME\"," +
-                        "\"role\":\"Developer\"," +
-                        "\"email\":\"melegova@gmail.com\"," +
-                        "\"location\":\"KM1@Mezzanine@KR9\"," +
-                        "\"id\":\"melegova\"" +
-                    "}," +
-                    "{" +
-                        "\"employeeGuid\":2," +
-                        "\"managerId\":\"dobias\"," +
-                        "\"firstName\":\"Ecaterina\"," +
-                        "\"lastName\":\"Zubataia\"," +
-                        "\"abbreviation\":\"EZU\"," +
-                        "\"role\":\"Developer\"," +
-                        "\"email\":\"zubataia@cngroup.cz\"," +
-                        "\"location\":\"K5@2nd Floor@KR9\"," +
-                        "\"id\":\"zubataia\"" +
-                    "}," +
-                    "{" +
-                        "\"employeeGuid\":3," +
-                        "\"managerId\":\"dobias\"," +
-                        "\"firstName\":\"Michal\"," +
-                        "\"lastName\":\"Pipal\"," +
-                        "\"abbreviation\":\"MPP\"," +
-                        "\"role\":\"Developer\"," +
-                        "\"email\":\"pipal@cngroup.cz\"," +
-                        "\"location\":\"205@2nd Floor@20\"," +
-                        "\"id\":\"pipal\"" +
-                    "}" +
-                "]"
-            ));
-  }
-
-    @Test
     public void employeesSingleRequestReturnsVictorCanoJSONData() throws Exception {
 
         this.mockMvc.perform(get("/employees/Victor Isaias/Cano Becerril")).andDo(print()).andExpect(status().isOk())
             .andExpect(content().json(
                 "{" +
-                        "\"employeeGuid\":6," +
+                        "\"employeeGuid\":2," +
                         "\"managerId\":\"dobias\"," +
                         "\"firstName\":\"Victor Isaias\"," +
                         "\"lastName\":\"Cano Becerril\"," +
@@ -141,7 +65,7 @@ public class HttpRequestsTest {
             .andExpect(content().json(
                 "[" +
                     "{" +
-                    "\"buildingGuid\":0," +
+                    "\"buildingGuid\":2," +
                     "\"buildingId\":\"KR9\"," +
                     "\"type\":\"Office Space\"," +
                     "\"name\":\"Krakovska 9\"," +
@@ -166,7 +90,7 @@ public class HttpRequestsTest {
         this.mockMvc.perform(get("/buildings/KR9")).andDo(print()).andExpect(status().isOk())
             .andExpect(content().json(
                 "{" +
-                    "\"buildingGuid\":0," +
+                    "\"buildingGuid\":2," +
                     "\"buildingId\":\"KR9\"," +
                     "\"type\":\"Office Space\"," +
                     "\"name\":\"Krakovska 9\"," +
@@ -183,35 +107,35 @@ public class HttpRequestsTest {
                 .andExpect(content().json(
                     "[" +
                             "{" +
-                            "\"floorId\":0," +
+                            "\"floorId\":1," +
                             "\"floorName\":\"1st Floor\"," +
                             "\"floorplanUrl\":\"/floor201.gif\"," +
                             "\"type\":\"General\"," +
                             "\"buildingId\":\"20\"" +
                             "}," +
                             "{" +
-                            "\"floorId\":1," +
+                            "\"floorId\":2," +
                             "\"floorName\":\"2nd Floor\"," +
                             "\"floorplanUrl\":\"/floor202.gif\"," +
                             "\"type\":\"General\"," +
                             "\"buildingId\":\"20\"" +
                             "}," +
                             "{" +
-                            "\"floorId\":2," +
+                            "\"floorId\":3," +
                             "\"floorName\":\"Ground\"," +
                             "\"floorplanUrl\":\"/floor200.gif\"," +
                             "\"type\":\"General\"," +
                             "\"buildingId\":\"20\"" +
                             "}," +
                             "{" +
-                            "\"floorId\":3," +
+                            "\"floorId\":4," +
                             "\"floorName\":\"Mezzanine\"," +
                             "\"floorplanUrl\":\"/floorKR93.gif\"," +
                             "\"type\":\"General\"," +
                             "\"buildingId\":\"KR9\"" +
                             "}," +
                             "{" +
-                            "\"floorId\":4," +
+                            "\"floorId\":5," +
                             "\"floorName\":\"2nd Floor\"," +
                             "\"floorplanUrl\":\"/floorKR92.gif\"," +
                             "\"type\":\"General\"," +
@@ -226,7 +150,7 @@ public class HttpRequestsTest {
 
         this.mockMvc.perform(get("/floors/KR9/2nd Floor")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().json(
-                        "{\"floorId\":4,\"floorName\":\"2nd Floor\",\"floorplanUrl\":\"/floorKR92.gif\",\"type\":\"General\",\"buildingId\":\"KR9\"}"
+                        "{\"floorId\":5,\"floorName\":\"2nd Floor\",\"floorplanUrl\":\"/floorKR92.gif\",\"type\":\"General\",\"buildingId\":\"KR9\"}"
                 ));
     }
 
@@ -237,7 +161,7 @@ public class HttpRequestsTest {
                 .andExpect(content().json(
                     "[" +
                         "{" +
-                        "\"roomId\":1," +
+                        "\"roomId\":3," +
                         "\"name\":\"K1\"," +
                         "\"type\":\"Development\"," +
                         "\"floorName\":\"2nd Floor\"," +
@@ -246,7 +170,7 @@ public class HttpRequestsTest {
                         "\"styleLeft\":\"420px\"" +
                         "}," +
                         "{" +
-                        "\"roomId\":2," +
+                        "\"roomId\":4," +
                         "\"name\":\"K5\"," +
                         "\"type\":\"Development\"," +
                         "\"floorName\":\"2nd Floor\"," +
@@ -255,16 +179,16 @@ public class HttpRequestsTest {
                         "\"styleLeft\":\"120px\"" +
                         "}," +
                         "{" +
-                        "\"roomId\":3," +
+                        "\"roomId\":5," +
                         "\"name\":\"KM1\"," +
                         "\"type\":\"Development\"," +
                         "\"floorName\":\"Mezzanine\"," +
                         "\"buildingId\":\"KR9\"," +
-                        "\"styleTop\":\"-315px\"," +
-                        "\"styleLeft\":\"400px\"" +
+                        "\"styleTop\":\"-320px\"," +
+                        "\"styleLeft\":\"410px\"" +
                         "}," +
                         "{" +
-                        "\"roomId\":4," +
+                        "\"roomId\":2," +
                         "\"name\":\"E13\"," +
                         "\"type\":\"Development\"," +
                         "\"floorName\":\"Ground\"," +
@@ -273,7 +197,7 @@ public class HttpRequestsTest {
                         "\"styleLeft\":\"630px\"" +
                         "}," +
                         "{" +
-                        "\"roomId\":5," +
+                        "\"roomId\":6," +
                         "\"name\":\"205\"," +
                         "\"type\":\"Development\"," +
                         "\"floorName\":\"2nd Floor\"," +
@@ -282,7 +206,7 @@ public class HttpRequestsTest {
                         "\"styleLeft\":\"170px\"" +
                         "}," +
                         "{" +
-                        "\"roomId\":6," +
+                        "\"roomId\":1," +
                         "\"name\":\"106\"," +
                         "\"type\":\"Development\"," +
                         "\"floorName\":\"1st Floor\"," +
@@ -299,31 +223,7 @@ public class HttpRequestsTest {
 
         this.mockMvc.perform(get("/rooms/20/106")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().json(
-                        "{'roomId':6,'name':'106','type':'Development','floorName':1st Floor,'buildingId':'20','styleTop':'-270px','styleLeft':'170px'}"
+                        "{'roomId':1,'name':'106','type':'Development','floorName':1st Floor,'buildingId':'20','styleTop':'-270px','styleLeft':'170px'}"
                 ));
     }
-
-    @Test
-    public void updateRoomKM1CoordXY() throws Exception {
-
-        String jsonContent = "{\"roomId\":3,\"name\":\"KM1\",\"type\":\"Development\",\"floorName\":\"Mezzanine\",\"buildingId\":\"KR9\",\"styleTop\":\"-320px\",\"styleLeft\":\"410px\"}";
-
-        this.mockMvc.perform(post("/rooms/update/room").contentType(MediaType.APPLICATION_JSON)
-                .content(
-                        jsonContent
-                ))
-                .andExpect(status().isOk());
-
-        Room restoreRoom = new Room();
-        restoreRoom.setRoomId(3);
-        restoreRoom.setName("KM1");
-        restoreRoom.setType("Development");
-        restoreRoom.setFloorName("Mezzanine");
-        restoreRoom.setBuildingId("KR9");
-        restoreRoom.setStyleTop("-315px");
-        restoreRoom.setStyleLeft("400px");
-
-        roomRepository.save(restoreRoom);
-    }
-
 }

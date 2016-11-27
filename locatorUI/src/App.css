@@ -55,6 +55,25 @@ body {
   max-width: 30px;
 }
 
+#Unassigned.cardImg{
+  visibility: visible;
+  transition: all 0.5s;
+  max-width: 150px;
+  position: relative;
+  border: 5px solid lightcyan;
+  border-radius: 15px;
+}
+
+#UnassignedPen.cardImg{
+  visibility: visible;
+  transition: all 0.5s;
+  max-width: 20px;
+  position: relative;
+  border: 2px solid dimgray;
+  border-radius: 15px;
+  background-color: floralwhite;
+}
+
 .dropdown.open{
   z-index: 1075 !important;
 }

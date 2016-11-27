@@ -47,9 +47,17 @@ public interface RoomsRepository extends CrudRepository<Room, Long> {
      */
     Iterable<Room> findAllByOrderByRoomId();
 
+    /**
+     * JPA update to delete a room by floorName
+     * @return
+     */
     @Transactional
     List<Room> removeByFloorName(String FloorName);
 
+    /**
+     * JPA update to delete a room by buildingId
+     * @return
+     */
     @Transactional
     List<Room> removeByBuildingId(String BuildingId);
 }

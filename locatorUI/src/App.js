@@ -12,11 +12,12 @@ import {
     ModalHeader,
     ModalBody
 } from 'reactstrap';
+import { Link } from 'react-router';
 import EmployeeDropdown from './EmployeeDropdown';
-import BuildingDropdown from './BuildingDropdown';
 import FloorDropdown from './FloorDropdown';
 import RoomDropdown from './RoomDropdown';
 import ImageMap from './ImageMap';
+import AssignLocation from './AssignLocation';
 
 var App=React.createClass({
 
@@ -32,11 +33,9 @@ var App=React.createClass({
       myRoom : null,
       myImage : null,
 
-      popoverOpen: false,
       updateDone: false,
       myEditPen : null,
-      myEditBuilding : null,
-      myEditRoom : null
+      myAssignLocation : null
 
     };
   },
@@ -118,7 +117,7 @@ var App=React.createClass({
     var res = data.emplData.location.split("@");
 
     var inputData ={
-      employeeId : data.emplData.id,
+      employeeId : data.emplData.employeeId,
       buildingId : res[2],
       floorName : res[1],
       roomName : res[0],
@@ -189,97 +188,63 @@ var App=React.createClass({
     this.state.myEditPen.setStyleProps(style);
   },
 
-  onEditLocationBuilding: function(event){
+  reset(){
 
-    var selectedBuilding = event.selectedBuilding;
-    this.state.myEditRoom.loadCommentsFromServer('http://localhost:8080/rooms/' + selectedBuilding.buildingId);
-  },
+    var style =
+    {
+      visibility: 'hidden'
+    };
+    this.state.myMap.setStyleProps(style);
+    this.state.myImage.setStyleProps(style);
+    this.state.myEditPen.setStyleProps(style);
 
-  onEditLocationRoom: function(event){
-
+    this.state.myEmployee.updateName('Select an Employee');
+    this.state.myFloor.updateFloor('Select a Floor');
+    this.state.myRoom.updateRoom('Select a Room');
   },
 
   toggle() {
 
     var updateStatus = this.state.updateDone;
 
-    if( this.state.popoverOpen === true &&
+    var popoverOpen = false;
+    if(this.state.myAssignLocation !== null)
+    {
+      this.state.myAssignLocation.setSelectedEmployee(this.state.myEmployee.getEmployeeData().selectedEmployee);
+      popoverOpen = this.state.myAssignLocation.getPopoverState();
+    }
+
+    if( popoverOpen === true &&
         updateStatus === true)
     {
-      this.state.myEmployee.updateName('Select an Employee');
-      this.state.myFloor.updateFloor('Select a Floor');
-      this.state.myRoom.updateRoom('Select a Room');
-      var style =
-      {
-        visibility: 'hidden'
-      };
-      this.state.myMap.setStyleProps(style);
-      this.state.myImage.setStyleProps(style);
-      this.state.myEditPen.setStyleProps(style);
+      this.reset();
       updateStatus = false;
     }
 
     this.setState({
-      popoverOpen: !this.state.popoverOpen,
       updateDone: updateStatus
     });
+
+    if(this.state.myAssignLocation !== null)
+    {
+      this.state.myAssignLocation.toggle();
+    }
+
   },
 
-  onSubmitNewLocationHandler: function () {
+  onSubmitNewLocation: function (data){
 
-    var roomName = this.state.myEditRoom.getCurrentRoom().currentRoom;
-
-    var roomData = this.state.myEditRoom.getRoomData().selectedRoom;
-
-    if( roomName !== 'Select a Room')
-    {
-
-      var employeeData = this.state.myEmployee.getEmployeeData().selectedEmployee;
-      var newLocation = roomData.name + "@" + roomData.floorName + "@" + roomData.buildingId;
-
-      employeeData.location = newLocation;
-
-      var jsonData = JSON.stringify(employeeData);
-      fetch('http://localhost:8080/employees/update/employee',{
-        method: 'POST',
-        mode: 'cors',
-        redirect: 'follow',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: jsonData
-      })
-      .then((response) => {
-
-        var message;
-        if(response.status === 200) {
-          message = {
-            content: "Success! New Location for the Employee Submitted.",
-            type: "success"
-          };
-        }
-        else{
-          message = {
-            content: "Error: New Location not updated. Contact your Administrator.",
-            type: "error"
-          };
-        }
-        this.setState(
-            {updateDone : true}
-        );
-        this.addNotification(message);
-      }).catch((error) => {
-        console.error(error);
-      });
+    this.reset();
+    if(data.type !== 'ValidationError'){
+      this.setState(
+          {updateDone : true}
+      );
     }
-    else{
-      var message = {
-        content: "Please Choose a New Room Before Clicking \"Submit\"",
-        type: "info"
-      };
-      this.addNotification(message);
-    }
+
+    this.addNotification(data.message);
+    this.state.myAssignLocation.toggle();
+
+
   },
 
   addNotification: function(notificationMessage) {
@@ -291,6 +256,13 @@ var App=React.createClass({
   },
 
   render: function() {
+
+    var modalEmployee = null;
+
+    if (this.state.myEmployee) {
+      modalEmployee = this.state.myEmployee.getEmployeeData().selectedEmployee;
+    }
+
     return (
 
         <div className="selectorBox">
@@ -299,6 +271,7 @@ var App=React.createClass({
             <hr/>
             <h1 className="display-3">Locator</h1>
             <p className="lead">CN Group - Staff Locator</p>
+            <p><Link to="/tools/unassigned">Unassigned Users</Link></p>
             <Card className="card" block>
               <CardSubtitle>Select an employee, floor number or room to display the location</CardSubtitle>
               <Row>
@@ -306,7 +279,7 @@ var App=React.createClass({
                   <EmployeeDropdown className="MyEmployees"
                                     onChange={this.onSelectEmployee}
                                     onReceipt={this.onEmployeeDataReceived}
-                                    url="http://localhost:8080/employees"
+                                    url="http://localhost:8080/employees/assigned"
                                     ref={(ref) => this.state.myEmployee = ref}/>
                 </Col>
                 <Col sm="3">
@@ -334,32 +307,11 @@ var App=React.createClass({
                             ref={(ref) => this.state.myEditPen = ref}
                             clickHandler={this.toggle}
                   />
-                  <Modal id="EditLocation"
-                           placement="bottom"
-                           isOpen={this.state.popoverOpen}
-                           target="EditPen"
-                           toggle={this.toggle}
-                           >
-                    <ModalHeader>Did this employee move?</ModalHeader>
-                    <ModalBody>
-                        Choose the new location:
-                        <BuildingDropdown className="EditBuildingDropdown"
-                                          onChange={this.onEditLocationBuilding}
-                                          url="http://localhost:8080/buildings"
-                                          ref={(ref) => this.state.myEditBuilding = ref}
-                        />
-                        <RoomDropdown className="EditRoomsDropdown"
-                                      onChange={this.onEditLocationRoom}
-                                      url="http://localhost:8080/rooms"
-                                      ref={(ref) => this.state.myEditRoom = ref}
-                        />
-                        <Button id="EditLocationButton"
-                                color="primary"
-                                onClick={this.onSubmitNewLocationHandler}>
-                          Submit
-                        </Button>
-                    </ModalBody>
-                  </Modal>
+                  <AssignLocation id="Modal"
+                                  ref={(ref) => this.state.myAssignLocation = ref}
+                                  onToggleClick={this.toggle}
+                                  onSubmit={this.onSubmitNewLocation}
+                                  selectedEmployee={modalEmployee}/>
                 </Col>
               </Row>
             </Card>

@@ -15,20 +15,18 @@ import javax.persistence.*;
 public class StaffMember{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employees_employee_guid_seq")
-    @SequenceGenerator(name = "employees_employee_guid_seq", sequenceName = "employees_employee_guid_seq", allocationSize=1)
     @Column(name = "employee_guid")
     private Integer employeeGuid;
     @Column(name = "employee_id")
     private String employeeId;
     @Column(name = "manager_id")
-    private String managerId;
+    private Integer managerId;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-    private String abbreviation;
     private String role;
+    private String department;
     private String email;
     private String location;
 
@@ -37,12 +35,13 @@ public class StaffMember{
     }
 
     public StaffMember(StaffMember sm){
-        this.employeeId = sm.getId();
+        this.employeeGuid = sm.getEmployeeGuid();
+        this.employeeId = sm.getEmployeeId();
         this.managerId = sm.getManagerId();
         this.firstName = sm.getFirstName();
         this.lastName = sm.getLastName();
-        this.abbreviation = sm.getAbbreviation();
         this.role = sm.getRole();
+        this.department = sm.getDepartment();
         this.email = sm.getEmail();
         this.location = sm.getLocation();
     }
@@ -88,19 +87,19 @@ public class StaffMember{
         this.employeeGuid = employeeGuid;
     }
 
-    public String getId() {
+    public String getEmployeeId() {
         return employeeId;
     }
 
-    public void setId(String id) {
+    public void setEmployeeId(String id) {
         this.employeeId = id;
     }
 
-    public void setManagerId(String id){
+    public void setManagerId(Integer id){
         this.managerId = id;
     }
 
-    public String getManagerId(){
+    public Integer getManagerId(){
         return managerId;
     }
 
@@ -120,19 +119,19 @@ public class StaffMember{
         this.lastName = lastName;
     }
 
-    public String getAbbreviation() {
-        return abbreviation;
-    }
-
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
-    }
-
     public String getRole() {
         return role;
     }
 
     public void setRole(String role){ this.role = role; }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
     public String getEmail() {
         return email;

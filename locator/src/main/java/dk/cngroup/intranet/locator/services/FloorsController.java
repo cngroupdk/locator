@@ -4,8 +4,12 @@ import dk.cngroup.intranet.locator.buildingcomponents.Floor;
 import dk.cngroup.intranet.locator.repositories.FloorsRepository;
 import dk.cngroup.intranet.locator.repositories.RoomsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -15,6 +19,9 @@ import java.util.List;
 
 @RestController
 public class FloorsController {
+
+    @Value("${internal.resources.files.location}")
+    private String floorplanLocation;
 
     @Autowired
     private FloorsRepository repository;
@@ -128,7 +135,8 @@ public class FloorsController {
     @ResponseBody
     public String deleteSingleCNFloor(@RequestBody Floor deleteFloor) {
         try{
-            
+
+            deletePicture(deleteFloor);
             repository.delete(deleteFloor);
             roomRepository.removeByFloorName(deleteFloor.getFloorName());
 
@@ -151,6 +159,9 @@ public class FloorsController {
     public String updateSingleCNFloor(@RequestBody Floor updateFloor) {
 
         try{
+            Floor update = repository.findByFloorId(updateFloor.getFloorId());
+            deletePicture(update);
+
             repository.save(updateFloor);
         }catch(Exception e){
             Application.getLogger().info("/floors/update/floor, Floor not updated.");
@@ -158,6 +169,50 @@ public class FloorsController {
         }
 
         return "redirect:/";
+    }
+
+    /**
+     * Check if File exists
+     *
+     * @return a StoragePhotoFolder object
+     */
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
+    @RequestMapping("/floors/img/{floor_file}/{format}")
+    public ImageProperties getIfFloorplanExists(@PathVariable(value="floor_file") String fileName,
+                                                @PathVariable(value="format") String format){
+
+        Path rootLocation = Paths.get(floorplanLocation);
+        Path target = rootLocation.resolve(fileName + "." + format);
+        String reply = new String("empty");
+
+        if(Files.exists(target)) {
+            reply = "exists";
+        }
+
+        ImageProperties floor = new ImageProperties();
+        floor.setExistence(reply);
+        floor.setFilename(fileName);
+        floor.setExtension(format);
+        return floor;
+    }
+
+    public boolean deletePicture(Floor floor){
+
+        boolean pictureDeleted = false;
+
+        try{
+
+            Path rootLocation = Paths.get(floorplanLocation);
+            Path target = rootLocation.resolve(floor.getFloorplanUrl().substring(1));
+            Files.delete(target);
+
+            pictureDeleted = true;
+
+        }catch(Exception e){
+            Application.getLogger().info("/floors/update/floor, Floor image not eliminated.");
+        }
+
+        return pictureDeleted;
     }
 
     public FloorsRepository getRepository(){

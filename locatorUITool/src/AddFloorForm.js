@@ -127,6 +127,7 @@ var AddFloorForm = React.createClass({
 
     onFloorSubmitHandler(data){
 
+        this.state.RequestData = data;
         var url = data.url;
         var type = data.type;
         var messageContent = data.messageContent;
@@ -142,52 +143,65 @@ var AddFloorForm = React.createClass({
             floorName !== '' &&
             floorURL !== '' ){
 
-            if(this.state.refNewFile != null){
-                this.onSubmitNewFloorplan();
-            }
+            var filePart = floorURL.split(".");
+            var buildingURL = 'http://localhost:8080/floors/img' + filePart[0] + "/" + filePart[1];
 
-            var rawData = null;
+            this.serverRequest = $.get(buildingURL, function (result) {
 
-            if (type !== "add") {
+                if(result.existence != "empty" && this.state.RequestData.type !== "delete"){
+                    var d = new Date().getTime().toString().substring(8);
+                    floorURL = "/" + result.filename + "_" + d + "." + result.extension;
+                }
 
-                var selected = this.state.selectedFloor;
-                rawData = {
-                    floorId: selected.floorId,
-                    floorName: selected.floorName,
-                    floorplanUrl: floorURL,
-                    type: selected.type,
-                    buildingId: selected.buildingId
-                };
-            }
-            else {
-                rawData = {
-                    floorId: 0,
-                    floorName: floorName,
-                    floorplanUrl: floorURL,
-                    type: 'General',
-                    buildingId: buildingName
-                };
-            }
+                if(this.state.refNewFile != null){
+                    this.onSubmitNewFloorplan(floorURL);
+                }
 
-            var jsonData = JSON.stringify(rawData);
+                var rawData = null;
 
-            fetch(url,{
-                method: 'POST',
-                mode: 'cors',
-                redirect: 'follow',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: jsonData
-            })
-            .then((response) => {
-                this.props.onChange({response, messageContent});
-                passedValidation = true;
-            }).catch((response) => {
-                var messageContent = "Error, Floor Update Not Submitted. Please Contact Your Administrator.";
-                this.props.onChange({response, messageContent});
-            });
+                if (type !== "add") {
+
+                    var selected = this.state.selectedFloor;
+                    rawData = {
+                        floorId: selected.floorId,
+                        floorName: selected.floorName,
+                        floorplanUrl: floorURL,
+                        type: selected.type,
+                        buildingId: selected.buildingId
+                    };
+                }
+                else {
+                    rawData = {
+                        floorId: 0,
+                        floorName: floorName,
+                        floorplanUrl: floorURL,
+                        type: 'General',
+                        buildingId: buildingName
+                    };
+                }
+
+                var jsonData = JSON.stringify(rawData);
+
+                fetch(url,{
+                    method: 'POST',
+                    mode: 'cors',
+                    redirect: 'follow',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: jsonData
+                })
+                .then((response) => {
+                    this.props.onChange({response, messageContent});
+                    passedValidation = true;
+                }).catch((response) => {
+                    var messageContent = "Error, Floor Update Not Submitted. Please Contact Your Administrator.";
+                    this.props.onChange({response, messageContent});
+                });
+
+            }.bind(this));
+
 
         }
         else{
@@ -204,12 +218,13 @@ var AddFloorForm = React.createClass({
         }
     },
 
-    onSubmitNewFloorplan(){
+    onSubmitNewFloorplan(fileName){
 
         var data = new FormData();
 
         this.state.refNewFile.forEach((file)=> {
             data.append('file', file);
+            data.append('fileName', fileName.substring(1))
         });
 
 

@@ -1,8 +1,10 @@
 package dk.cngroup.intranet.locator.repositories;
 
 import dk.cngroup.intranet.locator.actors.StaffMember;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ import java.util.List;
  */
 
 @Repository
-public interface StaffMemberRepository extends CrudRepository <StaffMember, Long> {
+public interface StaffMemberRepository extends CrudRepository <StaffMember, Long>, JpaSpecificationExecutor {
 
     /**
      * JPA query to obtain an employee by the firstName and lastName fields
@@ -31,4 +33,16 @@ public interface StaffMemberRepository extends CrudRepository <StaffMember, Long
      * @return
      */
     List<StaffMember> findAllByOrderByEmployeeGuid();
+
+    /**
+     * JPA query to obtain all employees by a location different from the input
+     * @return
+     */
+    List<StaffMember> findAllByLocationNot(String location);
+
+    /**
+     * JPA query to obtain all employees by a location
+     * @return
+     */
+    List<StaffMember> findAllByLocation(String location);
 }

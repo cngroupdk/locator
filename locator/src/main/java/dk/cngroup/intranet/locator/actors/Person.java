@@ -33,6 +33,17 @@ public class Person {
 
     }
 
+    public Person(Person p){
+        this.id = p.id;
+        this.login = p.login;
+        this.abbreviation = p.abbreviation;
+        this.name = p.name;
+        this.department = p.department;
+        this.jobCategory = p.jobCategory;
+        this.email = p.email;
+        this.bossId = p.bossId;
+    }
+
     @Override
     public boolean equals(Object obj){
         boolean result;

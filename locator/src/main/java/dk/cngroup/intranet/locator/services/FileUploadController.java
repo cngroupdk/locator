@@ -12,9 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class FileUploadController {
 
     private final StorageService storageService;
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Autowired
     public FileUploadController(StorageService storageService) {
@@ -77,14 +78,17 @@ public class FileUploadController {
     @PostMapping(path="/files/upload", headers=("content-type=multipart/*"), consumes = "image/jpeg")
     @ResponseBody
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                   @RequestParam("fileName") String newName,
                                    RedirectAttributes redirectAttributes) {
+
+        String fileName = file.getOriginalFilename();
 
         storageService.store(file);
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-        Path movefrom = storageService.loadFromTemp(file.getOriginalFilename());
-        Path target = storageService.load(file.getOriginalFilename());
+        Path movefrom = storageService.loadFromTemp(fileName);
+        Path target = storageService.load(newName);
 
         try {
             Files.move(movefrom, target, StandardCopyOption.REPLACE_EXISTING);

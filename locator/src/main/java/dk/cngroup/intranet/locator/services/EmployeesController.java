@@ -9,13 +9,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,15 +49,50 @@ public class EmployeesController {
     @RequestMapping("/employees")
     public List<StaffMember> getEmployeeList(){
 
-        Iterable<StaffMember> employees = repository.findAll();
         List<StaffMember> result = repository.findAllByOrderByEmployeeGuid();
 
-        if (employees == null) {
+        if (result == null) {
             Application.getLogger().info("/employees failed, no employees found.");
             throw new EmployeesServiceException();
         }
         return result;
 
+    }
+
+    /**
+     * Rest service to return a list of all assigned employees in the database.
+     *
+     * @return an Iterable object of StaffMember objects
+     */
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
+    @RequestMapping("/employees/assigned")
+    public List<StaffMember> getAssignedEmployeeList(){
+
+        List<StaffMember> employees = repository.findAllByLocationNot("undefined");
+
+        if (employees == null) {
+            Application.getLogger().info("/employees failed, no employees found.");
+            throw new EmployeesServiceException();
+        }
+        return employees;
+    }
+
+    /**
+     * Rest service to return a list of all unassigned employees in the database.
+     *
+     * @return an Iterable object of StaffMember objects
+     */
+    @CrossOrigin(origins = {"${origin.locator.ui}", "${origin.locator.ui.tool}"})
+    @RequestMapping("/employees/unassigned")
+    public List<StaffMember> getUnassignedEmployeeList(){
+
+        List<StaffMember> employees = repository.findAllByLocation("undefined");
+
+        if (employees == null) {
+            Application.getLogger().info("/employees failed, no employees found.");
+            throw new EmployeesServiceException();
+        }
+        return employees;
     }
 
     /**
@@ -130,20 +172,73 @@ public class EmployeesController {
      * @return a String object
      */
     @Scheduled(fixedDelayString = "${schedule.task.interval}")
-    public void getTimurNames(){
-        RestTemplate restTemplate = new RestTemplate();
+    public void getTimurNames() {
 
-        ResponseEntity<List<Person>> rateResponse =
-                restTemplate.exchange(  timurURL,
-                        HttpMethod.GET,
-                        null,
-                        new ParameterizedTypeReference<List<Person>>() {}
-                );
+        try {
 
-        List<Person> employees = rateResponse.getBody();
+            RestTemplate restTemplate = new RestTemplate();
 
-        log.info("Connected to Persons at " + dateFormat.format(new Date()));
+            ResponseEntity<List<Person>> rateResponse =
+                    restTemplate.exchange(timurURL,
+                            HttpMethod.GET,
+                            null,
+                            new ParameterizedTypeReference<List<Person>>() {
+                            }
+                    );
 
+            List<Person> persons = rateResponse.getBody();
+            List<StaffMember> staffMembers = getEmployeeList();
+
+            List<StaffMember> staffToDelete = new ArrayList<StaffMember>();
+
+            for (StaffMember staffMember : staffMembers) {
+
+                boolean found = false;
+                Person personToRemove = new Person();
+
+                for (Person person : persons) {
+                    if (person.getId().equals(staffMember.getEmployeeGuid())) {
+                        personToRemove = new Person(person);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found == true) {
+                    persons.remove(personToRemove);
+                } else {
+                    staffToDelete.add(staffMember);
+                }
+            }
+
+            for (StaffMember sm : staffToDelete) {
+                repository.delete(sm);
+            }
+
+            for (Person p : persons) {
+
+                String[] names = p.getName().split(" ");
+                StaffMember newStaff = new StaffMember();
+
+                newStaff.setEmployeeGuid(p.getId());
+                newStaff.setEmployeeId(p.getLogin());
+                newStaff.setFirstName(names[1]);
+                newStaff.setLastName(names[0]);
+                newStaff.setManagerId(p.getBossId());
+                newStaff.setRole(p.getJobCategory());
+                newStaff.setDepartment(p.getDepartment());
+                newStaff.setEmail(p.getEmail());
+                newStaff.setLocation("undefined");
+                repository.save(newStaff);
+            }
+
+            log.info("Updated from TIMUR at " + dateFormat.format(new Date()));
+
+        } catch (Exception e) {
+            log.info("Unable to update from TIMUR");
+        }
     }
+
+
 
 }
